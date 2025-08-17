@@ -1,0 +1,425 @@
+[
+  {
+    "_id": {
+      "$oid": "6833f8fd1161c6f57c118d68"
+    },
+    "creator": {
+      "$oid": "682a7d1103a49f981f03df2c"
+    },
+    "vendor": {
+      "name": "Hardesty Private Investigations",
+      "emails": [],
+      "phns": [
+        "1-800-595-0830"
+      ],
+      "addrs": [
+        {
+          "streetAddr": "PO Box 624",
+          "city": "Brighton",
+          "state": "MI",
+          "postal": "48116",
+          "country": "USA"
+        }
+      ]
+    },
+    "client": {
+      "name": "kevin mcneely",
+      "emails": [],
+      "phns": [
+        "1-248-945-1040"
+      ],
+      "org": "Miller & Tischler",
+      "addrs": []
+    },
+    "subjects": [
+      {
+        "name": "lachrissa parker",
+        "emails": [
+          "alachrissa.parke225@yahoo.com",
+          "lachrissa.parker@yahoo.com"
+        ],
+        "addrs": [
+          {
+            "streetAddr": "9566 Cheyenne St",
+            "city": "Detroit",
+            "state": "MI",
+            "postal": "48227",
+            "country": "USA",
+            "info": "9566, Cheyenne Street, Pride Ave Community, Detroit, Wayne County, Michigan, 48227, USA",
+            "loc": {
+              "type": "Point",
+              "coordinates": [
+                -83.1738022,
+                42.3669266
+              ]
+            }
+          }
+        ],
+        "phns": [
+          "1-313-850-7755",
+          "1-313-744-8801"
+        ],
+        "dob": {
+          "$date": "1984-07-29T05:00:00Z"
+        },
+        "type": "primary"
+      },
+      {
+        "name": "tiffany knight",
+        "emails": [],
+        "addrs": [
+          {
+            "streetAddr": "16870 Fairfield St",
+            "city": "Detroit",
+            "state": "MI",
+            "postal": "48221",
+            "country": "USA",
+            "info": "16870, Fairfield Street, University District, Detroit, Wayne County, Michigan, 48221, USA",
+            "loc": {
+              "type": "Point",
+              "coordinates": [
+                -83.134938,
+                42.415924
+              ]
+            }
+          },
+          {
+            "streetAddr": "9242 Mansfield St, Apt. 103",
+            "city": "Detroit",
+            "state": "MI",
+            "postal": "48228",
+            "country": "USA",
+            "info": "9242, Mansfield Street, Fishkorn, Detroit, Wayne County, Michigan, 48228, USA",
+            "loc": {
+              "type": "Point",
+              "coordinates": [
+                -83.2034053,
+                42.3633439
+              ]
+            }
+          }
+        ],
+        "phns": [
+          "1-313-970-9871"
+        ],
+        "type": "secondary"
+      }
+    ],
+    "details": {
+      "rush": true,
+      "objective": "full",
+      "dueOn": {
+        "$date": "2025-05-16T05:00:00Z"
+      },
+      "dateOfAccident": {
+        "$date": "2024-06-23T05:00:00Z"
+      },
+      "specialNotes": "39 years old. Citizens assigned by MACP. Refusing to appear for EVO. Establish no auto, did not have permisson from owner to use the car",
+      "vehicleDesc": "2020 Volkswagon Tiguan",
+      "isQNAReq": true,
+      "questions": [
+        "who owned the vehicle",
+        "does LaChrissa own a vehicle",
+        "does LaChrissa have auto insurance",
+        "did LaChrissa had permission",
+        "how did she attain the vehicle",
+        "who are her relatives"
+      ]
+    },
+    "reqNo": "00002",
+    "statusUpdates": [
+      {
+        "name": "new",
+        "time": {
+          "$date": "2025-05-26T05:15:41.562Z"
+        }
+      },
+      {
+        "name": "in-progress",
+        "time": {
+          "$date": "2025-05-26T05:15:58.334Z"
+        }
+      },
+      {
+        "name": "in-progress",
+        "time": {
+          "$date": "2025-05-26T05:16:20.294Z"
+        }
+      },
+      {
+        "name": "in-progress",
+        "time": {
+          "$date": "2025-05-26T05:16:23.413Z"
+        }
+      },
+      {
+        "name": "completed",
+        "time": {
+          "$date": "2025-05-26T05:16:26.531Z"
+        },
+        "info": {
+          "reason": "performed full investigation, found subject, qna complete"
+        }
+      },
+      {
+        "name": "completed",
+        "time": {
+          "$date": "2025-05-26T21:52:44.671Z"
+        },
+        "info": {
+          "reason": "performed full investigation, invterviewed subjects, no further action required."
+        }
+      },
+      {
+        "name": "completed",
+        "time": {
+          "$date": "2025-05-26T22:07:43.189Z"
+        },
+        "info": {
+          "reason": "performed full investigation, invterviewed subjects, no further action required."
+        }
+      },
+      {
+        "name": "completed",
+        "time": {
+          "$date": "2025-05-26T22:07:49.614Z"
+        },
+        "info": {
+          "reason": "performed full investigation, invterviewed subjects, no further action required."
+        }
+      },
+      {
+        "name": "completed",
+        "time": {
+          "$date": "2025-05-26T22:39:29.128Z"
+        },
+        "info": {
+          "reason": "performed full investigation, invterviewed subjects, no further action required."
+        }
+      },
+      {
+        "name": "completed",
+        "time": {
+          "$date": "2025-05-26T22:43:30.905Z"
+        },
+        "info": {
+          "reason": "performed full investigation, invterviewed subjects, no further action required."
+        }
+      },
+      {
+        "name": "completed",
+        "time": {
+          "$date": "2025-05-26T22:52:27.167Z"
+        },
+        "info": {
+          "reason": "performed full investigation, invterviewed subjects, no further action required."
+        }
+      },
+      {
+        "name": "completed",
+        "time": {
+          "$date": "2025-05-26T22:52:37.951Z"
+        },
+        "info": {
+          "reason": "performed full investigation, invterviewed subjects, no further action required."
+        }
+      },
+      {
+        "name": "completed",
+        "time": {
+          "$date": "2025-05-26T22:57:14.562Z"
+        },
+        "info": {
+          "reason": "performed full investigation, invterviewed subjects, no further action required."
+        }
+      }
+    ],
+    "files": [
+      {
+        "originDate": {
+          "$date": "2025-05-26T05:15:55.175Z"
+        },
+        "originLoc": "Detroit, MI, USA",
+        "originName": "00094156.pdf",
+        "mimeType": "pdf",
+        "size": 236748,
+        "location": "cloudinary.com/buckets/13782/1892jd09102dj19jd19jd"
+      },
+      {
+        "originDate": {
+          "$date": "2025-05-26T05:15:55.175Z"
+        },
+        "originLoc": "Detroit, MI, USA",
+        "originName": "00094156.docx",
+        "mimeType": "docx",
+        "size": 236748,
+        "location": "cloudinary.com/buckets/13782/1892jd09102dj19jd19jd"
+      }
+    ],
+    "attempts": [
+      {
+        "start": {
+          "$date": "2025-05-18T05:16:01.436Z"
+        },
+        "log": [
+          {
+            "type":"stop",
+            "addrIdx":[1, 0],
+            "vehiclesPresent":[
+              {
+                "desc": "2020 Volkswagon Tiguan",
+                "plateNo": "ESL 1949",
+                "plateSt": "MI",
+                "location":"parked out front"
+              }
+            ],
+            "time": {
+              "$date": "2025-05-18T05:20:17.747Z"
+            },
+            "leftAttyLetter":false
+          },{
+            "type": "img",
+            "data": {
+              "name": "carsInThedriveway-001.jpg",
+              "originName": "00094745.jpg",
+              "originLoc": "Detroit, MI, USA",
+              "originDate": "2025-05-18T05:16:10.839Z",
+              "mimeType": "jpg",
+              "size": 236748,
+              "res": "1040X920",
+              "location": "cloudinary.com/buckets/13782/1892jd09102dj19jd19jd"
+            },
+            "createdOn": {
+              "$date": "2025-05-18T05:16:10.878Z"
+            }
+          },{
+            "type":"interview",
+            "name": "Tiffany Knight",
+            "rel": "associate",
+            "ref": "lachrissa parker",
+            "method": "in-person",
+            "info": "Tiffany stated her vehicle was not invloved. She received a call from Detroit Police that her car was found abandoned after an accident and was available for pickup. She informed them that the car was sitting in her rdiveway and she was unaware of any accident. Call was received two prior from eithr the 2th, 5th or 7th precinct.",
+            "time": {
+              "$date": "2025-05-18T05:20:17.747Z"
+            }
+          },{
+            "type":"stop",
+            "addrIdx":[0, 0],
+            "vehiclesPresent":[],
+            "leftAttyLetter":true
+          },{
+            "type":"interview",
+            "name": "LaChrissa Parker",
+            "rel": "primary",
+            "method": "in-person",
+            "info": "Refused to speak. Left lettter from attorney",
+            "time": {
+              "$date": "2025-05-18T05:36:07.747Z"
+            }
+          },{
+            "type":"interview",
+            "name": "Tiffany Knight",
+            "rel": "secondary",
+            "phns": [
+              "1-313-970-9871"
+            ],
+            "method": "phn",
+            "info": "nlnxiwoixonwxbxowi xniwnxiwexninwe",
+            "time": {
+              "$date": "2025-05-18T05:47:07.747Z"
+            }
+          }
+        ],
+        "outcome": "LaChrissa refused to speak but took any letter. Tiffany stated her vehicle was not involved per police logistical error. Captured VIN number and plan to follow up with police.",
+        "end": {
+          "$date": "2025-05-18T07:16:08.519Z"
+        },
+        "meta": {
+          "mileage": 24.8086325011391,
+          "mileageAdj": 24.8086325011391,
+          "elapsedTime": 7207083
+        }
+      },
+      {
+        "start": {
+          "$date": "2025-05-23T05:16:01.436Z"
+        },
+        "log": [
+          {
+            "type": "interview",
+            "name": "Detroit Police",
+            "method": "phn",
+            "info": "Calls made to 2nd, 5th and 7th precints.",
+            "time": {
+              "$date": "2025-05-23T05:22:07.747Z"
+            }
+          }
+        ],
+        "outcome": "police refused to provide any additional info or possible amended police report.",
+        "end": {
+          "$date": "2025-05-23T05:46:01.558Z"
+        },
+        "meta": {
+          "mileage": 0,
+          "mileageAdj": 0,
+          "elapsedTime": 1800122
+        }
+      }
+    ],
+    "createdOn": {
+      "$date": "2025-05-26T05:15:41.590Z"
+    },
+    "updatedOn": {
+      "$date": "2025-05-26T22:57:14.573Z"
+    },
+    "__v": 17,
+    "admin": {
+      "name": "mia francis",
+      "emails": [],
+      "addrs": [
+        {
+          "streetAddr": "31115 Huntley Square East Apt 614",
+          "city": "Beverly Hills",
+          "state": "MI",
+          "postal": "48025",
+          "country": "USA",
+          "info": "31114, Huntley Square East, Beverly Hills, Oakland County, Michigan, 48025, USA",
+          "loc": {
+            "type": "Point",
+            "coordinates": [
+              -83.225571,
+              42.518633
+            ]
+          }
+        }
+      ],
+      "phns": [
+        "1-248-417-3211"
+      ],
+      "rateAmt": 30,
+      "rateUnit": "hr",
+      "mileageRate": 0.7
+    },
+    "assignedOn": {
+      "$date": "2025-05-26T05:15:52.073Z"
+    },
+    "findings": {
+      "newFacts": "tiffany said the police called about her car being abandoned after an accident while her car was sitting in the driveway",
+      "ownerOfCar": "tiffany knight",
+      "premissionToDrive": false,
+      "answers": [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f"
+      ],
+      "household": [],
+      "insuranceInfo": []
+    },
+    "resolution": {
+      "qnaCompleted": "2025-05-26T05:16:23.374Z"
+    }
+  }
+]

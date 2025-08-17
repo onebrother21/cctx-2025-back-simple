@@ -1,0 +1,100 @@
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+    body {
+        background: #074b79;
+        font-family: 'Ubuntu', sans-serif;
+        font-weight: 400;
+        line-height: 1.25em;
+        margin: 0;
+        font-size: 16px;
+        color: #454b52;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    .post-job-page {
+        width: 360px;
+        padding: 8% 0 0;
+        margin: auto;
+    }
+    .form {
+        position: relative;
+        z-index: 1;
+        background: #FFFFFF;
+        max-width: 360px;
+        margin: 0 auto 100px;
+        padding: 45px;
+        text-align: center;
+        box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+    }
+    .form input,
+    .form select,
+    .form textarea {
+        font-family: inherit;
+        outline: 0;
+        background: #f2f2f2;
+        width: 100%;
+        border-width: 2px;
+        border-color: #8c8c8c;
+        margin: 0 0 15px;
+        padding: 15px;
+        box-sizing: border-box;
+        font-size: 14px;
+    }
+    .form button {
+        font-family: inherit;
+        text-transform: uppercase;
+        outline: 0;
+        background: hsl(217, 22%, 24%);
+        width: 100%;
+        border: 0;
+        padding: 15px;
+        color: #FFFFFF;
+        font-size: 14px;
+        -webkit-transition: all 0.3 ease;
+        transition: all 0.3 ease;
+        cursor: pointer;
+    }
+    .form button:hover,.form button:active,.form button:focus {
+        background: hsl(217, 22%, 28%);
+    }
+    .form .message {
+        margin: 15px 0 0;
+        color: #b3b3b3;
+        font-size: 12px;
+    }
+    .form .message a {
+        color: hsl(217, 22%, 24%);
+        text-decoration: none;
+    }
+
+    .message.error {
+        color: #EF3B3A;
+    }
+
+</style>
+
+<div class="post-job-page">
+  <div class="form">
+    <form class="post-job-form" #myForm id="myForm">
+      <select name="type" placeholder="Job Name">
+        <option selected>Select System Job</option>
+        <option value="send-notifications">Send Notifications</option>
+        <option value="clock-bugs">Clock Bugs</option>
+        <option value="random-sleep">Do Random Sleep</option>
+      </select>
+      <input type="number" name="every" min="0" step="1" placeholder="Every (minutes)"/>
+      <input type="number" name="delay" min="0" step="500" placeholder="Delay Start (seconds)"/>
+      <textarea rows="2" name="data" placeholder="Job Data"></textarea>
+      <button type="submit">Post Job</button>
+      <% if (invalid) { %><p class="message error">Invalid parameters.</p><% } %>
+    </form>
+  </div>
+  <div class="form">
+    <form class="post-job-form" #testNotify id="testNotify">
+      <button type="submit">Test Notification</button>
+    </form>
+  </div>
+</div>
+<script type="module" src="/js/helpers.js"></script>
+<script type="module" src="/js/index.js"></script>

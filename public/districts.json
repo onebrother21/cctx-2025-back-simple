@@ -1,0 +1,111 @@
+[
+  {
+    "name":"Brooks County Independent School District",
+    "county":"Brooks County",
+    "region":1
+  },
+  
+  {
+    "name":"Brownsville Independent School District",
+    "county":"Cameron County",
+    "region":1
+  },{
+    "name":"Harlingen Consolidated Independent School District",
+    "county":"Cameron County",
+    "region":1
+  },{
+    "name":"La Feria Independent School District",
+    "county":"Cameron County",
+    "region":1
+  },{
+    "name":"Los Fresnos Consolidated Independent School District",
+    "county":"Cameron County",
+    "region":1
+  },{
+    "name":"Point Isabel Independent School District",
+    "county":"Cameron County",
+    "region":1
+  },{
+    "name":"BRio Hondo Independent School District",
+    "county":"Cameron County",
+    "region":1
+  },{
+    "name":"San Benito Consolidated Independent School District",
+    "county":"Cameron County",
+    "region":1
+  },{
+    "name":"Santa Maria Independent School District",
+    "county":"Cameron County",
+    "region":1
+  },{
+    "name":"Santa Rosa Independent School District",
+    "county":"Cameron County",
+    "region":1
+  },{
+    "name":"South Texas Independent School District (also extends into Hidalgo and Willacy Counties)",
+    "county":"Cameron County",
+    "region":1
+  },
+
+  {
+    "name":"Donna Independent School District",
+    "county":"Hidalgo County",
+    "region":1
+  },{
+    "name":"Edcouch-Elsa Independent School District",
+    "county":"Hidalgo County",
+    "region":1
+  },{
+    "name":"Progreso Independent School District",
+    "county":"Hidalgo County",
+    "region":1
+  },{
+    "name":"Pharr-San Juan-Alamo Independent School District",
+    "county":"Hidalgo County",
+    "region":1
+  },{
+    "name":"Monte Alto Independent School District",
+    "county":"Hidalgo County",
+    "region":1
+  },{
+    "name":"Mission Consolidated Independent School District",
+    "county":"Hidalgo County",
+    "region":1
+  },{
+    "name":"Mercedes Independent School District",
+    "county":"Hidalgo County",
+    "region":1
+  },{
+    "name":"McAllen Independent School District",
+    "county":"Hidalgo County",
+    "region":1
+  },{
+    "name":"La Villa Independent School District",
+    "county":"Hidalgo County",
+    "region":1
+  },{
+    "name":"La Joya Independent School District",
+    "county":"Hidalgo County",
+    "region":1
+  },{
+    "name":"Hidalgo Independent School District",
+    "county":"Hidalgo County",
+    "region":1
+  },{
+    "name":"Edinburg Consolidated Independent School District",
+    "county":"Hidalgo County",
+    "region":1
+  },{
+    "name":"Sharyland Independent School District",
+    "county":"Hidalgo County",
+    "region":1
+  },{
+    "name":"Valley View Independent School District",
+    "county":"Hidalgo County",
+    "region":1
+  },{
+    "name":"Weslaco Independent School District",
+    "county":"Hidalgo County",
+    "region":1
+  }
+]

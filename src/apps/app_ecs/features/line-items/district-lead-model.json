@@ -1,0 +1,328 @@
+{
+    "_id" : ObjectId("6833f8fd1161c6f57c118d68"),
+    "creator" : ObjectId("682a7d1103a49f981f03df2c"),
+    "client" : {
+        "name" : "kevin mcneely",
+        "emails" : [],
+        "phns" : [ 
+            "1-248-945-1040"
+        ],
+        "org" : "Miller & Tischler",
+        "addrs" : []
+    },
+    "subjects" : [ 
+        {
+            "name" : "lachrissa parker",
+            "emails" : [ 
+                "alachrissa.parke225@yahoo.com", 
+                "lachrissa.parker@yahoo.com"
+            ],
+            "addrs" : [ 
+                {
+                    "streetAddr" : "9566 Cheyenne St",
+                    "city" : "Detroit",
+                    "state" : "MI",
+                    "postal" : "48227",
+                    "country" : "USA",
+                    "info" : "9566, Cheyenne Street, Pride Ave Community, Detroit, Wayne County, Michigan, 48227, USA",
+                    "loc" : {
+                        "type" : "Point",
+                        "coordinates" : [ 
+                            -83.1738022, 
+                            42.3669266
+                        ]
+                    }
+                }
+            ],
+            "phns" : [ 
+                "1-313-850-7755", 
+                "1-313-744-8801"
+            ],
+            "dob" : ISODate("1984-07-29T05:00:00.000Z"),
+            "type" : "primary"
+        }, 
+        {
+            "name" : "tiffany knight",
+            "emails" : [],
+            "addrs" : [ 
+                {
+                    "streetAddr" : "16870 Fairfield St",
+                    "city" : "Detroit",
+                    "state" : "MI",
+                    "postal" : "48221",
+                    "country" : "USA",
+                    "info" : "16870, Fairfield Street, University District, Detroit, Wayne County, Michigan, 48221, USA",
+                    "loc" : {
+                        "type" : "Point",
+                        "coordinates" : [ 
+                            -83.134938, 
+                            42.415924
+                        ]
+                    }
+                }, 
+                {
+                    "streetAddr" : "9242 Mansfield St, Apt. 103",
+                    "city" : "Detroit",
+                    "state" : "MI",
+                    "postal" : "48228",
+                    "country" : "USA",
+                    "info" : "9242, Mansfield Street, Fishkorn, Detroit, Wayne County, Michigan, 48228, USA",
+                    "loc" : {
+                        "type" : "Point",
+                        "coordinates" : [ 
+                            -83.2034053, 
+                            42.3633439
+                        ]
+                    }
+                }
+            ],
+            "phns" : [ 
+                "1-313-970-9871"
+            ],
+            "type" : "secondary"
+        }
+    ],
+    "details" : {
+        "rush" : true,
+        "objective" : "full",
+        "dueOn" : ISODate("2025-05-16T05:00:00.000Z"),
+        "dateOfAccident" : ISODate("2024-06-23T05:00:00.000Z"),
+        "specialNotes" : "39 years old. Citizens assigned by MACP. Refusing to appear for EVO. Establish no auto, did not have permisson from owner to use the car",
+        "vehicleDesc" : "2020 Volkswagon Tiguan",
+        "isQNAReq" : true,
+        "questions" : [ 
+            "who owned the vehicle", 
+            "does LaChrissa own a vehicle", 
+            "does LaChrissa have auto insurance", 
+            "did LaChrissa had permission", 
+            "how did she attain the vehicle", 
+            "who are her relatives"
+        ]
+    },
+    "reqNo" : "00002",
+    "statusUpdates" : [ 
+        {
+            "name" : "new",
+            "time" : ISODate("2025-05-26T05:15:41.562Z")
+        }, 
+        {
+            "name" : "in-progress",
+            "time" : ISODate("2025-05-26T05:15:58.334Z")
+        }, 
+        {
+            "name" : "in-progress",
+            "time" : ISODate("2025-05-26T05:16:20.294Z")
+        }, 
+        {
+            "name" : "in-progress",
+            "time" : ISODate("2025-05-26T05:16:23.413Z")
+        }, 
+        {
+            "name" : "completed",
+            "time" : ISODate("2025-05-26T05:16:26.531Z"),
+            "info" : {
+                "reason" : "performed full investigation, found subject, qna complete"
+            }
+        }
+    ],
+    "files" : [ 
+        {
+            "originDate" : ISODate("2025-05-26T05:15:55.175Z"),
+            "originLoc" : "Detroit, MI, USA",
+            "originName" : "00094156.pdf",
+            "mimeType" : "pdf",
+            "size" : 236748,
+            "location" : "cloudinary.com/buckets/13782/1892jd09102dj19jd19jd"
+        }, 
+        {
+            "originDate" : ISODate("2025-05-26T05:15:55.175Z"),
+            "originLoc" : "Detroit, MI, USA",
+            "originName" : "00094156.docx",
+            "mimeType" : "docx",
+            "size" : 236748,
+            "location" : "cloudinary.com/buckets/13782/1892jd09102dj19jd19jd"
+        }
+    ],
+    "attempts" : [ 
+        {
+            "start" : ISODate("2025-05-18T05:16:01.436Z"),
+            "artifacts" : [ 
+                {
+                    "type" : "img",
+                    "data" : {
+                        "name" : "carsInThedriveway-001.jpg",
+                        "originName" : "00094745.jpg",
+                        "originLoc" : "Detroit, MI, USA",
+                        "originDate" : "2025-05-18T05:16:10.839Z",
+                        "mimeType" : "jpg",
+                        "size" : 236748,
+                        "res" : "1040X920",
+                        "location" : "cloudinary.com/buckets/13782/1892jd09102dj19jd19jd"
+                    },
+                    "createdOn" : ISODate("2025-05-18T05:16:10.878Z")
+                },
+                {
+                    "type" : "contact",
+                    "data" : {
+                        "name" : "Tiffany Knight",
+                        "rel" : "associate",
+                        "ref" : "lachrissa parker",
+                        "how" : "in-person",
+                        "info" : "nlnxiwoixonwxbxowi xniwnxiwexninwe"
+                    },
+                    "createdOn" : ISODate("2025-05-18T05:16:07.747Z")
+                }, {
+                    "type" : "contact",
+                    "data" : {
+                        "name" : "LaChrissa Parker",
+                        "rel" : "primary",
+                        "how" : "in-person",
+                        "info" : "Refused to speak. Left lettter from attorney"
+                    },
+                    "createdOn" : ISODate("2025-05-18T05:36:07.747Z")
+                },{
+                    "type" : "contact",
+                    "data" : {
+                        "name" : "Tiffany Knight",
+                        "rel" : "secondary",
+                        "phns" : [ 
+                            "1-313-970-9871"
+                        ],
+                        "how" : "phn",
+                        "info" : "nlnxiwoixonwxbxowi xniwnxiwexninwe"
+                    },
+                    "createdOn" : ISODate("2025-05-18T05:47:07.747Z")
+                }
+            ],
+            "addrs" : [
+                {
+                    "streetAddr" : "16870 Fairfield St",
+                    "city" : "Detroit",
+                    "state" : "MI",
+                    "postal" : "48221",
+                    "country" : "USA",
+                    "info" : "16870, Fairfield Street, University District, Detroit, Wayne County, Michigan, 48221, USA",
+                    "loc" : {
+                        "type" : "Point",
+                        "coordinates" : [ 
+                            -83.134938, 
+                            42.415924
+                        ]
+                    }
+                },{
+                    "loc" : {
+                        "type" : "Point",
+                        "coordinates" : [ 
+                            -83.1738022, 
+                            42.3669266
+                        ]
+                    },
+                    "streetAddr" : "9566 Cheyenne St",
+                    "city" : "Detroit",
+                    "state" : "MI",
+                    "postal" : "48227",
+                    "country" : "USA",
+                    "info" : "9566, Cheyenne Street, Pride Ave Community, Detroit, Wayne County, Michigan, 48227, USA"
+                }
+            ],
+            "outcome":"LaChrissa refused to speak but took any letter. Tiffany stated her vehicle was not involved per police logistical error.",
+            "end" : ISODate("2025-05-16T05:48:17.159Z"),
+            "meta" : {
+                "mileage" : 10.8207278665856,
+                "mileageRT" : 21.6414557331711,
+                "elapsedTime" : 15723,
+                "vehiclesPresent" : []
+            }
+        },{
+            "start" : ISODate("2025-05-23T05:16:01.436Z"),
+            "artifacts" : [
+                {
+                    "type" : "contact",
+                    "data" : {
+                        "name" : "Detroit Police",
+                        "how" : "phn",
+                        "info" : "Calls made to 2nd, 5th and 7th precints."
+                    },
+                    "createdOn" : ISODate("2025-05-23T05:22:07.747Z")
+                }
+            ],
+            "outcome":"police refused to provide any additional info or possible amended police report.",
+            "end" : ISODate("2025-05-23T05:46:17.159Z"),
+            "meta" : {
+                "mileage" : 0,
+                "mileageRT" : 0,
+                "vehiclesPresent" : []
+            }
+        }
+    ],
+    "createdOn" : ISODate("2025-05-26T05:15:41.590Z"),
+    "updatedOn" : ISODate("2025-05-26T05:16:26.537Z"),
+    "__v" : 9,
+    "admin" : {
+        "name" : "mia francis",
+        "emails" : [],
+        "addrs" : [ 
+            {
+                "streetAddr" : "31114 Huntley Square East",
+                "city" : "Beverly Hills",
+                "state" : "MI",
+                "postal" : "48025",
+                "country" : "USA",
+                "info" : "31114, Huntley Square East, Beverly Hills, Oakland County, Michigan, 48025, USA",
+                "loc" : {
+                    "type" : "Point",
+                    "coordinates" : [ 
+                        -83.225571, 
+                        42.518633
+                    ]
+                }
+            }
+        ],
+        "phns" : [],
+        "rateAmt" : 30,
+        "rateType" : "hr",
+        "mileageRate" : 0.7
+    },
+    "assignedOn" : ISODate("2025-05-26T05:15:52.073Z"),
+    "findings" : {
+        "newFacts" : "tiffany said the police called about her car being abandoned after an accident while her car was sitting in the driveway",
+        "ownerOfCar" : "tiffany knight",
+        "premissionToDrive" : false,
+        "answers" : [ 
+            "a", 
+            "b", 
+            "c", 
+            "d", 
+            "e", 
+            "f"
+        ],
+        "household" : [],
+        "insuranceInfo" : []
+    },
+    "resolution" : {
+        "qnaCompleted" : "2025-05-26T05:16:23.374Z"
+    },
+    "invoice" : {
+        "items" : [ 
+            {
+                "type" : "hr",
+                "duration" : 0.0043675,
+                "durationStr" : "0.0 hr",
+                "serviceCharges" : 0.131025,
+                "serviceChg" : "$ 0.13",
+                "mileage" : 21.6414557331711,
+                "mileageStr" : "21.64 mi",
+                "mileageCharges" : 15.1490190132198,
+                "mileageChg" : "$ 15.15",
+                "totalCharges" : 15.2800440132198,
+                "totalChg" : "$ 15.28",
+                "desc" : "{\n  mileage: 10.820727866585557,\n  mileageRT: 21.641455733171114,\n  elapsedTime: 15723,\n  vehiclesPresent: []\n}"
+            }
+        ],
+        "subtotal" : 15.2800440132198,
+        "tax" : 0.993202860859286,
+        "total" : 16.2732468740791,
+        "createdAt" : ISODate("2025-05-26T05:16:26.537Z"),
+        "updatedAt" : ISODate("2025-05-26T05:16:26.537Z")
+    }
+}

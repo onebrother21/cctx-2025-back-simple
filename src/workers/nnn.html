@@ -1,0 +1,13 @@
+<script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+<script>
+  const socket = io('http://localhost:3000');
+
+  // Register user with userId (this would come from your user data, such as authentication)
+  socket.emit('register', 'userId123'); // Pass the user ID
+
+  // Listen for new notifications
+  socket.on('notification', (notificationData) => {
+    console.log('New Notification:', notificationData);
+    // You can now show this notification in your UI
+  });
+</script>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Colorcoded DEV</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+      body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", Arial, Helvetica, sans-serif}
+    </style>
+  </head>
+  <body class="w3-content w3-border-left w3-border-right">
+
+
+    <!-- Top menu on small screens -->
+    <header class="w3-bar w3-top w3-hide-large w3-black w3-xlarge">
+      <span class="w3-bar-item">colorcoded<spam class="w3-crimson">DEV</spam></span>
+    </header>
+
+    <!-- !PAGE CONTENT! -->
+    <div class="w3-main w3-white" style="margin-left:260px">
+
+      <!-- Push down content on small screens -->
+      <div class="w3-hide-large" style="margin-top:80px"></div>
+      <!-- Contact -->
+      <div class="w3-container" id="login">
+        <h4>Welcome back!</h4>
+        <p>Please use your email and pincode below:</p>
+        <form #authForm id="authForm">
+          <p><input class="w3-input w3-border" type="text" placeholder="Email Or Username" required name="username"></p>
+          <p><input class="w3-input w3-border" type="password" placeholder="PIN" required name="pin"></p>
+          <button type="submit" class="w3-button w3-green w3-third">Login</button>
+        </form>
+      </div>
+      
+      <footer class="w3-container w3-padding-16" style="margin-top:32px">Powered by <a href="javascript:void(0)" class="w3-hover-text-green">Colorcoded</a></footer>
+
+    <!-- End page content -->
+    </div>
+
+
+    <script type="module" src="/js/auth.js"></script>
+
+  </body>
+</html>
