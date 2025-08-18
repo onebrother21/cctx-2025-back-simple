@@ -125,6 +125,31 @@ export class BugsService {
     await bug.saveMe();
     return {bug};
   };
+    // 📌 Bug Notation
+  static addTaskToBug = async (bugId:string,task:UpcentricTypes.ITaskITO) => {
+    const bug = await UpcentricModels.Bug.findById(bugId);
+    if (!bug) throw new Utils.AppError(422,'Requested bug not found');
+    const n = new UpcentricModels.Task(task);
+    await n.save();
+    bug.notes.push(n.id);
+    await bug.saveMe();
+    return {bug};
+  };
+  static updateNote = async (bugId:string,taskIdx:number,task_:Partial<UpcentricTypes.ITask>) => {
+    const bug = await UpcentricModels.Bug.findById(bugId);
+    if (!bug) throw new Utils.AppError(422,'Requested bug not found');
+    const task = await UpcentricModels.Task.findByIdAndUpdate(taskId,{$set:task_});
+    bug.tasks[taskIdx] = task.id;
+    await bug.saveMe();
+    return {bug};
+  };
+  static removeNote = async (bugId:string,noteIdx:number) => {
+    const bug = await UpcentricModels.Bug.findById(bugId);
+    if (!bug) throw new Utils.AppError(422,'Requested bug not found');
+    bug.notes = bug.notes.filter((o,i) => i !== noteIdx);
+    await bug.saveMe();
+    return {bug};
+  };
 
   /*
   // 📌 Bug Attempts

@@ -1,3 +1,4 @@
+import { TasksService } from '../tasks/tasks.service';
 import { BugsService } from './bugs.service';
 import { BugsQueriesService } from './bugs-queries.service';
 
@@ -52,6 +53,43 @@ export class BugsController {
   static deleteBug:IHandler = async (req,res,next) => {
     try {
       const {ok} = await BugsService.deleteBug(req.params.bugId);
+      res.locals.success = ok;
+      res.locals.data = {removed:req.params.bugId,ok};
+      next();
+    } catch (e) { next(e); }
+  };
+  // Bug Tasks CRUD Ops
+  static createBugTask:IHandler = async (req,res,next) => {
+    try {
+      Utils.print("trace","new-bug",req.body.data);
+      const {task} = await BugsService.c(req.user.id,req.body.data);
+      res.locals.success = true;
+      res.locals.data = task.json();
+      next();
+    } catch (e) { next(e); }
+  };
+  static getBugTaskById:IHandler = async (req,res,next) => {
+    try {
+      const {taskId} = req.params;
+      const {task} = await TasksService.getTaskById(taskId);
+      res.locals.success = true;
+      res.locals.data = task.json();
+      next();
+    } catch (e) { next(e); }
+  };
+  static updateBugTask:IHandler = async (req,res,next) => {
+    try {
+      const {bugId} = req.params;
+      const {task} = await BugsService.updateBugTask(req.params.bugId,req.body.data);
+      res.locals.success = true;
+      res.locals.data = task.json();
+      next();
+    } catch (e) { next(e); }
+  };
+  static deleteBugTask:IHandler = async (req,res,next) => {
+    try {
+      const {bugId} = req.params;
+      const {ok} = await BugsService.removeTaskFromBug(req.params.bugId);
       res.locals.success = ok;
       res.locals.data = {removed:req.params.bugId,ok};
       next();

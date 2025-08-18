@@ -43,10 +43,13 @@ export type ITaskType = DocEntity<ITaskStatuses> & {
   resolution?:string;
   reason?:string;
 };
+export type ITaskITO = Partial<ITask>;
+export type ITaskPTO = Pick<ITask,"id"|"title"|"project"|"desc"|"status">;
+export type ITaskOTO = Partial<ITask>;
 export interface ITaskMethods {
   saveMe(status?:ITaskStatuses,info?:any):Promise<void>;
   populateMe():Promise<void>;
-  json():Partial<ITask>;
-  preview():Pick<ITask,"id"|"title"|"project"|"desc"|"status">;
+  json():ITaskOTO;
+  preview():ITaskPTO;
 };
 export interface ITask extends ITaskType,ITaskMethods {}

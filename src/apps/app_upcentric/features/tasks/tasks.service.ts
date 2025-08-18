@@ -25,7 +25,7 @@ const {
 
 export class TasksService {
   // 📌 Task CRUD Ops
-  static createTask = async (creator:string,newTask:Partial<UpcentricTypes.ITask>) => {
+  static createTask = async (creator:string,newTask:UpcentricTypes.ITaskITO) => {
     const task = new UpcentricModels.Task({creator,...newTask});
     await task.saveMe();
     return {task};
