@@ -66,7 +66,7 @@ export class AuthController {
       res.locals.success = true,
       res.locals.message = req.t(Utils.transStrings.registeredsuccessfully,{name: user.name.first}),
       res.locals.data = user.json(true);
-      res.locals.token = await AuthUtilsService.generateTokens(data.app,user);
+      res.locals.token = {accces:await AuthUtilsService.generateToken(data.app,user,"access")};
       req.user = user;
       //send registration notification
       await notify({
@@ -87,8 +87,18 @@ export class AuthController {
         success:true,
         data:user.json(true),
         enc:true,
-        token:await AuthUtilsService.generateTokens(data.app,user),
+        token:{
+          accces:await AuthUtilsService.generateToken(data.app,user,"access"),
+          refresh:await AuthUtilsService.generateToken(data.app,user,"refresh"),
+        }
       };
+      if(res.locals.token) res.cookie("cctx_auth_23j012",{ready:true},{
+        sameSite:"lax",
+        path: '/',
+        secure:process.env.NODE_ENV === 'production',
+        httpOnly:true,
+        maxAge:1000 * 60 * 30,
+      })
       req.user = user;
       // Send unrecognized device notification
       //if(unrecognized) {
@@ -107,8 +117,16 @@ export class AuthController {
       const data = {...req.body.data};
       const user = await AuthService.refreshAuthToken(data);
       res.locals.success = true;
-      res.locals.data = user.json(true);
-      res.locals.token = await AuthUtilsService.generateTokens(data.app,user);
+      res.locals.data = user.json(true);res.locals = {
+        ...res.locals,
+        success:true,
+        data:user.json(true),
+        enc:true,
+        token:{
+          accces:await AuthUtilsService.generateToken(data.app,user,"access"),
+          refresh:await AuthUtilsService.generateToken(data.app,user,"refresh"),
+        }
+      };
       req.user = user;
       next();
     } catch(e){ next(e); }

@@ -35,10 +35,9 @@ const BugsRouter = (cache:Utils.RedisCache) => {
   router.put("/:bugId/notes/:noteIdx",[ctrl.updateNote,...PostMiddleware]);
   router.delete("/:bugId/notes/:noteIdx",[ctrl.removeNote,...PostMiddleware]);
 
-  router.post("/:bugId/tasks",[...validators.createBug,ctrl.createBug,...PostMiddleware]);
-  router.get("/:bugId/tasks/:taskId",[ctrl.getBugById,...PostMiddleware]);
-  router.put("/:bugId/tasks/:taskId",[...validators.updateBug, ctrl.updateBug,...PostMiddleware]);
-  router.delete("/:bugId/tasks/:taskId",[ctrl.deleteBug,...PostMiddleware]);
+  router.post("/:bugId/tasks",[ctrl.addTaskToBug,...PostMiddleware]);
+  router.put("/:bugId/tasks/:taskIdx",[ctrl.updateBugTask,...PostMiddleware]);
+  router.delete("/:bugId/tasks/:taskIdx",[ctrl.removeTaskFromBug,...PostMiddleware]);
   /*
   // 📌 Bug Attempts
   router.post("/:bugId/attempts",[ctrl.startAttempt,...PostMiddleware]);

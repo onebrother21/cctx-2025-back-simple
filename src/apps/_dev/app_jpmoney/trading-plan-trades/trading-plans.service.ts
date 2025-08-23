@@ -1,7 +1,7 @@
-import Models from '../../models';
-import Types from "../../types";
-import Utils from '../../utils';
-import Services from '../../services';
+import Models from '../../../../models';
+import Types from "../../../../types";
+import Utils from '../../../../utils';
+import Services from '../../../../services';
 
 const queryOpts = { new:true,runValidators: true,context:'query' };
 

@@ -47,7 +47,7 @@ class myServer {
       //this.server = server;
       this.app.listen(port,() => {
         Utils.print("ok","env",`Env: ${process.env.NODE_ENV.toLocaleUpperCase()}`);
-        Utils.print("ok","server",`${hostname}:${port} is up and running...`);
+        Utils.print("ok","server",`${hostname}:${port} is up an running...`);
       });
     }
   };

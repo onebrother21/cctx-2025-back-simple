@@ -153,12 +153,7 @@ export class AuthUtilsService {
     }
     const token = jwt.sign(payload,secret,{expiresIn,issuer});
     const decoded = jwt.verify(token,secret) as Types.IAuthToken;
-    if(type == "refresh") await Models.AuthToken.findOneAndUpdate({userId},decoded,{upsert:true});
+    await Models.AuthToken.findOneAndUpdate({userId},decoded,{upsert:true});
     return token;
-  };
-  static generateTokens = async function (appnName:string,user:Types.IUser){
-    const accessToken = await this.generateToken(appnName,user,"access");
-    const refreshToken = await this.generateToken(appnName,user,"refresh");
-    return {accessToken,refreshToken};
   };
 }

@@ -2,7 +2,7 @@ import { Router } from 'express';
 import {
   PostMiddleware,
 } from "../../middlewares";
-import {ApiConnectionController as ctrl} from "../app_upcentric/api-connect.controller";
+import {ApiConnectionController as ctrl} from "../upcentric/api-connect.controller";
 import Utils from '../../utils';
 
 const getAppPublicRouter = (cache:Utils.RedisCache) => {

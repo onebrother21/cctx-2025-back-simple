@@ -23,7 +23,7 @@ export const getRedisConnectionOpts = () => {
       host: process.env.REDIS_HOST_ZERO || process.env.REDIS_HOST || "localhost",
       port: Number(process.env.REDIS_PORT) || 6379,
       //username: process.env.REDIS_USER,
-      password: process.env.REDIS_PASSWORD,
+      //password: process.env.REDIS_PASSWORD,
       //tls: process.env.REDIS_TLS === "true" ? {} : { rejectUnauthorized: false },
     };
   }

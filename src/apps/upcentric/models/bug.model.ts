@@ -26,7 +26,7 @@ const bugSchema = new Schema<Types.IBug,Bug,Types.IBugMethods>({
   progress:{type:Number,min:0,max:100,default:() => 0},
   resolution:{ type: String,maxlength:140},
   reason:{ type: String},
-  bugs:[{type:ObjectId,ref:"upcentric_bugs"}],
+  tasks:[{type:ObjectId,ref:"upcentric_tasks"}],
   notes:[Utils.noteSchema],
   files:[Utils.attachmentSchema],
   info:{type:Object},
@@ -55,7 +55,7 @@ bugSchema.methods.preview = function () {
   };
 };
 bugSchema.methods.json = function () {
-  const json:Partial<Types.IBug> =  {};
+  const json:Partial<Types.IBugOTO> = {};
   json.id = this._id.toString();
   json.creator = (this.creator as any).preview();
   json.createdOn = this.createdOn;
@@ -66,7 +66,7 @@ bugSchema.methods.json = function () {
   json.recurring = this.recurring;
   json.recurringInterval = this.recurringInterval;
   json.amt = this.amt;
-  json.bugs = this.bugs.map(o => o.preview() as Types.IBug);
+  json.tasks = this.tasks.map(o => o.preview());
   json.notes = this.notes.slice(-20);
   json.status = this.status;
   json.startOn = this.startOn;

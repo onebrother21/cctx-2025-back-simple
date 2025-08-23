@@ -1,7 +1,7 @@
 import { body,param } from 'express-validator';
-import { CheckValidation } from '../../../middlewares';
-import Types from "../../../types";
-import Utils from '../../../utils';
+import { CheckValidation } from '../../../../middlewares';
+import Types from "../../../../types";
+import Utils from '../../../../utils';
 
 export class TradingPlanMgmtValidators {
   // 📌 TradingPlan & Fulfillment Validators

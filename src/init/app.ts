@@ -25,12 +25,12 @@ import {
 } from "../middlewares";
 import Utils from "../utils";
 
-import {getAppPublicRouter,getApiConnectionRouter} from '../apps/app_public';
+import {getAppPublicRouter,getApiConnectionRouter} from '../apps/cctx_public';
 import getAuthRouter from '../apps/cctx_auth';
 //import getPiMiaRouter from '../apps/app_pimia';
 //import getCrashDepotRouter from '../apps/app_crashdepot';
 //import getECSRouter from '../apps/app_ecs';
-import getUpcentricRouter from '../apps/app_upcentric';
+import getUpcentricRouter from '../apps/upcentric';
 
 const cookieSecret = process.env.COOKIE_SECRET || 'myCookieSecret';
 

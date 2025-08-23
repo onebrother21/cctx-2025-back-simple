@@ -1,4 +1,5 @@
 import * as Profiles from "./profile.types";
+import * as Tasks from "./task.types";
 
 export enum IBugStatuses {
   NEW = "new",
@@ -36,17 +37,20 @@ export type IBugType = DocEntity<IBugStatuses> & {
   progress?:number;
   recurring?:boolean;
   recurringInterval?:string;
-  bugs:IBug[];
+  tasks:Tasks.ITask[];
   notes:IBugNote[];
   files:Attachment[];
   admin:Profiles.IUpcentricAdmin;
   resolution?:string;
   reason?:string;
 };
+export type IBugITO = Partial<IBug>;
+export type IBugPTO = Pick<IBug,"id"|"title"|"project"|"desc"|"status">;
+export type IBugOTO = Omit<Partial<IBug>,"tasks"> & {tasks:Tasks.ITaskPTO[]};
 export interface IBugMethods {
   saveMe(status?:IBugStatuses,info?:any):Promise<void>;
   populateMe():Promise<void>;
-  json():Partial<IBug>;
-  preview():Pick<IBug,"id"|"title"|"project"|"desc"|"status">;
+  json():IBugOTO;
+  preview():IBugPTO;
 };
 export interface IBug extends IBugType,IBugMethods {}

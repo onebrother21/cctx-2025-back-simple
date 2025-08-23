@@ -1,5 +1,5 @@
 import { Job } from 'bullmq';
-import Models from '../apps/app_upcentric/models';
+import Models from '../apps/upcentric/models';
 import Services from '../services';
 import Types from '../types';
 import Utils from '../utils';
