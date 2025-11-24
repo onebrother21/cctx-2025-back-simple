@@ -25,33 +25,10 @@ const BugsRouter = (cache:Utils.RedisCache) => {
   router.post("/:bugId/admin",[ctrl.assignAdminToBug,...PostMiddleware]);
   router.delete("/:bugId/admin",[ctrl.unassignAdminFromBug,...PostMiddleware]);
   
-  router.post("/:bugId/details",[ctrl.assignDetailsToBug,...PostMiddleware]);
   router.post("/:bugId/files",[ctrl.addFilesToBug,...PostMiddleware]);
   router.put("/:bugId/files/:fileIndex",[ctrl.addFilesToBug,...PostMiddleware]);
   router.delete("/:bugId/files/:fileIndex",[ctrl.addFilesToBug,...PostMiddleware]);
   
-  // 📌 Bug Notation
-  router.post("/:bugId/notes",[ctrl.addNotes,...PostMiddleware]);
-  router.put("/:bugId/notes/:noteIdx",[ctrl.updateNote,...PostMiddleware]);
-  router.delete("/:bugId/notes/:noteIdx",[ctrl.removeNote,...PostMiddleware]);
-
-  router.post("/:bugId/tasks",[ctrl.addTaskToBug,...PostMiddleware]);
-  router.put("/:bugId/tasks/:taskIdx",[ctrl.updateBugTask,...PostMiddleware]);
-  router.delete("/:bugId/tasks/:taskIdx",[ctrl.removeTaskFromBug,...PostMiddleware]);
-  /*
-  // 📌 Bug Attempts
-  router.post("/:bugId/attempts",[ctrl.startAttempt,...PostMiddleware]);
-  router.put("/:bugId/attempts/:attemptIndex",[ctrl.updateAttempt,...PostMiddleware]);
-  router.post("/:bugId/attempts/:attemptIndex/finalize",[ctrl.finalizeAttempt,...PostMiddleware]);
-  router.delete("/:bugId/attempts/:attemptIndex",[ctrl.removeAttempt,...PostMiddleware]);
-
-  // 📌 Bug Artificats
-  router.post("/:bugId/attempts/:attemptIndex/stops",[ctrl.addAttemptActivity,...PostMiddleware]);
-  router.post("/:bugId/attempts/:attemptIndex/interviews",[ctrl.addAttemptActivity,...PostMiddleware]);
-  router.post("/:bugId/attempts/:attemptIndex/notes",[ctrl.addAttemptActivity,...PostMiddleware]);
-  router.post("/:bugId/attempts/:attemptIndex/uploads",upload.single('file'),[ctrl.addAttemptActivity,...PostMiddleware]);
-  router.delete("/:bugId/attempts/:attemptIndex/log/:itemIdx",[ctrl.removeAttemptActivity,...PostMiddleware]);
-  */
   // 📌 Bug Resolution & Invoicing
   router.post("/:bugId/finalize",[ctrl.finalizeBug,...PostMiddleware]);
   router.post("/:bugId/close",[ctrl.closeBug,...PostMiddleware]);

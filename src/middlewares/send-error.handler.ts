@@ -24,16 +24,16 @@ const SendErrorHandler:() => IErrorHandler = () => async (err,req,res,next) => {
   else if(err.name == "TokenExpiredError") res.status(401).json({
     status:401,
     success:false,
-    message:"Token expired. Please login.",
+    message:"Your session is expired. Please login.",
     csrfToken,
   });
-  else if(/malformed/i.test(err.message))  Utils.error(err) && res.status(403).json({
+  else if(err.name == "JsonWebTokenError" && /malformed/i.test(err.message))  res.status(403).json({
     status:403,
     success:false,
-    message:"Forbidden",
+    message:"This action is not allowed.",
     csrfToken,
   });
-  else if(/validation/i.test(err.message) || /validation/i.test(err.name)) res.status(422).json({
+  else if(/validation/i.test(err.name) || /validation/i.test(err.message)) res.status(422).json({
     status:422,
     success:false,
     message:"Operation failed. Please check your data and try again.",
@@ -49,7 +49,7 @@ const SendErrorHandler:() => IErrorHandler = () => async (err,req,res,next) => {
   else {
     const clockBugsQ = Utils.createQueue("clock-bugs");
     Utils.error(err);
-    await clockBugsQ.add("clock-bug-job",{
+    if(!await clockBugsQ.isPaused()) await clockBugsQ.add("clock-bug-job",{
       creator:req.profile?req.profile.id:null,
       creatorRef:req.user?req.user.role:"customer",
       category:"backend",

@@ -4,10 +4,9 @@ import { getRedisConnectionOpts } from "./create-redis-conn-opts";
 import BusinessVars from "../models/bvars.model";
 import * as logger from './console-logger';
 
+export interface RedisCache {redis:Redis}
 export class RedisCache {
-  redis: Redis;
   public load = async () => {
-    const cacheData = await this.get();
     const bvars = await BusinessVars.findOne({status:"active"});
     const data = bvars.json();
     await this.set(data);
@@ -18,26 +17,6 @@ export class RedisCache {
   
   public save = this.set;
   public clear = async () => await this.redis.set("app_data","null");
-  public connect = async (o?:{clear?:boolean}) => {
-    try {
-      return new Promise((done,reject) => {
-        this.redis = new Redis(getRedisConnectionOpts());
-        this.redis.on("error",e => {
-          logger.error(e);
-          process.exit(1);
-        });
-        this.redis.on("connect",async () => {
-          const o = await this.load();
-          logger.print("ok","redis","App cache connected");
-          done(true);
-        });
-      });
-    }
-    catch (e) {
-      logger.error(`Redis connection error. ${e}`);
-      process.exit(1);
-    }
-  };
   public test = async () => {
     try {
       const cache = await this.get();
@@ -47,6 +26,28 @@ export class RedisCache {
       console.error(e);
     }
   };
+  public static connect = async (o?:{clear?:boolean}):Promise<RedisCache> => {
+    try {
+      return new Promise((done,reject) => {
+        const cache = new this();
+        cache.redis = new Redis(getRedisConnectionOpts());
+        cache.redis.on("error",e => {
+          logger.error(e);
+          reject(e);
+        });
+        cache.redis.on("connect",async () => {
+          await cache.load();
+          logger.print("ok","ok","Redis connected");
+          done(cache);
+        });
+      });
+    }
+    catch (e) {
+      logger.error(`Redis connection error. ${e}`);
+      process.exit(1);
+    }
+  };
+  
   
   /*
   private static createSysAdmin = async (cache:Utils.RedisCache) => {
@@ -68,9 +69,4 @@ export class RedisCache {
   };
   */
 }
-export const getRedisCache = async () => {
-  const cache = new RedisCache();
-  await cache.connect();
-  return cache;
-}
-export default getRedisCache;
+export default RedisCache;

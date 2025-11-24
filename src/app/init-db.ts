@@ -23,7 +23,7 @@ class Db {
         "connectTimeoutMS":10000,
         "socketTimeoutMS":10000
       });
-      Utils.print("ok","db","MongoDb connected");
+      Utils.print("ok","ok","MongoDb connected");
     }
     catch(err) {
       if(err.message.indexOf("ECONNREFUSED") !== -1) {

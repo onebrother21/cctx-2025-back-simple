@@ -1,4 +1,3 @@
-import { TasksService } from '../tasks/tasks.service';
 import { BugsService } from './bugs.service';
 import { BugsQueriesService } from './bugs-queries.service';
 
@@ -26,8 +25,9 @@ export class BugsController {
   // 📌 Bug CRUD Ops
   static createBug:IHandler = async (req,res,next) => {
     try {
-      Utils.print("trace","new-bug",req.body.data);
-      const {bug} = await BugsService.createBug(req.user.id,req.body.data);
+      const profileId = req.profile.id;
+      const data = req.body.data;
+      const {bug} = await BugsService.createBug(profileId,data);
       res.locals.success = true;
       res.locals.data = bug.json();
       next();
@@ -44,7 +44,9 @@ export class BugsController {
   };
   static updateBug:IHandler = async (req,res,next) => {
     try {
-      const {bug} = await BugsService.updateBug(req.params.bugId,req.body.data);
+      const data = req.body.data;
+      const {bugId} = req.params;
+      const {bug} = await BugsService.updateBug(bugId,data);
       res.locals.success = true;
       res.locals.data = bug.json();
       next();
@@ -52,37 +54,20 @@ export class BugsController {
   };
   static deleteBug:IHandler = async (req,res,next) => {
     try {
-      const {ok} = await BugsService.deleteBug(req.params.bugId);
+      const {bugId} = req.params;
+      const {ok} = await BugsService.deleteBug(bugId);
       res.locals.success = ok;
-      res.locals.data = {removed:req.params.bugId,ok};
+      res.locals.data = {removed:bugId,ok};
       next();
     } catch (e) { next(e); }
   };
-  // Bug Tasks CRUD Ops
-  static addTaskToBug:IHandler = async (req,res,next) => {
+  static createBugs:IHandler = async (req,res,next) => {
     try {
-      Utils.print("trace","new-bug",req.body.data);
-      const {bug} = await BugsService.addTaskToBug(req.user.id,req.body.data);
+      const profileId = req.profile.id;
+      const {items} = req.body.data;
+      const {bugs} = await BugsService.createBugs(profileId,items);
       res.locals.success = true;
-      res.locals.data = bug.json();
-      next();
-    } catch (e) { next(e); }
-  };
-  static updateBugTask:IHandler = async (req,res,next) => {
-    try {
-      const {bugId,taskIdx} = req.params;
-      const {bug} = await BugsService.updateBugTask(bugId,Number(taskIdx),req.body.data);
-      res.locals.success = true;
-      res.locals.data = bug.json();
-      next();
-    } catch (e) { next(e); }
-  };
-  static removeTaskFromBug:IHandler = async (req,res,next) => {
-    try {
-      const {bugId,taskIdx} = req.params;
-      const {bug} = await BugsService.removeTaskFromBug(bugId,Number(taskIdx));
-      res.locals.success = true;
-      res.locals.data = bug.json();
+      res.locals.data = {created:bugs.length,ok:true};
       next();
     } catch (e) { next(e); }
   };
@@ -133,7 +118,6 @@ export class BugsController {
   static updateBugStatus:IHandler = async (req,res,next) => {
     try {
       const {bugId} = req.params;
-      Utils.trace(req.profile,req.user)
       const admin = req.profile.displayName;
       const data = req.body.data;
       const {bug} = await BugsService.updateBugStatus(admin,bugId,data);
@@ -153,122 +137,13 @@ export class BugsController {
       next();
     } catch (e) { next(e); }
   };
-  static assignDetailsToBug:IHandler = async (req,res,next) => {
-    try {
-      const {bugId} = req.params;
-      const {details} = req.body.data;
-      if(!bugId) throw new Utils.AppError(422,'Requested parameters not found');
-      const {bug} = await BugsService.addDetailsToBug(bugId,details);
-      res.locals.success = true;
-      res.locals.data = bug.json();
-      next();
-    } catch (e) { next(e); }
-  };
   
-  // 📌 Bug Notation
-  static addNotes:IHandler = async (req,res,next) => {
-    try {
-      const {bugId} = req.params;
-      const {bug} = await BugsService.addNotes(bugId,req.body.data);
-      res.locals.success = true;
-      res.locals.data = bug.json();
-      next();
-    } catch (e) { next(e); }
-  };
-  static updateNote:IHandler = async (req,res,next) => {
-    try {
-      const {bugId,noteIdx} = req.params;
-      const {bug} = await BugsService.updateNote(bugId,Number(noteIdx),req.body.data);
-      res.locals.success = true;
-      res.locals.data = bug.json();
-      next();
-    } catch (e) { next(e); }
-  };
-  static removeNote:IHandler = async (req,res,next) => {
-    try {
-      const {bugId,noteIdx} = req.params;
-      const {bug} = await BugsService.removeNote(bugId,Number(noteIdx));
-      res.locals.success = true;
-      res.locals.data = bug.json();
-      next();
-    } catch (e) { next(e); }
-  };
-
-  /*
-  // 📌 Bug Attempts
-  static startAttempt:IHandler = async (req,res,next) => {
-    try {
-      const {bugId} = req.params;
-      const {bug} = await BugsService.startAttempt(bugId,req.body.data);
-      res.locals.success = true;
-      res.locals.data = bug.json();
-      next();
-    } catch (e) { next(e); }
-  };
-  static updateAttempt:IHandler = async (req,res,next) => {
-    try {
-      const {bug} = await BugsService.updateAttempt(req.params.bugId,Number(req.params.attemptIndex));
-      res.locals.success = true;
-      res.locals.data = bug.json();
-      next();
-    } catch (e) { next(e); }
-  };
-  static finalizeAttempt:IHandler = async (req,res,next) => {
-    try {
-      const {bugId,attemptIndex} = req.params;
-      const attemptData = req.body.data;
-      const {bug} = await BugsService.finalizeAttempt(bugId,Number(attemptIndex),attemptData);
-      res.locals.success = true;
-      res.locals.data = bug.json();
-      next();
-    } catch (e) { next(e); }
-  };
-  static removeAttempt:IHandler = async (req,res,next) => {
-    try {
-      const {bug} = await BugsService.removeAttempt(req.params.bugId,Number(req.params.attemptIndex));
-      res.locals.success = true;
-      res.locals.data = bug.json();
-      next();
-    } catch (e) { next(e); }
-  };
-
-  // 📌 Bug Artifacts - Stops, Interviews, Uploads and Notes
-  static addAttemptActivity:IHandler = async (req,res,next) => {
-    try {
-      let data:any;
-      if(req.file && req.file.path){
-        const filePath = req.file.path as string;
-        const uploadRes = await cloudinary.uploader.upload(filePath, {
-          resource_type: 'auto', // auto-detect image/audio/video
-          folder: 'your_app_media'
-        }) as any;
-        fs.unlinkSync(filePath);
-        data = {...uploadRes,...req.body};
-      }
-      else data = req.body.data;
-      const {bugId,attemptIndex} = req.params;
-      const {bug} = await BugsService.addAttemptActivity(bugId,Number(attemptIndex),data);
-      res.locals.success = true;
-      res.locals.data = bug.json();
-      next();
-    } catch (e) { next(e); }
-  };
-  static removeAttemptActivity:IHandler = async (req,res,next) => {
-    try {
-      const {bugId,attemptIndex,itemIdx} = req.params;
-      const {bug} = await BugsService.removeAttemptActivity(bugId,Number(attemptIndex),Number(itemIdx));
-      res.locals.success = true;
-      res.locals.data = bug.json();
-      next();
-    } catch (e) { next(e); }
-  };
-  */
-
   // 📌 Bug Resolution & Invoicing
   static finalizeBug:IHandler = async (req,res,next) => {
     try {
+      const data = req.body.data;
       const {bugId} = req.params;
-      const {bug} = await BugsService.finalizeBug(bugId,req.body.data);
+      const {bug} = await BugsService.finalizeBug(bugId,data);
       res.locals.success = true;
       res.locals.data = bug.json();
       next();

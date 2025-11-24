@@ -2,11 +2,6 @@ import { Schema } from 'mongoose';
 import { stateAbbreviations } from './constants';
 import Types from "../types";
 
-const noteSchema = new Schema({
-  user: { type: String},
-  msg: { type: String},
-  time:{type:Date}
-},{_id:false,timestamps:false});
 const attachmentSchema = new Schema<Attachment>({
   originDate:{type:Date},
   originLoc:{type:String},
@@ -42,38 +37,12 @@ const addressSchema = new Schema<AddressObj>({
   loc:{type:{type:String,default:"Point"},coordinates:[Number]},
 },{_id:false,timestamps:false});
 addressSchema.index({"loc":"2dsphere"});
-const statusSchema = new Schema({
-  name: { type: String,required:true},
-  time: { type: Date,default:() => Date.now()},
-  info: { type: Object},
-},{_id:false,timestamps:false});
-const getStatusSchema = <K extends string>(statuses:K[],defaultVal?:K) => {
-  return new Schema({
-    name: { type: String,enum:statuses,default:defaultVal || statuses[0]},
-    time: { type: Date,default:() => Date.now()},
-    info: { type: Object},
-  } as any,{_id:false,timestamps:false}) as Schema<Status<K>>;
-};
-const getStatusArraySchema = <K extends string>(statuses:K[],defaultVal?:K) => {
-  return {
-    type:[
-      new Schema({
-        name: { type: String,enum:statuses},
-        time: { type: Date,default:() => Date.now()},
-        info: { type: Object},
-      } as any,{_id:false,timestamps:false}) as Schema<Status<K>>
-    ],
-    default:() => statuses.length?[{name:defaultVal || statuses[0],time:new Date()}]:[]
-  };
-};
+
+
 
 export {
-  noteSchema,
   addressSchema,
   attachmentSchema,
   uploadSchema,
-  statusSchema,
-  getStatusSchema,
-  getStatusArraySchema,
 };
 

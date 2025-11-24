@@ -1,6 +1,6 @@
-import MyServer from "./src";
+import myApp from "./src/app";
 
 module.exports = (async () => {
-  const app = new MyServer();
+  const app = new myApp();
   await app.init();
 })();

@@ -395,3 +395,7 @@ export var listRoutes = (app:Express.Application) => {
   });
   logger.info("App Routes: ",routes);
 };
+export var findReverseIndex = (arr:any[],pred:(o:any) => boolean) => {
+  for (let i = arr.length - 1; i >= 0; i--) if(pred(arr[i])) return i;
+  return -1;
+};

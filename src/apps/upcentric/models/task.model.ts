@@ -3,47 +3,59 @@ import uniqueValidator from "mongoose-unique-validator";
 
 import Types from "../types";
 import Utils from '../../../utils';
+import Models from '../../../models';
 
 const ObjectId = Schema.Types.ObjectId;
 const {NEW} = Types.ITaskStatuses;
 
+const taskMetaSchema = new Schema<Types.ITask["meta"]>({
+  assigned:Date,
+  completed:Date,
+  cancelled:Date,
+  rejected:Date,
+  reopened:Date,
+},{_id:false,timestamps:false});
 const taskSchema = new Schema<Types.ITask,Task,Types.ITaskMethods>({
-  statusUpdates:Utils.getStatusArraySchema(Object.values(Types.ITaskStatuses),NEW),
+  log:{type:[{type:ObjectId,ref:"upcentric_activity"}],default:() => []},
   creator:{type:ObjectId,ref:"upcentric_profiles",required:true},
   project: { type: String,required:true},
   title: { type: String,required:true},
   execAction: { type: String,required:true},
   lob: { type: String,required:true},
-  desc: { type: String,maxlength:250 },
-  recurring:{type:Boolean},
-  recurringInterval:{type:String,enum:["wk","2wk","3wk","mo","3mo","6mo","yr"]},
-  amt:{type:Number},
+  desc:String,
   startOn:{type:Date,required:true},
   dueOn:{type:Date,required:true},
-  assignedOn:Date,
-  completedOn:Date,
-  admin:{type:ObjectId,ref:"upcentric_profiles"},
+  priority:{type:Number,min:1,max:4,default:() => 4},
   progress:{type:Number,min:0,max:100,default:() => 0},
-  resolution:{ type: String,maxlength:140},
-  reason:{ type: String},
+  resolution:String,
+  reason:String,
+  recurring:Boolean,
+  recurringInterval:{type:String,enum:["wk","2wk","3wk","mo","3mo","6mo","yr"]},
+  amt:Number,
   tasks:[{type:ObjectId,ref:"upcentric_tasks"}],
-  notes:[Utils.noteSchema],
   files:[Utils.attachmentSchema],
-  info:{type:Object},
-},{timestamps:{createdAt:"createdOn",updatedAt:"updatedOn"}});
+  info:Object,
+  meta:taskMetaSchema,
+  assignees:String,
+  admin:{type:ObjectId,ref:"upcentric_profiles"},
+},{timestamps:{createdAt:"createdOn"}});
 
 taskSchema.plugin(uniqueValidator);
 taskSchema.virtual('status').get(function () {
-  return this.statusUpdates[this.statusUpdates.length - 1].name;
+  const log = this.log as AppActivityUpdate[];
+  const idx = Utils.findReverseIndex(log,o => !!o.status);
+  return log[idx].status;
 });
-taskSchema.methods.saveMe = async function (name,info){
-  if(name) this.statusUpdates.push({name,time:new Date(),...(info?{info}:{})});
-  if(this.statusUpdates.length > 20) this.statusUpdates = this.statusUpdates.slice(-20);
+taskSchema.methods.saveMe = async function (o){
+  if(o) {
+    const n = await Models.AppActivity.create(o);
+    this.log.push(n._id as any);
+  }
   await this.save();
   await this.populateMe();
 };
 taskSchema.methods.populateMe = async function () {
-  await this.populate("creator admin");
+  await this.populate("creator log");
 };
 taskSchema.methods.preview = function () {
   return {
@@ -52,33 +64,36 @@ taskSchema.methods.preview = function () {
     title:this.title,
     desc:this.desc,
     status:this.status,
+    priority:this.priority,
   };
 };
 taskSchema.methods.json = function () {
-  const json:Partial<Types.ITask> =  {};
+  const json:Partial<Types.ITaskOTO> = {};
   json.id = this._id.toString();
   json.creator = (this.creator as any).preview();
   json.createdOn = this.createdOn;
   json.project = this.project;
   json.title = this.title;
+  json.lob = this.lob;
   json.execAction = this.execAction;
   json.desc = this.desc;
   json.recurring = this.recurring;
   json.recurringInterval = this.recurringInterval;
   json.amt = this.amt;
   json.tasks = this.tasks.map(o => o.preview() as Types.ITask);
-  json.notes = this.notes.slice(-20);
+  json.notes = this.log.filter((o:any) => !!o.msg).slice(-20);
   json.status = this.status;
   json.startOn = this.startOn;
   json.dueOn = this.dueOn;
+  json.priority = this.priority;
   json.progress = this.progress;
-  json.assignedOn = this.assignedOn;
-  json.admin = this.admin?this.admin.json() as any:null;
-  json.completedOn = this.completedOn;
+  json.assignees = this.assignees;
+  json.admin = this.admin?this.admin.preview() as any:null;
   json.resolution = this.resolution;
   json.reason = this.reason;
   json.info = this.info;
-  return json as Types.ITask;
+  json.meta = this.meta;
+  return json as any;
 };
 
 type Task = Model<Types.ITask,{},Types.ITaskMethods>;

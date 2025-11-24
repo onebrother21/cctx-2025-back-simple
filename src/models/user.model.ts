@@ -3,34 +3,38 @@ import uniqueValidator from "mongoose-unique-validator";
 import Types from "../types";
 import Utils from '../utils';
 
+import AppUsage from "./app-usage.model";
+
 const ObjectId = Schema.Types.ObjectId;
-const {NEW} = Types.IUserStatuses;
 
 const nameSchema = new Schema({
   first: { type: String},
   last: { type: String},
 },{_id:false,timestamps:false});
-const profilesSchema = new Schema({
-  "app-admn":{type:ObjectId,ref:"upcentric_profiles"},
-  "acct-admn":{type:ObjectId,ref:"upcentric_profiles"},
+const profileRefSchema = new Schema({
+  name:{type:String,required:true},
+  obj:{type:ObjectId,ref:"cctx_profiles",required:true},
 },{_id:false,timestamps:false});
 
 const userSchema = new Schema<Types.IUser,User,Types.IUserMethods>({
-  statusUpdates:Utils.getStatusArraySchema(Object.values(Types.IUserStatuses),NEW),
+  status:{type: String,enum:Object.values(Types.IUserStatuses)},
   name:{type:nameSchema},
   email:{type: String, unique: true, lowercase: true ,required:true},
   mobile:{type: String, unique: true ,sparse:true},
-  dob:{type:Date},
-  info:{type:Object},
-  meta:{type:Object},
+  dob:Date,
+  info:Object,
+  meta:Object,
+  settings:Object,
   pin: { type: String },
-  //prefs:prefsSchema,
-  reset:{type:String},
-  verification:{type:String},
-  verificationSent:{type:Date},
+  reset:String,
+  verification:String,
+  verificationSent:Date,
+  verificationType:{type: String,enum:Object.values(Types.IContactMethods)},
   username:{type:String,sparse:true},
-  profiles:{type:profilesSchema,default:{}},
-},{timestamps:{createdAt:"createdOn",updatedAt:"updatedOn"}});
+  profiles:[profileRefSchema],
+  devices:[{type:ObjectId,ref:"cctx_devices"}],
+  loc:{type:{type:String,default:"Point"},coordinates:[Number]},
+},{timestamps:{createdAt:"createdOn"}});
 
 userSchema.plugin(uniqueValidator,{message:'{PATH} is already taken.'});
 userSchema.methods.toAge = function toAge(){
@@ -77,44 +81,36 @@ userSchema.methods.getUserContactByMethod = function(method:Types.IContactMethod
   return to;
 };
 userSchema.virtual('fullname').get(function fullName() {return this.name?this.name.first + ' ' + this.name.last:"";});
-userSchema.virtual('status').get(function () {
-  return this.statusUpdates[this.statusUpdates.length - 1].name;
-});
-userSchema.methods.populateMe = async function () {
-  const profileNames = Object.keys((this.profiles.schema as any).obj).map(k => "profiles."+k).join(" ");
-  await this.populate(profileNames);
-};
-userSchema.methods.saveMe = async function (name,info){
-  if(name) this.statusUpdates.push({name,time:new Date(),...(info?{info}:{})});
-  if(this.statusUpdates.length > 20) this.statusUpdates = this.statusUpdates.slice(-20);
+userSchema.methods.saveMe = async function (){
   await this.save();
   await this.populateMe();
 };
+userSchema.methods.populateMe = async function () {
+  const populations = [{path:"profiles.obj",populate:"creator"}];
+  await this.populate(populations);
+};
 userSchema.methods.getProfile = function (){
-  return this.role && this.profiles[this.role]?this.profiles[this.role].json():null;
+  return this.profiles.find(ref => ref.name == this.role)?.obj.json() || null;
 }
 userSchema.methods.preview = function (){
-  const p = this.getProfile();
   return {
     fullname:this.fullname,
     username:this.username,
     id:this.id,
-    location:p?p.location:"",
-    img:p?p.img?.url||"":"",
+    location:this.loc?.coordinates.toString() || "",
   };
 };
 userSchema.methods.json = function (auth) {
   const p = this.getProfile();
-  const json:Types.IUserOTO =  {...this.preview() as any};
+  const json:Types.IUserJson =  {...this.preview() as any};
   if(auth) {
     json.name = this.name,
     json.email = this.email,
     json.username = this.username;
     json.status = this.status;
-    json.age = this.toAge();
-    json.memberSince = this.createdOn as Date;
-    json.lastUse = (this.meta?.lastUse as Date) || null;
     json.info = this.info;
+    json.meta = this.meta;
+    json.settings = this.settings;
     json.profile = p;
   };
   return json;

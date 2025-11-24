@@ -14,7 +14,6 @@ export const getRedisConnectionOpts = () => {
     };
   }
   else {
-    console.log("chceking in")
     // Local Redis configuration
     connection = {
       //lazyConnect: true,

@@ -1,5 +1,6 @@
-import * as Users from "./user.types";
-import * as Templates from "./notification-templates.types";
+import * as AUTH from "./auth.types";
+import * as USER from "./user.types";
+import * as TEMPLATES from "./notification-templates.types";
 
 export enum INotificationStatuses {
   NEW = "new",
@@ -9,19 +10,25 @@ export enum INotificationStatuses {
   FAILED = "failed",
 }
 export type INotificationPre = {
-  type:keyof typeof Templates.INotificationTemplates;
-  method:Users.IContactMethods;
+  type:keyof typeof TEMPLATES.INotificationTemplates;
+  method:AUTH.IContactMethods;
   audience:{
-    user?:Users.IUser,
+    user?:USER.IUser,
     info:string,
   }[];
   data?:any; // Replaceable data for personalization
 };
+export enum INotificationActions {
+  NOTIFICATION_ATTEMPT = 12,
+  NOTIFICATION_SENT = 13,
+  NOTIFICATION_FAILED = 14
+};
 export type INotificationMeta = {job: string;retries:number;};
-export type INotificationType = DocEntity<INotificationStatuses> & INotificationPre & INotificationMeta;
+export type INotificationType = DocEntity & INotificationPre & INotificationMeta;
 
 export interface INotificationMethods {
-  setStatus(name:INotificationStatuses,info?:any,save?:boolean):Promise<void>;
+  saveMe():Promise<void>;
+  populateMe():Promise<void>;
   json():Partial<INotification>;
 };
 export interface INotification extends INotificationType,INotificationMethods {}

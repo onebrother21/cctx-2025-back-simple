@@ -2,52 +2,46 @@ import * as Profiles from "./profile.types";
 
 export enum ITaskStatuses {
   NEW = "new",
-  ACTIVE = "active",
-  OPEN = "open",
-  OPEN_CRIT = "open-crit",
-  IN_PROGRESS = "in-progress",
-  IN_PROGRESS_CRIT = "in-progress-crit",
-  PENDING = "pending",
-  PENDING_CRIT = "pending-crit",
   PLANNED = "planned",
   PLANNED_PENDING = "planned-pending",
+  UPLANNED = "unplanned",
+  OPEN = "open",
+  REOPENED = "reopened",
+  IN_PROGRESS = "in-progress",
+  STALLED = "stalled",
+  PENDING = "pending",
+  ACTIVE = "active",
   COMPLETED = "completed",
-  CLOSED = "closed",
   CANCELLED = "cancelled",
   REJECTED = "rejected",
-  REOPENED = "reopened",
+  CLOSED = "closed",
 }
-export type ITaskNote = {
-  user:string;
-  time:Date;
-  msg:string;
-}
-export type ITaskType = DocEntity<ITaskStatuses> & {
-  startOn:Date;
-  dueOn:Date;
-  assignedOn:Date;
-  completedOn:Date;
+export type ITaskType = DocEntity & {
   title:string;
+  desc:string;
+  meta:any;
   lob:string;
   project:string;
   execAction:string;
-  desc:string;
+  startOn:Date;
+  dueOn:Date;
+  priority:number;// 4, 3, 2, 1 - most crit
   amt?:number;
   progress?:number;
   recurring?:boolean;
   recurringInterval?:string;
-  tasks:ITask[];
-  notes:ITaskNote[];
-  files:Attachment[];
-  admin:Profiles.IUpcentricAdmin;
   resolution?:string;
   reason?:string;
+  files:Attachment[];
+  tasks:ITask[];
+  assignees:string;
+  admin:Profiles.IUpcentricAdmin;
 };
 export type ITaskITO = Partial<ITask>;
-export type ITaskPTO = Pick<ITask,"id"|"title"|"project"|"desc"|"status">;
-export type ITaskOTO = Partial<ITask>;
+export type ITaskPTO = Pick<ITask,"id"|"title"|"project"|"desc"|"status"|"priority">;
+export type ITaskOTO = Omit<Partial<ITask>,"tasks"> & {notes:ITask["log"];tasks:ITaskPTO[];};
 export interface ITaskMethods {
-  saveMe(status?:ITaskStatuses,info?:any):Promise<void>;
+  saveMe(o?:ITask["log"][0]):Promise<void>;
   populateMe():Promise<void>;
   json():ITaskOTO;
   preview():ITaskPTO;

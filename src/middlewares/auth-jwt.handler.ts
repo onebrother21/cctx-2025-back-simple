@@ -20,10 +20,10 @@ const auth:() => IHandler = () => async (req,res,next) => {
     if(!user) throw new Utils.AppError(401,"Unauthorized - no user");
 
     await user.populateMe();
+    user.device = req.device;
     req.user = user;
     req.user.role = decoded.role;
     req.profile = decoded.role?user.profiles[decoded.role]:null;
-    req.user = user;
     req.token = decoded;
     next();
   }

@@ -1,8 +1,5 @@
 
 import Utils from "../../utils";
-import { UAParser } from "ua-parser-js";
-
-const deviceCookie = process.env.DEVICE_COOKIE || 'deviceCookie';
 
 export class ApiConnectionController {
   static appConfig:IHandler = async (req,res,next) => {
@@ -41,27 +38,6 @@ export class ApiConnectionController {
     };
     res.locals.success = true;
     res.locals.data = config;
-    next();
-  }
-  static appConnect:IHandler = async (req,res,next) => {
-    const {data} = req.body;
-    if(!req.device){
-      const ip = req.ip;
-      const deviceParser:any = new UAParser(req.headers["user-agent"]);
-      const deviceData:any = deviceParser.getResult() || {};
-      const deviceId = Utils.longId();
-      const device = {id:deviceId,ip,...deviceData,...data};
-      res.cookie(deviceCookie,Utils.encrypt(device),{ 
-        sameSite:"none",  // Recommend you make this strict if posible
-        path:"/",
-        secure: true,//process.env.NODE_ENV === 'production',
-        httpOnly:true,
-        signed:true,
-      });
-      req.device = device;
-    }
-    res.locals.success = true;
-    res.locals.data = {connected:true};
     next();
   }
   static appClient:IHandler = async (req,res,next) => {

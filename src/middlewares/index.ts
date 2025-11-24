@@ -1,3 +1,4 @@
+import ApiConnect from './api-connect.handler';
 import AuthJWT from './auth-jwt.handler';
 import CheckUserRole from "./check-user-role.handler";
 import CheckAdminScopes from "./check-admin-scopes.handler";
@@ -16,6 +17,7 @@ import SendErrorHandler from "./send-error.handler";
 import { headerCheck ,cookieCheck } from './custom.handlers';
 
 export {
+  ApiConnect,
   AuthJWT,
   CheckUserRole,
   CheckAdminScopes,

@@ -64,13 +64,13 @@ export class DistrictLeadsService {
     const selectGrouping = (fields:string[]) => {
       const o:any = {_id: "$_id"};
       fields.forEach(k => k !== "id"?o[k] = { $first: "$"+k }:null);
-      Utils.log(o);
+      //Utils.log(o);
       return o;
     };
     const selectProjections = (fields:string[]) => {
       const o:any = {_id:0};
       fields.forEach(k => o[k] = k == "id"?"$_id":projections[k] || 1);
-      Utils.info(o);
+      //Utils.info(o);
       return o;
     };
     const formatResultsWithDistCalc = (results:any[]) => results.map(o => {
@@ -91,7 +91,7 @@ export class DistrictLeadsService {
       //{ $unwind: "$creator"},
       { $addFields: {
         created_on: { "$toDouble": "$createdOn" },
-        status: {$arrayElemAt:["$statusUpdates.name",-1]}//last status update
+        status: {$arrayElemAt:["$log.status",-1]}//last status update
       }},
       { $match: query },
       { $group: selectGrouping(select)},

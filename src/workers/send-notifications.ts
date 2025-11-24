@@ -8,14 +8,17 @@ import * as SendMethods from "./send-notification-helpers";
 import fs from "fs";
 import path from "path";
 
+const Notification = Models.Notification;
+const AppUsage = Models.AppUsage;
 const {SENDING,SENT,FAILED} = Types.INotificationStatuses;
 
 export const sendNotifications = async (job:Job) => {
   const notificationsToProcess = await Services.Notifications.getNotificationsToProcess();
   for(const o of notificationsToProcess) {
-    const notification = await Models.Notification.findById(o.id);
-    await notification.setStatus(SENDING,null,true);
-    
+    const notification = await Notification.findById(o.id);
+    notification.status = SENDING;
+    await notification.saveMe();
+    await AppUsage.make("sys-admn","attemptToSendNotifications");
     const template = Types.INotificationTemplates[o.type];
     const to = o.audience.map((m:Types.INotification["audience"][0]) => m.info);
     const subject = o.type.replace("_"," ");
@@ -70,12 +73,16 @@ export const sendNotifications = async (job:Job) => {
         */
       }
       notification.meta = meta;
-      await notification.setStatus(SENT,null,true);
+      notification.status = SENT;
+      await notification.saveMe();
+      await AppUsage.make("sys-admn","sentNotifications");
       return { ok: true };
     }
     catch (error) {
       console.error('Error processing notification:', error);
-      await notification.setStatus(FAILED,null,true);
+      notification.status = FAILED;
+      await notification.saveMe();
+      await AppUsage.make("sys-admn","failedToSendNotifications");
       throw error;
     }
   }

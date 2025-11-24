@@ -1,13 +1,15 @@
 import mongoose,{Schema,Model} from 'mongoose';
 import uniqueValidator from "mongoose-unique-validator";
 
-import PiMiaTypes from "../types";
+import UTypes from "../types";
 import Utils from '../../../utils';
+import Models from '../../../models';
 
 const ObjectId = Schema.Types.ObjectId;
+const {NEW} = UTypes.IDistrictLeadStatuses;
 
-const districtLeadSchema = new Schema<PiMiaTypes.IDistrictLead,DistrictLead,PiMiaTypes.IDistrictLeadMethods>({
-  statusUpdates:Utils.getStatusArraySchema(Object.values(PiMiaTypes.IDistrictLeadStatuses),PiMiaTypes.IDistrictLeadStatuses.NEW),
+const districtLeadSchema = new Schema<UTypes.IDistrictLead,DistrictLead,UTypes.IDistrictLeadMethods>({
+  log:{type:[{type:ObjectId,ref:"upcentric_activity"}],default:() => []},
   creator:{type:ObjectId,ref:"users",required:true},
   name:String,
   region:Number,
@@ -23,20 +25,24 @@ const districtLeadSchema = new Schema<PiMiaTypes.IDistrictLead,DistrictLead,PiMi
     contactPhn:String,
     role:String,
   }
-},{timestamps:{createdAt:"createdOn",updatedAt:"updatedOn"}});
+},{timestamps:{createdAt:"createdOn"}});
 
 districtLeadSchema.plugin(uniqueValidator);
 districtLeadSchema.virtual('status').get(function () {
-  return this.statusUpdates[this.statusUpdates.length - 1].name;
+  const log = this.log as AppActivityUpdate[];
+  const idx = Utils.findReverseIndex(log,o => !!o.status);
+  return log[idx].status;
 });
-districtLeadSchema.methods.saveMe = async function (name,info){
-  if(name) this.statusUpdates.push({name,time:new Date(),...(info?{info}:{})});
-  if(this.statusUpdates.length > 20) this.statusUpdates = this.statusUpdates.slice(-20);
+districtLeadSchema.methods.saveMe = async function (o){
+  if(o) {
+    const n = await Models.AppActivity.create(o);
+    this.log.push(n._id as any);
+  }
   await this.save();
-  await this.populate("creator");
+  await this.populateMe();
 };
 districtLeadSchema.methods.populateMe = async function () {
-  await this.populate("creator");
+  await this.populate("creator log");
 };
 districtLeadSchema.methods.json = function () {
   return {
@@ -57,6 +63,6 @@ districtLeadSchema.methods.json = function () {
   };
 };
 
-type DistrictLead = Model<PiMiaTypes.IDistrictLead,{},PiMiaTypes.IDistrictLeadMethods>;
-const DistrictLead:DistrictLead = mongoose.model<PiMiaTypes.IDistrictLead>('upcentric_districtLeads',districtLeadSchema);
+type DistrictLead = Model<UTypes.IDistrictLead,{},UTypes.IDistrictLeadMethods>;
+const DistrictLead:DistrictLead = mongoose.model<UTypes.IDistrictLead>('upcentric_districtLeads',districtLeadSchema);
 export default DistrictLead;

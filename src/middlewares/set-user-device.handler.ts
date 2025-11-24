@@ -1,3 +1,4 @@
+import Models from "../models";
 import Utils from "../utils";
 
 const deviceCookie = process.env.DEVICE_COOKIE || 'deviceCookie';
@@ -5,7 +6,8 @@ const deviceCookie = process.env.DEVICE_COOKIE || 'deviceCookie';
 export const SetUserDevice:() => IHandler = () => async (req, res, next) => {
   const cookie = req.signedCookies[deviceCookie];
   if(cookie){
-    const device = Utils.decrypt(cookie);
+    const deviceId = Utils.decrypt(cookie);
+    const device = await Models.AppDevice.findById(deviceId);
     //check available app versions and refresh device
     req.device = device;
   }

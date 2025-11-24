@@ -26,7 +26,12 @@ export class BugsValidators {
   
   static updateBugStatus = [[
     param('taskId').isMongoId().withMessage('Invalid task ID'),
-    body('data.name').isIn(Object.values(UpcentricTypes.IBugStatuses)).withMessage('Invalid status value'),
+    body('data.user').isString().withMessage('Invalid msg').optional(),
+    body('data.action').isString().withMessage('Invalid msg').optional(),
+    body('data.msg').isString().withMessage('Invalid msg').optional(),
+    body('data.info').isString().withMessage('Invalid msg').optional(),
+    body('data.status').isIn(Object.values(UpcentricTypes.IBugStatuses))
+    .withMessage('Invalid status').optional(),
     body('data.info').isString().withMessage('Invalid msg').optional(),
   ],CheckValidation()] as IHandler[];
 };

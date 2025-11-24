@@ -28,26 +28,33 @@ export class TasksQueriesService {
         name:"$creator.name",
         displayName:"$creator.displayName",
         org:"$creator.org",
-        img:"$creator.img",
+        img:"$creator.img.url",
       },
       admin:{
         id:"$admin._id",
         name:"$admin.name",
         displayName:"$admin.displayName",
         org:"$admin.org",
-        img:"$admin.img",
+        img:"$admin.img.url",
       },
+      pets: { 
+        $filter:{ 
+          input: "$log",
+          as: "log",
+          cond: { $not: { $in: ["$$log.status", [null, "",undefined]] } }
+        }
+      } 
     };
     const selectGrouping = (fields:string[]) => {
       const o:any = {_id: "$_id"};
       fields.forEach(k => k !== "id"?o[k] = { $first: "$"+k }:null);
-      Utils.log(o);
+      //Utils.log(o);
       return o;
     };
     const selectProjections = (fields:string[]) => {
       const o:any = {_id:0};
       fields.forEach(k => o[k] = k == "id"?"$_id":projections[k] || 1);
-      Utils.info(o);
+      //Utils.info(o);
       return o;
     };
     const formatResultsWithDistCalc = (results:any[]) => results.map(o => {
@@ -68,20 +75,22 @@ export class TasksQueriesService {
       { $unwind: "$creator"},
       { $lookup: {from: "upcentric_profiles",localField: "admin",foreignField: "_id",as: "admin"}},
       { $unwind: {path: '$admin',preserveNullAndEmptyArrays: true}},
+      { $project:  selectProjections(select)},
       { $addFields: {
-        created_on: { "$toDouble": "$createdOn" },
         start_on:{"$toDouble":"$startOn"},
         due_on: { "$toDouble": "$dueOn" },
-        assigned_on: { "$toDouble": "$assignedOn" },
-        completed_on: { "$toDouble": "$completedOn" },
-        status: {$arrayElemAt:["$statusUpdates.name",-1]}//last status update
+        created: { "$toDouble": "$createdOn" },
+        assigned: { "$toDouble": "$meta.assigned" },
+        completed: { "$toDouble": "$meta.completed" },
+        cancelled: { "$toDouble": "$meta.cancelled" },
+        rejected: { "$toDouble": "$meta.rejected" },
+        status: {$arrayElemAt:["$log.status",-1]}//last status update
       }},
       { $match: query },
       { $group: selectGrouping(select)},
       { $skip: skip },
       { $limit: limit },
       { $sort: { [sortField]: sortOrder } },  // Sorting stage
-      { $project:  selectProjections(select)},
     );
     // Utils.trace({query});
     let results = formatResultsWithDistCalc(await UpcentricModels.Task.aggregate(pipeline));
@@ -103,17 +112,18 @@ export class TasksQueriesService {
 
     const projections = {
       addr:{info:"$addrs.info",loc:"$addrs.loc.coordinates"},
+      img:"$img.url",
     };
     const selectGrouping = (fields:string[]) => {
       const o:any = {_id: "$_id"};
       fields.forEach(k => k !== "id"?o[k] = { $first: "$"+k }:null);
-      Utils.log(o);
+      //Utils.log(o);
       return o;
     };
     const selectProjections = (fields:string[]) => {
       const o:any = {_id:0};
       fields.forEach(k => o[k] = k == "id"?"$_id":projections[k] || 1);
-      Utils.info(o);
+      //Utils.info(o);
       return o;
     };
     const formatResultsWithDistCalc = (results:any[]) => results.map(o => {
@@ -134,7 +144,7 @@ export class TasksQueriesService {
       { $addFields: {
         addr:"$addrs",
         created_on: { "$toDouble": "$createdOn" },
-        status: {$arrayElemAt:["$statusUpdates.name",-1]}//last status update
+        status: {$arrayElemAt:["$log.status",-1]}//last status update
       }},
       { $match: query },
       { $group: selectGrouping(select)},
@@ -144,7 +154,7 @@ export class TasksQueriesService {
       { $project:  selectProjections(select)},
     );
     
-    Utils.trace({query});
+    //Utils.trace({query});
     const results = formatResultsWithDistCalc(await Models.Profile.aggregate(pipeline));
     return { results };
   };

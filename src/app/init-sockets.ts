@@ -6,6 +6,8 @@ import Models from '../models';
 import Types from "../types";
 
 const userSockets: Map<string, Socket> = new Map();
+const {ACTIVE,INACTIVE} = Types.IUserStatuses;
+const AppUsage = Models.AppUsage;
 
 const initializeSockets = (app:Express.Application) => {
   const server = http.createServer(app);
@@ -15,12 +17,16 @@ const initializeSockets = (app:Express.Application) => {
     console.log('A user connected:', socket.id);
 
     // Register event - save the socketId to the user
-    socket.on('register', async (userId: string) => {
+    socket.on('register', async (userId: string,deviceId:string) => {
       const user = await Models.User.findById(userId);
+      const device = await Models.AppDevice.findById(deviceId);
       if (user) {
         userSockets.set(userId, socket);
-        //user.socketId = socket.id;
-        user.saveMe(Types.IUserStatuses.ACTIVE); // Mark as inactive
+        device.socket = socket.id;
+        device.lastUse = new Date();
+        user.status = ACTIVE;
+        await user.saveMe();
+        await device.saveMe();
         console.log(`User ${userId} registered with socketId: ${socket.id}`);
       }
     });
@@ -30,8 +36,8 @@ const initializeSockets = (app:Express.Application) => {
       const user = await Models.User.findOne({ socketId: socket.id });
       if (user) {
         userSockets.delete(user.id);
-        //user.socketId = null;
-        user.saveMe(Types.IUserStatuses.INACTIVE); // Mark as inactive
+        user.status = INACTIVE;
+        user.saveMe();
         console.log(`User ${user._id} disconnected and marked as inactive.`);
       }
     });

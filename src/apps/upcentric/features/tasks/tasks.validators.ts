@@ -13,6 +13,8 @@ export class TasksValidators {
     body('data.lob').isString().withMessage('Invalid lob'),
     body('data.execAction').isString().withMessage('Invalid exec action'),
     body('data.desc').isString().withMessage('Invalid description'),
+    body('data.dueOn').isISO8601().withMessage('Invalid due date'),
+    body('data.startOn').isISO8601().withMessage('Invalid start date'),
   ],CheckValidation()] as IHandler[];
   
   static updateTask = [[
@@ -22,12 +24,15 @@ export class TasksValidators {
     body('data.lob').isString().withMessage('Invalid lob').optional(),
     body('data.execAction').isString().withMessage('Invalid exec action').optional(),
     body('data.desc').isString().withMessage('Invalid description').optional(),
+    body('data.dueOn').isISO8601().withMessage('Invalid due date').optional(),
+    body('data.startOn').isISO8601().withMessage('Invalid start date').optional(),
   ],CheckValidation()] as IHandler[];
   
   static updateTaskStatus = [[
     param('taskId').isMongoId().withMessage('Invalid task ID'),
-    body('data.name').isIn(Object.values(UpcentricTypes.ITaskStatuses)).withMessage('Invalid status value'),
+    body('data.name').isIn(Object.values(UpcentricTypes.ITaskStatuses)).withMessage('Invalid status value').optional(),
     body('data.info').isString().withMessage('Invalid msg').optional(),
+    body('data.progress').isNumeric().withMessage('Invalid value').optional(),
   ],CheckValidation()] as IHandler[];
 };
 export default TasksValidators;

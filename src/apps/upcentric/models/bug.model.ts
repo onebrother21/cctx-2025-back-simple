@@ -1,49 +1,61 @@
 import mongoose,{Schema,Model} from 'mongoose';
 import uniqueValidator from "mongoose-unique-validator";
 
-import Types from "../types";
+import UTypes from "../types";
 import Utils from '../../../utils';
+import Models from '../../../models';
 
 const ObjectId = Schema.Types.ObjectId;
-const {NEW} = Types.IBugStatuses;
+const {NEW} = UTypes.IBugStatuses;
 
-const bugSchema = new Schema<Types.IBug,Bug,Types.IBugMethods>({
-  statusUpdates:Utils.getStatusArraySchema(Object.values(Types.IBugStatuses),NEW),
-  creator:{type:ObjectId,ref:"upcentric_profiles",required:true},
+const bugMetaSchema = new Schema<UTypes.IBug["meta"]>({
+  assigned:Date,
+  completed:Date,
+  cancelled:Date,
+  rejected:Date,
+  reopened:Date,
+},{_id:false,timestamps:false});
+const bugSchema = new Schema<UTypes.IBug,Bug,UTypes.IBugMethods>({
+  log:{type:[{type:ObjectId,ref:"upcentric_activity"}],default:() => []},
   project: { type: String,required:true},
   title: { type: String,required:true},
   execAction: { type: String,required:true},
   lob: { type: String,required:true},
-  desc: { type: String,maxlength:250 },
+  desc:String,
   recurring:{type:Boolean},
   recurringInterval:{type:String,enum:["wk","2wk","3wk","mo","3mo","6mo","yr"]},
   amt:{type:Number},
   startOn:{type:Date,required:true},
   dueOn:{type:Date,required:true},
-  assignedOn:Date,
-  completedOn:Date,
-  admin:{type:ObjectId,ref:"upcentric_profiles"},
+  priority:{type:Number,min:1,max:4,default:() => 4},
   progress:{type:Number,min:0,max:100,default:() => 0},
-  resolution:{ type: String,maxlength:140},
+  resolution:String,
   reason:{ type: String},
+  assignees:String,
+  creator:{type:ObjectId,ref:"upcentric_profiles",required:true},
+  admin:{type:ObjectId,ref:"upcentric_profiles"},
   tasks:[{type:ObjectId,ref:"upcentric_tasks"}],
-  notes:[Utils.noteSchema],
   files:[Utils.attachmentSchema],
   info:{type:Object},
-},{timestamps:{createdAt:"createdOn",updatedAt:"updatedOn"}});
+  meta:bugMetaSchema,
+},{timestamps:{createdAt:"createdOn"}});
 
 bugSchema.plugin(uniqueValidator);
 bugSchema.virtual('status').get(function () {
-  return this.statusUpdates[this.statusUpdates.length - 1].name;
+  const log = this.log as AppActivityUpdate[];
+  const idx = Utils.findReverseIndex(log,o => !!o.status);
+  return log[idx].status;
 });
-bugSchema.methods.saveMe = async function (name,info){
-  if(name) this.statusUpdates.push({name,time:new Date(),...(info?{info}:{})});
-  if(this.statusUpdates.length > 20) this.statusUpdates = this.statusUpdates.slice(-20);
+bugSchema.methods.saveMe = async function (o){
+  if(o) {
+    const n = await Models.AppActivity.create(o);
+    this.log.push(n._id as any);
+  }
   await this.save();
   await this.populateMe();
 };
 bugSchema.methods.populateMe = async function () {
-  await this.populate("creator admin");
+  await this.populate("creator log");
 };
 bugSchema.methods.preview = function () {
   return {
@@ -55,32 +67,34 @@ bugSchema.methods.preview = function () {
   };
 };
 bugSchema.methods.json = function () {
-  const json:Partial<Types.IBugOTO> = {};
+  const json:Partial<UTypes.IBugOTO> = {};
   json.id = this._id.toString();
   json.creator = (this.creator as any).preview();
   json.createdOn = this.createdOn;
   json.project = this.project;
   json.title = this.title;
+  json.lob = this.lob;
   json.execAction = this.execAction;
   json.desc = this.desc;
   json.recurring = this.recurring;
   json.recurringInterval = this.recurringInterval;
   json.amt = this.amt;
-  json.tasks = this.tasks.map(o => o.preview());
-  json.notes = this.notes.slice(-20);
+  json.tasks = this.tasks.map(o => o.preview()).slice(-20);
+  json.notes = this.log.filter((o:any) => !!o.msg).slice(-20);
   json.status = this.status;
   json.startOn = this.startOn;
   json.dueOn = this.dueOn;
+  json.priority = this.priority;
   json.progress = this.progress;
-  json.assignedOn = this.assignedOn;
-  json.admin = this.admin?this.admin.json() as any:null;
-  json.completedOn = this.completedOn;
+  json.assignees = this.assignees;
+  json.admin = this.admin?this.admin.preview() as any:null;
   json.resolution = this.resolution;
   json.reason = this.reason;
   json.info = this.info;
-  return json as Types.IBug;
+  json.meta = this.meta;
+  return json as any;
 };
 
-type Bug = Model<Types.IBug,{},Types.IBugMethods>;
-const Bug:Bug = mongoose.model<Types.IBug>('upcentric_bugs',bugSchema);
+type Bug = Model<UTypes.IBug,{},UTypes.IBugMethods>;
+const Bug:Bug = mongoose.model<UTypes.IBug>('upcentric_bugs',bugSchema);
 export default Bug;

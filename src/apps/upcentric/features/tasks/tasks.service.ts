@@ -5,9 +5,9 @@ import Models from "../../../../models";
 import Types from "../../../../types";
 import Utils from '../../../../utils';
 import Services from '../../../../services';
-import { uploadFields } from "../../../../middlewares";
 
 import axios from 'axios';
+
 
 const notify = Services.Notifications.createNotification;
 
@@ -17,16 +17,24 @@ const locationIQKey = process.env.LOCATION_IQ_KEY;
 const {
   NEW,
   OPEN,
-  OPEN_CRIT,
   IN_PROGRESS,
-  IN_PROGRESS_CRIT,
   CLOSED,
 } = UpcentricTypes.ITaskStatuses;
 
 export class TasksService {
   // 📌 Task CRUD Ops
+  static createTasks = async (creator:string,newTasks:Partial<UpcentricTypes.ITask>[]) => {
+    const tasks:UpcentricTypes.ITask[] = [];
+    for(let i = 0,l = newTasks.length;i<l;i++){
+      const nt = {creator,...newTasks[i]};
+      const task = new UpcentricModels.Task(nt);
+      await task.saveMe();
+      tasks.push(task);
+    }
+    return {tasks};
+  };
   static createTask = async (creator:string,newTask:UpcentricTypes.ITaskITO) => {
-    const task = new UpcentricModels.Task({creator,...newTask});
+    const task = new UpcentricModels.Task({creator,meta:{},...newTask});
     await task.saveMe();
     return {task};
   };
@@ -59,11 +67,15 @@ export class TasksService {
   };
 
   // Task Updates
-  static updateTaskStatus = async (admin:string,taskId:string,{name,info}:{name:UpcentricTypes.ITaskStatuses,info?:any}) => {
+  static updateTaskStatus = async (
+    admin:string,
+    taskId:string,
+    {progress,priority,...o}:UpcentricTypes.ITask["log"][0] & {progress?:number,priority?:number}) => {
     const task = await UpcentricModels.Task.findById(taskId);
-    if (!task) throw new Utils.AppError(422,'Requested task not found');
-    if(info) task.notes.push({user:admin,msg:info,time:new Date()});
-    await task.saveMe(name,info);
+    if(!task) throw new Utils.AppError(422,'Requested task not found');
+    if(priority) task.priority = priority;
+    if(progress) task.progress = progress;
+    await task.saveMe({...o,time:new Date()});
     return {task};
   };
   static addFilesToTask = async (taskId:string,files:UpcentricTypes.ITask["files"]) => {
@@ -82,179 +94,64 @@ export class TasksService {
     await task.saveMe();
     return {task};
   };
-  static addDetailsToTask = async (taskId:string,details:UpcentricTypes.ITask["meta"]) => {
-    const task = await UpcentricModels.Task.findById(taskId);
-    if (!task) throw new Utils.AppError(422,'Requested task not found');
-    task.meta = {...task.meta,...details};
-    await task.saveMe();
-    return {task};
-  };
   static assignAdminToTask = async (taskId:string,adminId:string) => {
     const task = await UpcentricModels.Task.findById(taskId);
     task.admin = adminId as any;
-    task.assignedOn = new Date();
-    await task.saveMe(/crit/.test(task.status)?IN_PROGRESS_CRIT:IN_PROGRESS);
+    task.meta.assigned = new Date();
+    const update = {
+      status:IN_PROGRESS,
+      action:"task assigned, status changed to 'in-progress'",
+      user:"sys-admn",
+      time:new Date()
+    };
+    await task.saveMe(update);
     return {task};
   };
   static unassignAdminFromTask = async (taskId:string) => {
     const task = await UpcentricModels.Task.findById(taskId);
-    task.admin = null,task.assignedOn = null;
-    await task.saveMe(/crit/.test(task.status)?OPEN_CRIT:OPEN);
-    return {task};
-  };
-
-  // 📌 Task Notation
-  static addNotes = async (taskId:string,notes:UpcentricTypes.ITaskNote[]) => {
-    const task = await UpcentricModels.Task.findById(taskId);
-    if (!task) throw new Utils.AppError(422,'Requested task not found');
-    task.notes.push(...notes);
-    await task.saveMe();
-    return {task};
-  };
-  static updateNote = async (taskId:string,noteIdx:number,note:UpcentricTypes.ITaskNote) => {
-    const task = await UpcentricModels.Task.findById(taskId);
-    if (!task) throw new Utils.AppError(422,'Requested task not found');
-    task.notes[noteIdx] = note;
-    await task.saveMe();
-    return {task};
-  };
-  static removeNote = async (taskId:string,noteIdx:number) => {
-    const task = await UpcentricModels.Task.findById(taskId);
-    if (!task) throw new Utils.AppError(422,'Requested task not found');
-    task.notes = task.notes.filter((o,i) => i !== noteIdx);
-    await task.saveMe();
-    return {task};
-  };
-
-  /*
-  // 📌 Task Attempts
-  static startAttempt = async (taskId:string,attempt:Types.ITask["attempts"][0]) => {
-    const task = await Models.Task.findById(taskId);
-    if (!task) throw new Utils.AppError(422,'Requested task not found');
-    task.attempts.push(attempt);
-    await (task.status == ACTIVE?task.saveMe(IN_PROGRESS):task.saveMe());
-    return {task};
-  };
-  static updateAttempt = async (taskId:string,attemptIndex:number) => {
-    const task = await Models.Task.findById(taskId);
-    if (!task) throw new Utils.AppError(422,'Requested task not found');
-    task.attempts = task.attempts.filter((o,i) => 1 !== attemptIndex);
-    await task.saveMe();
-    return {task};
-  };
-  static finalizeAttempt = async (taskId:string,attemptIndex:number,attemptData?:Partial<{end:Date;outcome:string,mileageAdj:number}>) => {
-    const task = await Models.Task.findById(taskId);
-    if (!task) throw new Utils.AppError(422,'Requested task not found');
-    await task.populateMe();
-    const attempt = task.attempts[attemptIndex];
-    const homeBase = task.admin.addrs[0].loc.coordinates;
-    const delta = [];
-    const stops = attempt.log.filter(o => o.type == "stop");
-    for(let i = 0,l = stops.length;i<l;i++){
-      const {loc} = stops[i];
-      if(!i) delta.push(homeBase && loc?TasksService.calculateMileage(loc,homeBase):0);
-      if(i){
-        const {loc:lastLoc} = stops[i - 1];
-        delta.push(TasksService.calculateMileage(loc,lastLoc));
-      }
-      if(i == (l - 1)) delta.push(homeBase && loc?TasksService.calculateMileage(loc,homeBase):0);
-    }
-    attempt.outcome = attemptData?.outcome || attempt.outcome || "none provided.";
-    attempt.end = attemptData?.end || attempt.end || new Date();
-    attempt.meta = {
-      ...attempt.meta,
-      mileage:delta.reduce((o,p) => o+p,0),
-      mileageAdj:attemptData?.mileageAdj || attempt.meta.mileageAdj || 0,
-      elapsedTime:new Date(attempt.end).getTime() - new Date(attempt.start).getTime()
+    task.admin = null,
+    task.meta.assigned = null;
+    const update = {
+      status:OPEN,
+      action:"task unassigned, status changed to 'open'",
+      user:"sys-admn",
+      time:new Date()
     };
-    task.attempts[attemptIndex] = attempt;
-    await task.saveMe();
+    await task.saveMe(update);
     return {task};
   };
-  static removeAttempt = async (taskId:string,attemptIndex:number) => {
-    const task = await Models.Task.findById(taskId);
-    if (!task) throw new Utils.AppError(422,'Requested task not found');
-    task.attempts = task.attempts.filter((o,i) => i !== attemptIndex);
-    await task.saveMe();
-    return {task};
-  }
-  
-  // 📌 Task Artifacts - Stops, Interviews, Uploaads, Notes
-  static addAttemptActivity = async (taskId:string,attemptIndex:number,o:Types.ITaskArtifactPre) => {
-    const task = await Models.Task.findById(taskId);
-    if (!task) throw new Utils.AppError(422,'Requested task not found');
-    await task.populateMe();
-    let n:Partial<Types.ITaskArtifact>;
-    switch(o.type){
-      case "stop":{
-        const addr = task.subjects[o.subjectIdx].addrs[o.addrIdx];
-        const dist = TasksService.calculateMileage(o.loc,addr.loc.coordinates);
-        const atLoc = dist <= .05;
-        n = {
-          ...o,
-          addr:addr.info,
-          meta:{
-            ...o.meta,
-            ...atLoc?{verification:{
-              atLoc,
-              within:dist.toFixed(3) + " mi" as any,
-              time:new Date(),
-              hash:Utils.longId(),
-            }}:{},
-          }
-        };
-        break;
-      }
-      case "upload":{
-        const meta = uploadFields.reduce((n,k) => ({...n,[k]:o[k]}),{}) as any;
-        //const m = o as ;
-        n = {
-          id:o.public_id,
-          type:o.type,
-          time:o.original_date,
-          url:o.secure_url,
-          meta
-        };
-        break;
-      }
-      default:{n = {...o};break;}
-    }
-    
-    task.attempts[attemptIndex].log.push(n as Types.ITaskArtifact);
-    await task.saveMe();
-    return {task};
-  };
-  static removeAttemptActivity = async (taskId:string,attemptIndex:number,logIdx:number) => {
-    const task = await Models.Task.findById(taskId);
-    if (!task) throw new Utils.AppError(422,'Requested task not found');
-    const attempt = task.attempts[attemptIndex];
-    attempt.log = attempt.log.filter((o,i) => logIdx !== i);
-    task.attempts[attemptIndex] = attempt;
-    await task.saveMe();
-    return {task};
-  };
-  */
 
   // 📌 Task Resolution & Invoicing
-  static finalizeTask = async (taskId:string,{status:name,reason,resolution}:{
+  static finalizeTask = async (taskId:string,{status,reason,resolution}:{
     status:UpcentricTypes.ITaskStatuses,
     resolution:string,//Partial<Types.ITaskDetails>,
     reason:string}) => {
     const task = await UpcentricModels.Task.findById(taskId);
     if (!task) throw new Utils.AppError(422,'Requested task not found');
-    await task.populateMe();
     task.resolution = resolution;
     task.reason = reason;
-    task.meta = {...task.meta};
+    const update = {
+      status,
+      action:`status changed to '${status}'`,
+      user:"sys-admn",
+      time:new Date()
+    };
     //task.invoice = TasksService.generateInvoice(task);
-    await task.saveMe(name,{reason,resolution});
+    await task.saveMe(update);
     return {task};
   };
   static closeTask = async (taskId:string) => {
     const task = await UpcentricModels.Task.findById(taskId);
     if (!task) throw new Utils.AppError(422,'Requested task not found');
     //if (task.status == CLOSED || !task.invoice.meta.paid) throw new Utils.AppError(422,'Requested task cannot be closed');
-    await task.saveMe(CLOSED);
+    
+    const update = {
+      status:CLOSED,
+      action:`status changed to '${CLOSED}'`,
+      user:"sys-admn",
+      time:new Date()
+    };
+    await task.saveMe(update);
     return {task};
   };
 

@@ -1,5 +1,5 @@
 import UpcentricModels from "../../models";
-import UpcentricTypes from "../../types";
+import UTypes from "../../types";
 
 import Models from "../../../../models";
 import Types from "../../../../types";
@@ -9,6 +9,7 @@ import { uploadFields } from "../../../../middlewares";
 
 import axios from 'axios';
 
+
 const notify = Services.Notifications.createNotification;
 
 const queryOpts = { new:true,runValidators: true,context:'query' };
@@ -17,16 +18,24 @@ const locationIQKey = process.env.LOCATION_IQ_KEY;
 const {
   NEW,
   OPEN,
-  OPEN_CRIT,
   IN_PROGRESS,
-  IN_PROGRESS_CRIT,
   CLOSED,
-} = UpcentricTypes.IBugStatuses;
+} = UTypes.IBugStatuses;
 
 export class BugsService {
   // 📌 Bug CRUD Ops
-  static createBug = async (creator:string,newBug:Partial<UpcentricTypes.IBug>) => {
-    const bug = new UpcentricModels.Bug({creator,...newBug});
+  static createBugs = async (creator:string,newBugs:Partial<UTypes.IBug>[]) => {
+    const bugs:UTypes.IBug[] = [];
+    for(let i = 0,l = newBugs.length;i<l;i++){
+      const nt = {creator,...newBugs[i]};
+      const bug = new UpcentricModels.Bug(nt);
+      await bug.saveMe();
+      bugs.push(bug);
+    }
+    return {bugs};
+  };
+  static createBug = async (creator:string,newBug:UTypes.IBugITO) => {
+    const bug = new UpcentricModels.Bug({creator,meta:{},...newBug});
     await bug.saveMe();
     return {bug};
   };
@@ -59,14 +68,18 @@ export class BugsService {
   };
 
   // Bug Updates
-  static updateBugStatus = async (admin:string,bugId:string,{name,info}:{name:UpcentricTypes.IBugStatuses,info?:any}) => {
+  static updateBugStatus = async (
+    admin:string,
+    bugId:string,
+    {progress,priority,...o}:AppActivityUpdate & {progress?:number,priority?:number}) => {
     const bug = await UpcentricModels.Bug.findById(bugId);
-    if (!bug) throw new Utils.AppError(422,'Requested bug not found');
-    if(info) bug.notes.push({user:admin,msg:info,time:new Date()});
-    await bug.saveMe(name,info);
+    if(!bug) throw new Utils.AppError(422,'Requested bug not found');
+    if(priority) bug.priority = priority;
+    if(progress) bug.progress = progress;
+    await bug.saveMe({...o,time:new Date()});
     return {bug};
   };
-  static addFilesToBug = async (bugId:string,files:UpcentricTypes.IBug["files"]) => {
+  static addFilesToBug = async (bugId:string,files:UTypes.IBug["files"]) => {
     const bug = await UpcentricModels.Bug.findByIdAndUpdate(bugId,
       { $push: { files }},
       { new: true, runValidators: true } // Ensure validators are run
@@ -82,209 +95,64 @@ export class BugsService {
     await bug.saveMe();
     return {bug};
   };
-  static addDetailsToBug = async (bugId:string,details:UpcentricTypes.IBug["meta"]) => {
-    const bug = await UpcentricModels.Bug.findById(bugId);
-    if (!bug) throw new Utils.AppError(422,'Requested bug not found');
-    bug.meta = {...bug.meta,...details};
-    await bug.saveMe();
-    return {bug};
-  };
   static assignAdminToBug = async (bugId:string,adminId:string) => {
     const bug = await UpcentricModels.Bug.findById(bugId);
     bug.admin = adminId as any;
-    bug.assignedOn = new Date();
-    await bug.saveMe(/crit/.test(bug.status)?IN_PROGRESS_CRIT:IN_PROGRESS);
+    bug.meta.assigned = new Date();
+    const update = {
+      status:IN_PROGRESS,
+      action:"bug assigned, status changed to 'in-progress'",
+      user:"sys-admn",
+      time:new Date()
+    };
+    await bug.saveMe(update);
     return {bug};
   };
   static unassignAdminFromBug = async (bugId:string) => {
     const bug = await UpcentricModels.Bug.findById(bugId);
-    bug.admin = null,bug.assignedOn = null;
-    await bug.saveMe(/crit/.test(bug.status)?OPEN_CRIT:OPEN);
-    return {bug};
-  };
-
-  // 📌 Bug Notation
-  static addNotes = async (bugId:string,notes:UpcentricTypes.IBugNote[]) => {
-    const bug = await UpcentricModels.Bug.findById(bugId);
-    if (!bug) throw new Utils.AppError(422,'Requested bug not found');
-    bug.notes.push(...notes);
-    await bug.saveMe();
-    return {bug};
-  };
-  static updateNote = async (bugId:string,noteIdx:number,note:UpcentricTypes.IBugNote) => {
-    const bug = await UpcentricModels.Bug.findById(bugId);
-    if (!bug) throw new Utils.AppError(422,'Requested bug not found');
-    bug.notes[noteIdx] = note;
-    await bug.saveMe();
-    return {bug};
-  };
-  static removeNote = async (bugId:string,noteIdx:number) => {
-    const bug = await UpcentricModels.Bug.findById(bugId);
-    if (!bug) throw new Utils.AppError(422,'Requested bug not found');
-    bug.notes = bug.notes.filter((o,i) => i !== noteIdx);
-    await bug.saveMe();
-    return {bug};
-  };
-    // 📌 Bug Notation
-  static addTaskToBug = async (bugId:string,task:UpcentricTypes.ITaskITO) => {
-    const bug = await UpcentricModels.Bug.findById(bugId);
-    if (!bug) throw new Utils.AppError(422,'Requested bug not found');
-    const n = new UpcentricModels.Task(task);
-    await n.save();
-    bug.notes.push(n.id);
-    await bug.saveMe();
-    return {bug};
-  };
-  static updateBugTask = async (bugId:string,taskIdx:number,task_:Partial<UpcentricTypes.ITask>) => {
-    const bug = await UpcentricModels.Bug.findById(bugId);
-    if (!bug) throw new Utils.AppError(422,'Requested bug not found');
-    let taskId = bug.tasks[taskIdx];
-    await UpcentricModels.Task.findByIdAndUpdate(taskId,{$set:task_});
-    await bug.saveMe();
-    return {bug};
-  };
-  static removeTaskFromBug = async (bugId:string,taskIdx:number) => {
-    const bug = await UpcentricModels.Bug.findById(bugId);
-    if (!bug) throw new Utils.AppError(422,'Requested bug not found');
-    let taskId = "";
-    bug.tasks = bug.tasks.filter((o,i) => {
-      if(i == taskIdx) taskId = o.id;
-      return i !== taskIdx
-    });
-    await UpcentricModels.Task.findByIdAndDelete(taskId);
-    await bug.saveMe();
-    return {bug};
-  };
-
-  /*
-  // 📌 Bug Attempts
-  static startAttempt = async (bugId:string,attempt:Types.IBug["attempts"][0]) => {
-    const bug = await Models.Bug.findById(bugId);
-    if (!bug) throw new Utils.AppError(422,'Requested bug not found');
-    bug.attempts.push(attempt);
-    await (bug.status == ACTIVE?bug.saveMe(IN_PROGRESS):bug.saveMe());
-    return {bug};
-  };
-  static updateAttempt = async (bugId:string,attemptIndex:number) => {
-    const bug = await Models.Bug.findById(bugId);
-    if (!bug) throw new Utils.AppError(422,'Requested bug not found');
-    bug.attempts = bug.attempts.filter((o,i) => 1 !== attemptIndex);
-    await bug.saveMe();
-    return {bug};
-  };
-  static finalizeAttempt = async (bugId:string,attemptIndex:number,attemptData?:Partial<{end:Date;outcome:string,mileageAdj:number}>) => {
-    const bug = await Models.Bug.findById(bugId);
-    if (!bug) throw new Utils.AppError(422,'Requested bug not found');
-    await bug.populateMe();
-    const attempt = bug.attempts[attemptIndex];
-    const homeBase = bug.admin.addrs[0].loc.coordinates;
-    const delta = [];
-    const stops = attempt.log.filter(o => o.type == "stop");
-    for(let i = 0,l = stops.length;i<l;i++){
-      const {loc} = stops[i];
-      if(!i) delta.push(homeBase && loc?BugsService.calculateMileage(loc,homeBase):0);
-      if(i){
-        const {loc:lastLoc} = stops[i - 1];
-        delta.push(BugsService.calculateMileage(loc,lastLoc));
-      }
-      if(i == (l - 1)) delta.push(homeBase && loc?BugsService.calculateMileage(loc,homeBase):0);
-    }
-    attempt.outcome = attemptData?.outcome || attempt.outcome || "none provided.";
-    attempt.end = attemptData?.end || attempt.end || new Date();
-    attempt.meta = {
-      ...attempt.meta,
-      mileage:delta.reduce((o,p) => o+p,0),
-      mileageAdj:attemptData?.mileageAdj || attempt.meta.mileageAdj || 0,
-      elapsedTime:new Date(attempt.end).getTime() - new Date(attempt.start).getTime()
+    bug.admin = null,
+    bug.meta.assigned = null;
+    const update = {
+      status:OPEN,
+      action:"bug unassigned, status changed to 'open'",
+      user:"sys-admn",
+      time:new Date()
     };
-    bug.attempts[attemptIndex] = attempt;
-    await bug.saveMe();
+    await bug.saveMe(update);
     return {bug};
   };
-  static removeAttempt = async (bugId:string,attemptIndex:number) => {
-    const bug = await Models.Bug.findById(bugId);
-    if (!bug) throw new Utils.AppError(422,'Requested bug not found');
-    bug.attempts = bug.attempts.filter((o,i) => i !== attemptIndex);
-    await bug.saveMe();
-    return {bug};
-  }
-  
-  // 📌 Bug Artifacts - Stops, Interviews, Uploaads, Notes
-  static addAttemptActivity = async (bugId:string,attemptIndex:number,o:Types.IBugArtifactPre) => {
-    const bug = await Models.Bug.findById(bugId);
-    if (!bug) throw new Utils.AppError(422,'Requested bug not found');
-    await bug.populateMe();
-    let n:Partial<Types.IBugArtifact>;
-    switch(o.type){
-      case "stop":{
-        const addr = bug.subjects[o.subjectIdx].addrs[o.addrIdx];
-        const dist = BugsService.calculateMileage(o.loc,addr.loc.coordinates);
-        const atLoc = dist <= .05;
-        n = {
-          ...o,
-          addr:addr.info,
-          meta:{
-            ...o.meta,
-            ...atLoc?{verification:{
-              atLoc,
-              within:dist.toFixed(3) + " mi" as any,
-              time:new Date(),
-              hash:Utils.longId(),
-            }}:{},
-          }
-        };
-        break;
-      }
-      case "upload":{
-        const meta = uploadFields.reduce((n,k) => ({...n,[k]:o[k]}),{}) as any;
-        //const m = o as ;
-        n = {
-          id:o.public_id,
-          type:o.type,
-          time:o.original_date,
-          url:o.secure_url,
-          meta
-        };
-        break;
-      }
-      default:{n = {...o};break;}
-    }
-    
-    bug.attempts[attemptIndex].log.push(n as Types.IBugArtifact);
-    await bug.saveMe();
-    return {bug};
-  };
-  static removeAttemptActivity = async (bugId:string,attemptIndex:number,logIdx:number) => {
-    const bug = await Models.Bug.findById(bugId);
-    if (!bug) throw new Utils.AppError(422,'Requested bug not found');
-    const attempt = bug.attempts[attemptIndex];
-    attempt.log = attempt.log.filter((o,i) => logIdx !== i);
-    bug.attempts[attemptIndex] = attempt;
-    await bug.saveMe();
-    return {bug};
-  };
-  */
 
   // 📌 Bug Resolution & Invoicing
-  static finalizeBug = async (bugId:string,{status:name,reason,resolution}:{
-    status:UpcentricTypes.IBugStatuses,
+  static finalizeBug = async (bugId:string,{status,reason,resolution}:{
+    status:UTypes.IBugStatuses,
     resolution:string,//Partial<Types.IBugDetails>,
     reason:string}) => {
     const bug = await UpcentricModels.Bug.findById(bugId);
     if (!bug) throw new Utils.AppError(422,'Requested bug not found');
-    await bug.populateMe();
     bug.resolution = resolution;
     bug.reason = reason;
-    bug.meta = {...bug.meta};
+    const update = {
+      status,
+      action:`status changed to '${status}'`,
+      user:"sys-admn",
+      time:new Date()
+    };
     //bug.invoice = BugsService.generateInvoice(bug);
-    await bug.saveMe(name,{reason,resolution});
+    await bug.saveMe(update);
     return {bug};
   };
   static closeBug = async (bugId:string) => {
     const bug = await UpcentricModels.Bug.findById(bugId);
     if (!bug) throw new Utils.AppError(422,'Requested bug not found');
     //if (bug.status == CLOSED || !bug.invoice.meta.paid) throw new Utils.AppError(422,'Requested bug cannot be closed');
-    await bug.saveMe(CLOSED);
+    
+    const update = {
+      status:CLOSED,
+      action:`status changed to '${CLOSED}'`,
+      user:"sys-admn",
+      time:new Date()
+    };
+    await bug.saveMe(update);
     return {bug};
   };
 

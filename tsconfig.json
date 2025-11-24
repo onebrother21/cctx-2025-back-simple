@@ -36,7 +36,10 @@
     "files": [
       "index.ts",
       "types/global.d.ts",
-      "types/utils.d.ts",
+      "types/cctx-common.d.ts",
+      "types/cctx-entity.d.ts",
+      "types/cctx-errors.d.ts",
+      "types/cctx-utils.d.ts",
       "types/express-types.d.ts",
     ],
 }

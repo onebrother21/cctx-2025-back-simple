@@ -1,6 +1,6 @@
 import * as Users from './user.types';
-
-export type INoteType = DocEntity<any> & {
+export enum INoteActions {NOTE_CREATED = 15,NOTE_SAVED = 16}
+export type INoteType = DocEntity & {
   user:Users.IUser;
   msg:string;
   time:Date;

@@ -7,6 +7,7 @@ export * from "./console-logger";
 export * from "./locales";
 export * from "./math";
 
+export * from "./create-bull-queue-ui";
 export * from "./create-queue"
 export * from "./create-worker";
 export * from "./create-redis-conn-opts";

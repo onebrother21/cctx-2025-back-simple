@@ -12,7 +12,7 @@ export enum IDistrictLeadStatuses {
   PROCESSED = "processing",
   IN_PROGRESS = "in-progress"
 }
-export type IDistrictLeadType = DocEntity<IDistrictLeadStatuses> & {
+export type IDistrictLeadType = DocEntity & {
   name:string,
   region:number,
   county:string,
@@ -29,7 +29,7 @@ export type IDistrictLeadType = DocEntity<IDistrictLeadStatuses> & {
   }
 };
 export interface IDistrictLeadMethods {
-  saveMe(status?:IDistrictLeadStatuses,info?:any):Promise<void>;
+  saveMe(o?:IDistrictLead["log"][0]):Promise<void>;
   populateMe():Promise<void>;
   json():Partial<IDistrictLead>;
 }

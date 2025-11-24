@@ -1,16 +1,12 @@
 import { Router } from 'express';
-import {
-  PostMiddleware,
-} from "../../middlewares";
-import {ApiConnectionController as ctrl} from "../upcentric/api-connect.controller";
-import Utils from '../../utils';
+import { ApiConnect,PostMiddleware } from '../middlewares';
+import Utils from '../utils';
 
 const getAppPublicRouter = (cache:Utils.RedisCache) => {
   const router = Router();
 
-  router.get("/hm",(req,res) => {res.json({success:true,message:"ready"});});
-  router.get("/connect",(req,res) => {res.json({success:true,message:"ready",csrfToken:res.locals.csrfToken});});
-  router.get('/decrypt',(req, res) => {
+  router.get("/hm",(req:IRequest,res) => {res.json({success:true,message:"ready"});});
+  router.get('/decrypt',(req:IRequest, res) => {
     try {
       const {encryptedData} = req.body;
       if (!encryptedData) {
@@ -32,7 +28,7 @@ const getAppPublicRouter = (cache:Utils.RedisCache) => {
       });
     }
   });
-  router.get('/encrypt',(req, res) => {
+  router.get('/encrypt',(req:IRequest, res) => {
     try {
       const data = { message: 'This is sensitive data' };
       const encryptedData = Utils.encrypt(data);
@@ -46,13 +42,16 @@ const getAppPublicRouter = (cache:Utils.RedisCache) => {
       });
     }
   });
+  router.get("/connect",(req:IRequest,res) => {res.json({success:true,message:"ready",csrfToken:res.locals.csrfToken});});
+  router.post("/connect",[ApiConnect(),...PostMiddleware]);
   return router;
 };
 
-const getApiConnectionRouter = (cache:Utils.RedisCache) => {
-  const router = Router();
-  router.get("/config",[ctrl.appConfig,...PostMiddleware]);
-  router.post("/connect",[ctrl.appConnect,...PostMiddleware]);
-  return router;
-};
-export {getAppPublicRouter,getApiConnectionRouter};
+export default getAppPublicRouter;
+
+/*
+  router.post("/upload-test",upload.single('file'),[(req:any,res:any) => {
+    console.log(req.file);
+    res.json({success:true,msg:"ok"});
+  }]);
+*/
