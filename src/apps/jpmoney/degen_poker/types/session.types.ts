@@ -1,39 +1,37 @@
-import {IDegenPokerAdmin} from "./profile.types";
+import * as Profiles from "./profiles.types";
+import * as Venues from "./venue.types";
+
+import Types from "@types";
 
 export enum IDegenSessionStatuses {
   NEW = "new",
   ACTIVE = "active",
-  OPEN = "open",
-  OPEN_CRIT = "open-crit",
-  IN_PROGRESS = "in-progress",
-  IN_PROGRESS_CRIT = "in-progress-crit",
-  PENDING = "pending",
-  PENDING_CRIT = "pending-crit",
-  PLANNED = "planned",
-  PLANNED_PENDING = "planned-pending",
+  INACTIVE = "inactive",
   COMPLETED = "completed",
   CLOSED = "closed",
-  CANCELLED = "cancelled",
-  REJECTED = "rejected",
-  REOPENED = "reopened",
 }
-export type IDegenSessionNote = {
-  user:IDegenPokerAdmin;
-  time:Date;
-  msg:string;
-}
-export type IDegenSessionType = DocEntity & {
-  project:string;
-  venue:string;
-  host?:string;
+export type IDegenSessionType = DocEntity<IDegenSessionStatuses,Profiles.IDegenPlayer> & {
+  venue:Venues.IDegenVenue;
   desc:string;
-  type:"cash"|"tourney";
-  start:Date;
-  end:Date;
-  buyin:number;
-  reloads:{time:Date,amt:number;}[];
-  payout:number;
-  notes:IDegenSessionNote[];
+  type:"C"|"T";
+  dateOfPlay:Date;
+  startTime:TimeToTheNearestFive;
+  endTime:TimeToTheNearestFive;
+  ledger:{
+    time:Date;
+    amt:number;
+    reason:string;
+  }[];
+  notes:Types.INote[];
+  hands:any[];
+  info:{
+    startingStack?:string;
+    place?:number|"DNP";
+  };
+  meta:{
+    score:number;
+  };
+  player:Profiles.IDegenPlayer;
 };
 export type IDegenSessionITO = Partial<IDegenSessionType>;
 export type IDegenSessionPTO = Pick<IDegenSessionType,"id">;
@@ -46,3 +44,16 @@ export interface IDegenSessionMethods {
   preview():IDegenSessionPTO;
 };
 export interface IDegenSession extends IDegenSessionType,IDegenSessionMethods {}
+
+export type IDegenSessionQueryKeys = {
+  strings:
+  |"creator.name"|"creator.displayName"|"creatorId"
+  |"player.name"|"player.displayName"|"playerId"
+  |"venue.name"|"venue.addr.info"|"venueId"
+  |"status"|"desc"|"type"|"ledger.reason"
+  |`info.${keyof IDegenSession["info"]}`;
+  numbers:"ledger.amt"|"meta.score";
+  dates:"created_on"|"play_date";
+  geoNear:"venue.addr.loc";
+};
+export type IDegenSessionQuery = StrongQuery<IDegenSessionQueryKeys>;

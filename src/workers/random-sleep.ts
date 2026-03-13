@@ -1,6 +1,6 @@
 import { Job } from 'bullmq';
-import Types from "../types";
-import Utils from '../utils';
+import Types from "@types";
+import Utils from '@utils';
 
 export const doRandomSleep = async (job:Job) => {
   for (let i = 0; i <= 100; i++) {

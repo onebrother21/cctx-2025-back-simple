@@ -1,5 +1,4 @@
-
-import Utils from "../../utils";
+import Utils from "@utils";
 
 export class ApiConnectionController {
   static appConfig:IHandler = async (req,res,next) => {

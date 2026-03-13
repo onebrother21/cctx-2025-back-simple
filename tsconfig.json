@@ -24,6 +24,14 @@
     "importHelpers": true,
     "baseUrl": "./src",
     "paths": {
+      "@apps/*":["apps/*"],
+      "@middleware":["middleware"],
+      "@models":["models"],
+      "@services":["services"],
+      "@types":["types"],
+      "@utils":["utils"],
+      "@workers":["workers"],
+      "@workers/*":["workers/*"],
     }
   },
   "exclude": [

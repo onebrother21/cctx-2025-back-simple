@@ -10,6 +10,6 @@ type ErrorConfig = Partial<{
   src:string;
   info:MiscInfo;
 } & ValidationErrors>;
-type ErrorObj = Error & ErrorConfig & Omit<Entity,"status">;
+type ErrorObj = Error & ErrorConfig & Omit<Entity<number>,"status">;
 type ErrorType = Error|ErrorObj|ValidationErrors;
 type Errors<K extends string|undefined = undefined> = Enum<ErrorType,K>;

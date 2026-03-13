@@ -1,7 +1,7 @@
 import { Job } from 'bullmq';
-import Models from '../models';
-import Types from "../types";
-import Utils from '../utils';
+import Models from '@models';
+import Types from "@types";
+import Utils from '@utils';
 
 export const tokenCleanUp = async (job:Job) => {
   const requestBody = job.data.requestBody;

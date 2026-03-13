@@ -15,8 +15,16 @@ export type IAuthParams = {
   pin:IPin;
   reset:string|null;
   verification:string|null;
-  verificationType:IContactMethods|null;
-  verificationSent:Date|null;
   pushToken:string|null;
   socketId:string|null;
+  meta:Partial<{
+    verificationType:IContactMethods|null;
+    verificationSent:Date|null;
+    resetType:IContactMethods|null;
+    resetSent:Date|null;
+    lastLogin:Date|null;
+    lastLogout:Date|null;
+    lastVerified:Date|null;
+    lastReset:Date|null;
+  }>;
 };

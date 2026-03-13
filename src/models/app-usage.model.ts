@@ -1,36 +1,43 @@
 import mongoose,{Schema,Model} from 'mongoose';
 import uniqueValidator from "mongoose-unique-validator";
-import Types from "../types";
-import Utils from '../utils';
+import Types from "@types";
+import Utils from '@utils';
 
 const appUsageSchema = new Schema<Types.IAppUsage,AppUsage,Types.IAppUsageMethods>({
+  status:{type:String,enum:["new"],default:"new"},
   who:{type:String,required:true},
-  what:{ type: Schema.Types.Mixed,required:true},
+  what:{type:Schema.Types.Mixed,required:true},
   which:String,
-  where:String,
-  when: { type: Date,default:() => Date.now()},
+  where:Utils.locCoordsSchema,
+  when:{type:Date,default:() => Date.now()},
   how:String,
   to:String,
   with:String,
   why:String,
 },{timestamps:false});
+appUsageSchema.index({"where":"2dsphere"});
 appUsageSchema.plugin(uniqueValidator);
 appUsageSchema.static("make",async function (
-  user:Types.IUser|"sys-admn",
+  userOrProfile:"sys-admn"|`${"usr"|"adm"|"prf"}/${string}`,
   action:string|number,
-  dataObj?:Partial<Types.IAppUsage & LocationObj>,
+  dataObj?:Partial<Types.IAppUsage & LocationObj & {device:Types.IAppDevice}>,
 ){
-  const isSysAdmin = user == "sys-admn";
-  const device = !isSysAdmin?user.device:null;
-  const {loc,...data} = dataObj || {};
-  const n = new AppUsage({
-    who:isSysAdmin?user:`u/${user._id}`,
+  const {loc,device,...data} = dataObj || {};
+  const how = device?`${
+    (device.os.name?device.os.name + " ":"")+
+    (device.browser.name?device.browser.name + " ":"")+
+    (device.device.model?device.device.model + " ":"")+
+    (device.meta.lastAddr?device.meta.lastAddr + " ":"")
+  }`:"";
+  const o:any = {
+    who:userOrProfile,
     what:action,
     when:new Date(),
-    ...device?{how:`${device.device?.model||"Unknown"}/${device.lastAddr}`}:{},
-    ...loc?{where:`${loc[0]}X${loc[1]}`}:{},
+    ...loc?{where:{type:"Point",coordinates:loc}}:{},
+    ...device?{how}:{},
     ...data,
-  });
+  };
+  const n = new AppUsage(o);
   await n.save();
 });
 appUsageSchema.methods.saveMe = async function (){await this.save();};
@@ -49,5 +56,5 @@ appUsageSchema.methods.json = function () {
 };
 
 export interface AppUsage extends Model<Types.IAppUsage,{},Types.IAppUsageMethods>,Types.IAppUsageStatics {}
-const AppUsage:AppUsage = mongoose.model<Types.IAppUsage,AppUsage>('cctx_app_usage',appUsageSchema);
+const AppUsage:AppUsage = mongoose.model<Types.IAppUsage,AppUsage>('cctx_app_usages',appUsageSchema);
 export default AppUsage;

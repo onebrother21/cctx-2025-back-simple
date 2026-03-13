@@ -1,11 +1,10 @@
 import mongoose,{Schema,Model} from 'mongoose';
 import uniqueValidator from "mongoose-unique-validator";
-import Types from "../types";
-import Utils from '../utils';
-
-import AppUsage from "./app-usage.model";
+import Types from "@types";
+import Utils from '@utils';
 
 const ObjectId = Schema.Types.ObjectId;
+const {NEW} = Types.INotificationStatuses;
 
 const nameSchema = new Schema({
   first: { type: String},
@@ -17,24 +16,21 @@ const profileRefSchema = new Schema({
 },{_id:false,timestamps:false});
 
 const userSchema = new Schema<Types.IUser,User,Types.IUserMethods>({
-  status:{type: String,enum:Object.values(Types.IUserStatuses)},
+  status:{type: String,enum:Object.values(Types.IUserStatuses),default:NEW},
   name:{type:nameSchema},
   email:{type: String, unique: true, lowercase: true ,required:true},
   mobile:{type: String, unique: true ,sparse:true},
   dob:Date,
   info:Object,
   meta:Object,
-  settings:Object,
-  pin: { type: String },
+  pin:String,
   reset:String,
   verification:String,
-  verificationSent:Date,
-  verificationType:{type: String,enum:Object.values(Types.IContactMethods)},
   username:{type:String,sparse:true},
   profiles:[profileRefSchema],
   devices:[{type:ObjectId,ref:"cctx_devices"}],
   loc:{type:{type:String,default:"Point"},coordinates:[Number]},
-},{timestamps:{createdAt:"createdOn"}});
+},{timestamps:{createdAt:"createdOn",updatedAt:"updatedOn"}});
 
 userSchema.plugin(uniqueValidator,{message:'{PATH} is already taken.'});
 userSchema.methods.toAge = function toAge(){
@@ -90,28 +86,30 @@ userSchema.methods.populateMe = async function () {
   await this.populate(populations);
 };
 userSchema.methods.getProfile = function (){
-  return this.profiles.find(ref => ref.name == this.role)?.obj.json() || null;
+  const profile = this.profiles.find(ref => ref.name == this.role);
+  return profile?.obj || null;
 }
 userSchema.methods.preview = function (){
   return {
     fullname:this.fullname,
     username:this.username,
     id:this.id,
-    location:this.loc?.coordinates.toString() || "",
+    location:{info:"",loc:this.loc?.coordinates},
   };
 };
 userSchema.methods.json = function (auth) {
   const p = this.getProfile();
   const json:Types.IUserJson =  {...this.preview() as any};
   if(auth) {
-    json.name = this.name,
-    json.email = this.email,
+    json.name = this.name;
+    json.email = this.email;
+    json.mobile = this.mobile;
     json.username = this.username;
     json.status = this.status;
     json.info = this.info;
     json.meta = this.meta;
-    json.settings = this.settings;
-    json.profile = p;
+    json.createdOn = this.createdOn;
+    json.profile = p.json();
   };
   return json;
 };

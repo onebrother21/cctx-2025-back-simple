@@ -43,6 +43,7 @@ testem.log
 .prettierrc
 /ps
 /uploads
+/bin
 
 # System files
 .DS_Store

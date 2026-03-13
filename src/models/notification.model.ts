@@ -1,16 +1,16 @@
 import mongoose,{Schema,Model} from 'mongoose';
 import uniqueValidator from "mongoose-unique-validator";
-import Types from "../types";
+import Types from "@types";
 
 const ObjectId = Schema.Types.ObjectId;
 const {NEW} = Types.INotificationStatuses;
 
 const recipientSchema = new Schema<Types.INotification["audience"][0]>({
-  user:{type:ObjectId,ref:"users"},
+  user:{type:ObjectId,ref:"cctx_users"},
   info:{type:String,required:true}
 },{_id:false,timestamps:false});
 const notificationSchema = new Schema<Types.INotification,Notification,Types.INotificationMethods>({
-  status:{type: String,enum:Object.values(Types.INotificationStatuses)},
+  status:{type: String,enum:Object.values(Types.INotificationStatuses),default:NEW},
   type: {type: String,enum:Object.keys(Types.INotificationTemplates),required: true},
   audience:{
     type:[recipientSchema],
@@ -32,7 +32,7 @@ notificationSchema.methods.saveMe = async function (){
   await this.save();
   await this.populateMe();
 };
-notificationSchema.methods.populateMe = async function () {await this.populate("log")};
+notificationSchema.methods.populateMe = async function () {};
 notificationSchema.methods.json = function () {
   const json:Partial<Types.INotification> =  {};
   json.id = this.id;
@@ -45,8 +45,7 @@ notificationSchema.methods.json = function () {
   json.data = this.data;
   json.meta = this.meta;
   json.info = this.info;
-  //json.createdOn = this.createdOn;
-  //json.updatedOn = this.updatedOn;
+  json.createdOn = this.createdOn;
   return json;
 };
 

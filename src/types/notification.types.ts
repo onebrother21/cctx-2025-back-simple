@@ -16,15 +16,16 @@ export type INotificationPre = {
     user?:USER.IUser,
     info:string,
   }[];
-  data?:any; // Replaceable data for personalization
+  data?:any;
 };
+
 export enum INotificationActions {
   NOTIFICATION_ATTEMPT = 12,
   NOTIFICATION_SENT = 13,
   NOTIFICATION_FAILED = 14
 };
 export type INotificationMeta = {job: string;retries:number;};
-export type INotificationType = DocEntity & INotificationPre & INotificationMeta;
+export type INotificationType = DocEntity<INotificationStatuses,never> & INotificationPre & INotificationMeta;
 
 export interface INotificationMethods {
   saveMe():Promise<void>;
@@ -32,3 +33,9 @@ export interface INotificationMethods {
   json():Partial<INotification>;
 };
 export interface INotification extends INotificationType,INotificationMethods {}
+export type INotificationQueryKeys = {
+  strings:|"type"|"audience.user.username"|"meta.job";
+  dates:|"created_on";
+  geoNear:"location";
+};
+export type INotificationQuery = StrongQuery<INotificationQueryKeys>;

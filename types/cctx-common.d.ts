@@ -25,3 +25,26 @@ type Methods<T> = DataMap<Method<T>>;
 type TypedMethod<T,U> = (...params:(T|any)[]) => U;
 type TypedMethods<T,U> = DataMap<TypedMethod<T,U>>;
 type MiscInfo = Primitives;
+
+type StringQuery<K extends string> = Partial<Record<K,string|{$regex:string,$options:"i"}|{$in:string[]}>>;
+type BooleanQuery<K extends string> = Partial<Record<K,boolean>>;
+type NumberQuery<K extends string> = Partial<Record<K,Partial<Record<"$eq"|"$ne"|"$lt"|"$lte"|"$gt"|"$gte",number>>>>;
+type GeoNearQueryPre = Partial<Record<"locQuery",{pts:[number,number],radius:number,unit:"mi"|"km"}>>;
+type GeoNearQuery<K extends string> = Partial<Record<K,{$geoWithin:{$centerSphere:[[number,number],number]}}>>;
+type MetaQuery<K extends string = "meta"> = {[k in `${K}.${string}`]:StringQuery<k>|BooleanQuery<k>|NumberQuery<k>;};
+type InfoQuery<K extends string = "info"> = {[k in `${K}.${string}`]:StringQuery<k>|BooleanQuery<k>|NumberQuery<k>;};
+type ObjectQuery<K extends string> = {[k in `${K}.${string}`]:StringQuery<k>|BooleanQuery<k>|NumberQuery<k>;};
+type LogicalQuery<T> = Partial<Record<"$and"|"$or",T[]>>;
+
+type QueryTypes = "strings"|"booleans"|"numbers"|"dates"|"geoNear"|"any";
+type QueryKeys = Partial<Record<QueryTypes,string>>;
+
+type BasicQuery<K extends QueryKeys> =
+StringQuery<K["strings"]>
+& BooleanQuery<K["booleans"]>
+& NumberQuery<K["numbers"]>
+& NumberQuery<K["dates"]>
+& GeoNearQuery<K["geoNear"]>
+& GeoNearQueryPre
+& MetaQuery & InfoQuery & ObjectQuery<K["any"]>;
+type StrongQuery<K extends QueryKeys> = BasicQuery<K> & LogicalQuery<BasicQuery<K>>;

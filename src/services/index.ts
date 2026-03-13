@@ -1,25 +1,23 @@
 /*
-import { ProfilesService as Profiles } from "./profiles.service";
-import { OrderService as Order } from "./order.service";
-
-import { ReportsService as Reports } from "./reports.service";
-import { GeoService as Geo } from "./geo.service";
-import { MessageService as Message } from "./message.service";
-import { WebSocketService as Sockets } from "./websocket.service";
-import { AnalyticsService as Analytics } from "./analytics.service";
+import { ProfilesService as Profiles } from "./prev/profiles.service";
+import { OrderService as Order } from "./prev/order.service";
+import { ReportsService as Reports } from "./prev/reports.service";
+import { MessageService as Message } from "./prev/message.service";
+import { AnalyticsService as Analytics } from "./prev/analytics.service";
 */
-
-import { GeoService as Geo } from "./geo.service";
-import { NotificationService as Notifications } from "./notification.service";
+import { LocationHelpers } from "./location-helpers.service";
 import { WebSocketService as Sockets } from "./websocket.service";
+import { NotificationService as Notifications } from "./notification.service";
 
 export const Services = {
-  // Order,
+  /*
+  Message,
+  Order,
+  Reports,
+  Analytics,
+  */
   Notifications,
-  // Reports,
-  Geo,
-  // Message,
+  LocationHelpers,
   Sockets,
-  // Analytics,
 };
 export default Services;

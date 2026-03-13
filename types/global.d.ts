@@ -8,12 +8,11 @@ interface IAppCreds {
   id:string;
   role:string;
   username:string;
-  // appId:string;
-  // appname:string;
 }
 interface IError extends Error {
   status:number;
   code?:string;
   info?:string;
   errors?:(string|Error|any)[];
+  src?:string;
 }

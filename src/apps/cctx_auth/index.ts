@@ -1,6 +1,6 @@
-import getAuthRouter from "./auth.router";
+import getCCTXAuthRouter from "./cctx_auth.router";
 
 export {
-  getAuthRouter
+  getCCTXAuthRouter
 }
-export default getAuthRouter;
+export default getCCTXAuthRouter;

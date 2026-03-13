@@ -1,31 +1,35 @@
 import mongoose,{Schema,Model} from 'mongoose';
 import uniqueValidator from "mongoose-unique-validator";
 
-import Types from "../types";
-import Utils from '../utils';
+import Types from "@types";
+import Utils from '@utils';
 
 const ObjectId = Schema.Types.ObjectId;
+const {NEW} = Types.IProfileStatuses;
+const {REQUESTED} = Types.IApprovalStatuses;
 
-const profileContactSchema = new Schema<Types.IProfile["contact"]>({
+const profileContactSchema = new Schema<Types.IProfile["info"]>({
   emails:[{type: String,lowercase: true}],
-  addrs:[Utils.addressSchema],
+  addrs:[Utils.addrSchema],
   phns:[{type: String}],
   socials:[Schema.Types.Mixed],
 },{timestamps:false,_id:false});
 const profileSchema = new Schema<Types.IProfile,Profile,Types.IProfileMethods>({
   creator:{type:ObjectId,required:true,ref:"cctx_users"},
-  status:{type: String,enum:Object.values(Types.IProfileStatuses)},
+  status:{type: String,enum:Object.values(Types.IProfileStatuses),default:NEW},
+  approval:{type: String,enum:Object.values(Types.IApprovalStatuses),default:REQUESTED},
   app:{type: String,lowercase: true ,required:true},
   type:{type:String,enum:Object.values(Types.IProfileRoles),required:true},
   name:{type: String,lowercase: true ,required:true},
   displayName:String,
-  info:Schema.Types.Mixed,
-  meta:Schema.Types.Mixed,
+  contact:profileContactSchema,
+  settings:Object,
+  info:Object,
+  meta:Object,
   org:String,
   img:Object,
   bio:String,
   motto:String,
-  contact:profileContactSchema,
 },{timestamps:{createdAt:"createdOn"}});
 
 profileSchema.plugin(uniqueValidator);
@@ -49,19 +53,19 @@ profileSchema.methods.preview = function (){
 };
 profileSchema.methods.json = function (isMe) {
   const json:Partial<Types.IProfileJsonAuth> =  {...this.preview() as any};
-  json.creator = this.creator.username;
-  json.app = this.app;
-  json.type = this.type;
+  json.creator = this.creator.preview() as any;
   json.status = this.status;
   json.age = this.creator.toAge();
-  json.memberSince = this.createdOn;
   json.meta = this.meta;
+  json.meta.memberSince = this.createdOn;
+  json.motto = this.motto;
   json.bio = this.bio;
-  if(isMe){
+  //if(isMe){
+    json.settings = this.settings;
     json.approval = this.approval;
-    json.contact = this.contact;
     json.info = this.info;
-  }
+    json.contact = this.contact;
+  //}
   //json.updatedOn = this.updatedOn;
   return json as Types.IProfileJsonAuth;
 };

@@ -1,0 +1,47 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
+import db from './init-db';
+import Utils from '@utils';
+
+import doRandomSleep from '@workers/random-sleep';
+import sendNotifications from '@workers/send-notifications';
+//import autoAssignCouriers from '@workers/auto-assign-couriers';
+//import bulkEditCollection from '@workers/bulk-edit-collection';
+//import logData from '@workers/log-data';
+//import clockBugs from '@workers/clock-bugs';
+//import tokenCleanUp from '@workers/token-cleanup';
+
+enum MyQueueNames {
+  RANDOM_SLEEP = "random-sleep",
+  SEND_NOTIFICATIONS = "send-notifications",
+  //BULK_EDIT_COLLECTION = "bulk-edit-collection",
+  //LOG_DATA = "log-data",
+  // CLOCK_BUGS = "clock-bugs",
+  //TOKEN_CLEANUP = 'token-cleanup',
+}
+const MyWorkerProcessors = {
+  [MyQueueNames.RANDOM_SLEEP]:doRandomSleep,
+  [MyQueueNames.SEND_NOTIFICATIONS]:sendNotifications,
+ // [MyQueueNames.AUTO_ASSIGN_COURIERS]:autoAssignCouriers,
+ // [MyQueueNames.BULK_EDIT_COLLECTION]:bulkEditCollection,
+  //[MyQueueNames.LOG_DATA]:logData,
+  //[MyQueueNames.CLOCK_BUGS]:clockBugs,
+  //[MyQueueNames.TOKEN_CLEANUP]:tokenCleanUp,
+}
+const logItems = ['error','closed','init','failed','completed'];
+
+export class MyWorkers {
+  init = async () => {
+    try{
+      await db.connect();
+      Object.values(MyQueueNames).forEach(k => Utils.createWorker(k,MyWorkerProcessors[k],{logItems}));
+    }
+    catch(e){
+      Utils.error(e);
+      process.exit(1);
+    }
+  }
+}
+export default MyWorkers;
+export { MyQueueNames };

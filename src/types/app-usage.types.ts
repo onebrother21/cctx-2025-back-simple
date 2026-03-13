@@ -1,15 +1,13 @@
-import mongoose,{Schema,Model} from 'mongoose';
-import * as USER from "./user.types";
+import * as DEVICE from "./app-device.types";
 
-export type LocationObjStr = `${number}${"X"|"|"}${number}`;
-export type AppUsageUpdate = {
-  who:"sys-admn"|`${"u"|"a"}/${string}`;//user
+export type AppUsageUpdate = DocEntity<"new",never> & {
+  who:"sys-admn"|`${"usr"|"prf"}/${string}`;//user
   what:string|number;//desc of action
-  which?:`${"u"|"a"|"t"|"n"}/${string}`;//object affected
+  which?:`${"usr"|"prf"|"tsk"|"ntf"|"ssn"|"ven"|"case"|"att"}/${string}`;//object affected
   when:Date;//action date
-  where?:LocationObjStr;//geolocation
-  how:ObjectId_|string;//device id
-  to?:`${"u"|"a"|"g"}/${string}`;//g for group of profiles
+  where?:[number,number];//geolocation
+  how:string;//device info string -> os name & broswer name & make & model & ip
+  to?:`${"usr"|"prf"|"prfg"}/${string}`;//g for group of profiles
   with?:string;//add'l info, params
   why?:string;//add'l info, reason
 }
@@ -18,10 +16,16 @@ export interface IAppUsageMethods {
   json():Partial<AppUsageUpdate>;
 };
 export interface IAppUsage extends AppUsageUpdate,IAppUsageMethods {}
-export type IAppUsageStatics = {
+export interface IAppUsageStatics {
   make(
-    user:USER.IUser|"sys-admn",
+    user:"sys-admn"|`${"usr"|"prf"}/${string}`,
     action:string|number,
-    data?:Partial<IAppUsage & LocationObj>,
+    data?:Partial<IAppUsage & LocationObj & {device:DEVICE.IAppDevice}>,
   ):Promise<IAppUsage>;
+}
+export type IAppUsageQueryKeys = {
+  strings:|"who"|"what"|"which"|"how"|"to"|"with"|"why";
+  dates:|"when";
+  geoNear:"where";
 };
+export type IAppUsageQuery = StrongQuery<IAppUsageQueryKeys>;

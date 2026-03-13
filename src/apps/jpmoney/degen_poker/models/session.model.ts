@@ -1,64 +1,71 @@
 import mongoose,{Schema,Model} from 'mongoose';
 import uniqueValidator from "mongoose-unique-validator";
-
-import Types from "../types";
-import Utils from '../../../../utils';
-import Models from '../../../../models';
+import Utils from '@utils';
+import Types from "@types";
+import DegenTypes from "../types";
 
 const ObjectId = Schema.Types.ObjectId;
-const {NEW} = Types.IDegenSessionStatuses;
+const {NEW} = DegenTypes.IDegenSessionStatuses;
 
-const sessionNoteSChema = new Schema({
-  user:{type:ObjectId,ref:"jpmoney_profiles",required:true},
+const legderItemSchema = new Schema<DegenTypes.IDegenSession["ledger"]>({
   time:Date,
-  msg:String,
+  amt:Number,
+  reason:String
 },{timestamps:false,_id:false});
-const reloadSchema = new Schema({time:Date,amt:Number},{timestamps:false,_id:false});
 
-const sessionSchema = new Schema<Types.IDegenSession,DegenSession,Types.IDegenSessionMethods>({
-  creator:{type:ObjectId,ref:"jpmoney_profiles",required:true},
-  status:{type:String,enum:Object.values(Types.IDegenSessionStatuses)},
-  venue:String,
-  host:String,
+const sessionSchema = new Schema<DegenTypes.IDegenSession,DegenSession,DegenTypes.IDegenSessionMethods>({
+  creator:{type:ObjectId,ref:"cctx_profiles",required:true},
+  status:{type:String,enum:Object.values(DegenTypes.IDegenSessionStatuses),default:NEW},
+  venue:{type:ObjectId,ref:"degen_poker_venues",required:true},
+  type:{type:String,enum:["C","T"]},
   desc:String,
-  type:{type:String,enum:["cash","tourney"]},
-  start:Date,
-  end:Date,
-  buyin:Number,
-  reloads:[reloadSchema],
-  payout:Number,
-  notes:[sessionNoteSChema],
-},{timestamps:{createdAt:"createdOn"}});
+  dateOfPlay:Date,
+  startTime:String,
+  endTime:String,
+  ledger:[legderItemSchema],
+  notes:[Utils.noteSchema],
+  hands:[Object],
+  info:Object,
+  meta:Object,
+},{timestamps:{createdAt:"createdOn",updatedAt:"updatedOn"}});
 
 sessionSchema.plugin(uniqueValidator);
 sessionSchema.methods.saveMe = async function (){
   await this.save();
   await this.populateMe();
 };
-sessionSchema.methods.populateMe = async function () {await this.populate("creator notes.user");};
+sessionSchema.methods.populateMe = async function () {await this.populate("creator venue notes.author");};
 sessionSchema.methods.preview = function () {
   return {
     id:this._id.toString(),
   };
 };
 sessionSchema.methods.json = function () {
-  const json:Partial<Types.IDegenSessionOTO> = {};
+  const json:DegenTypes.IDegenSessionOTO = {};
   json.id = this._id.toString();
-  json.creator = (this.creator as any).preview();
+  json.creator = this.creator.preview() as any;
   json.createdOn = this.createdOn;
-  json.project = this.project;
-  json.venue = this.venue;
-  json.host = this.host;
-  json.buyin = this.buyin;
-  json.reloads = this.reloads;
-  json.payout = this.payout;
-  json.start = this.start;
-  json.end = this.end;
-  json.notes = this.notes.slice(-20);
+  json.updatedOn = this.updatedOn;
+  json.venue = this.venue.preview() as any;
+  json.type = this.type;
+  json.desc = this.desc;
+  json.dateOfPlay = this.dateOfPlay;
+  json.startTime = this.startTime;
+  json.endTime = this.endTime;
+  json.ledger = this.ledger;
+  json.hands = this.hands;
+  json.notes = this.notes.slice(-20).map(n => ({
+    author:n.author.preview() as any,
+    body:n.body,
+    time:n.time,
+  }) as any);
   json.status = this.status;
-  return json as any;
+  json.info = this.info;
+  json.meta = this.meta;
+  json.player = json.creator;
+  return json;
 };
 
-type DegenSession = Model<Types.IDegenSession,{},Types.IDegenSessionMethods>;
-const DegenSession:DegenSession = mongoose.model<Types.IDegenSession>('jpmoney_sessions',sessionSchema);
+type DegenSession = Model<DegenTypes.IDegenSession,{},DegenTypes.IDegenSessionMethods>;
+const DegenSession:DegenSession = mongoose.model<DegenTypes.IDegenSession>('degen_poker_sessions',sessionSchema);
 export default DegenSession;

@@ -1,7 +1,7 @@
 import { createBullBoard } from '@bull-board/api';
 import { BullMQAdapter } from '@bull-board/api/bullMQAdapter';
 import { ExpressAdapter } from '@bull-board/express';
-import createQueue from './create-queue';
+import createQueue from './create-bull-queue';
 
 export class BullQueueUi {
   static createQueueAdaptors = (queueNames:string[]) => {

@@ -1,14 +1,15 @@
 import mongoose,{Schema,Model} from 'mongoose';
 import uniqueValidator from "mongoose-unique-validator";
 
-import UTypes from "../types";
-import Utils from '../../../utils';
-import Models from '../../../models';
+import U_Types from "../types";
+
+import Utils from '@utils';
+import Models from '@models';
 
 const ObjectId = Schema.Types.ObjectId;
-const {NEW} = UTypes.IDistrictLeadStatuses;
+const {NEW} = U_Types.IDistrictLeadStatuses;
 
-const districtLeadSchema = new Schema<UTypes.IDistrictLead,DistrictLead,UTypes.IDistrictLeadMethods>({
+const districtLeadSchema = new Schema<U_Types.IDistrictLead,DistrictLead,U_Types.IDistrictLeadMethods>({
   log:{type:[{type:ObjectId,ref:"upcentric_activity"}],default:() => []},
   creator:{type:ObjectId,ref:"users",required:true},
   name:String,
@@ -63,6 +64,6 @@ districtLeadSchema.methods.json = function () {
   };
 };
 
-type DistrictLead = Model<UTypes.IDistrictLead,{},UTypes.IDistrictLeadMethods>;
-const DistrictLead:DistrictLead = mongoose.model<UTypes.IDistrictLead>('upcentric_districtLeads',districtLeadSchema);
+type DistrictLead = Model<U_Types.IDistrictLead,{},U_Types.IDistrictLeadMethods>;
+const DistrictLead:DistrictLead = mongoose.model<U_Types.IDistrictLead>('upcentric_districtLeads',districtLeadSchema);
 export default DistrictLead;

@@ -1,29 +1,41 @@
 export enum IAppDeviceStatuses {
   NEW = "new",
+  ACTIVE = "active",
+  INACTIVE = "inactive",
 }
-export type AppDevice = DocEntity & {
-  height:number;
-  width:number;
+export type IAppDeviceType = DocEntity<IAppDeviceStatuses,never> & {
   ua:string;
   mobile:boolean;
-  browser:{
-    name: string,
-    version: string,
-    major: string,
-    type: string,
-  };
-  device:{ type: string, model: string, vendor: string };
-  engine:{ name: string, version: string };
-  os:{ name: string, version: string };
+  browser:Record<"name"|"version"|"major"|"type",string>;
+  screen:Record<"height"|"width",number>;
+  device:Record<"type"|"model"|"vendor",string>;
+  engine:Record<"name"|"version",string>;
+  os:Record<"name"|"version",string>;
   socket:string;
   addrs:string[];
-  lastUse:Date;
-  lastAddr:string;
+  meta:{
+    lastUse:Date;
+    lastAddr:string;
+  };
 };
 export interface IAppDeviceMethods {
   saveMe():Promise<void>;
   populateMe():Promise<void>;
-  json(mine?:boolean):Partial<AppDevice>;
+  json(mine?:boolean):Partial<IAppDeviceType>;
 };
-export interface IAppDevice extends AppDevice,IAppDeviceMethods {}
-export type IAppDeviceStatics = {};
+export interface IAppDevice extends IAppDeviceType,IAppDeviceMethods {}
+
+export type IAppDeviceQueryKeys = {
+  strings:
+  |"ua"|"socket"|"addrs"
+  |`browser.${keyof IAppDevice["browser"]}`
+  |`device.${keyof IAppDevice["device"]}`
+  |`engine.${keyof IAppDevice["engine"]}`
+  |`os.${keyof IAppDevice["os"]}`
+  |"meta.lastAddr";
+  booleans:"mobile";
+  numbers:`screen.${keyof IAppDevice["screen"]}`;
+  dates:|"created_on"|"meta.lastUse";
+  //geoNear:"location";
+};
+export type IAppDeviceQuery = StrongQuery<IAppDeviceQueryKeys>;

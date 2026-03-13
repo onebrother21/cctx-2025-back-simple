@@ -95,3 +95,4 @@ export const stateSalesTaxRates:{abbr:string,state:string,rate:number}[] = [
   { abbr:"WI",state: "Wisconsin", rate: 0.05 },
   { abbr:"WY",state: "Wyoming", rate: 0.04 }
 ];
+export const streetAddrRegex = /^[\d\w]+\s[\w\s\d,\.]+$/;

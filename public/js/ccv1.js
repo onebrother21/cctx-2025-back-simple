@@ -28,7 +28,7 @@
             ...(csrfTkn?{"x-csrf-token":csrfTkn}:null),
           }
         };
-        console.log(reqOpts)
+        //console.log(reqOpts)
         const resp = await fetch(`${this.config.apiHost}/${this.config.apiPath}/connect`,reqOpts);
         const json = await resp.json();
         if(!resp.ok) throw json;

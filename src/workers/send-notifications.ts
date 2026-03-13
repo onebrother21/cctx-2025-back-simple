@@ -1,8 +1,8 @@
 import { Job } from 'bullmq';
-import Models from '../models';
-import Services from "../services";
-import Types from "../types";
-import Utils from '../utils';
+import Models from '@models';
+import Services from "@services";
+import Types from "@types";
+import Utils from '@utils';
 import * as SendMethods from "./send-notification-helpers";
 
 import fs from "fs";

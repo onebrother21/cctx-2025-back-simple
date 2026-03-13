@@ -1,14 +1,15 @@
 import mongoose,{Schema,Model} from 'mongoose';
 import uniqueValidator from "mongoose-unique-validator";
 
-import UTypes from "../types";
-import Utils from '../../../utils';
-import Models from '../../../models';
+import U_Types from "../types";
+
+import Utils from '@utils';
+import Models from '@models';
 
 const ObjectId = Schema.Types.ObjectId;
-const {NEW} = UTypes.IFinancialLineItemStatuses;
+const {NEW} = U_Types.IFinancialLineItemStatuses;
 
-const lineItemSchema = new Schema<UTypes.IFinancialLineItem,FinancialLineItem,UTypes.IFinancialLineItemMethods>({
+const lineItemSchema = new Schema<U_Types.IFinancialLineItem,FinancialLineItem,U_Types.IFinancialLineItemMethods>({
   log:{type:[{type:ObjectId,ref:"upcentric_activity"}],default:() => []},
   creator:{type:ObjectId,ref:"users",required:true},
   type:String,
@@ -57,6 +58,6 @@ lineItemSchema.methods.json = function () {
   };
 };
 
-type FinancialLineItem = Model<UTypes.IFinancialLineItem,{},UTypes.IFinancialLineItemMethods>;
-const FinancialLineItem:FinancialLineItem = mongoose.model<UTypes.IFinancialLineItem>('upcentric_lineItems',lineItemSchema);
+type FinancialLineItem = Model<U_Types.IFinancialLineItem,{},U_Types.IFinancialLineItemMethods>;
+const FinancialLineItem:FinancialLineItem = mongoose.model<U_Types.IFinancialLineItem>('upcentric_lineItems',lineItemSchema);
 export default FinancialLineItem;

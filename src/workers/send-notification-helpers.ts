@@ -3,8 +3,9 @@ import nodemailer from 'nodemailer';
 import { MailtrapTransport } from "mailtrap";
 import twilio from 'twilio';
 import axios from 'axios';
-import Utils from '../utils';
-import { getUserSocket } from '../app/init-sockets';
+
+import Utils from '@utils';
+import { getUserSocket } from '../init-sockets';
 
 //dummy func
 const sendDummy = async ({from = 'support@colorcoded.com',to,subject,text}:Record<string,string>) => {

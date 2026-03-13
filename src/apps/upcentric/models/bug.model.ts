@@ -1,21 +1,22 @@
 import mongoose,{Schema,Model} from 'mongoose';
 import uniqueValidator from "mongoose-unique-validator";
 
-import UTypes from "../types";
-import Utils from '../../../utils';
-import Models from '../../../models';
+import Utils from '@utils';
+import Models from '@models';
+
+import U_Types from "../types";
 
 const ObjectId = Schema.Types.ObjectId;
-const {NEW} = UTypes.IBugStatuses;
+const {NEW} = U_Types.IBugStatuses;
 
-const bugMetaSchema = new Schema<UTypes.IBug["meta"]>({
+const bugMetaSchema = new Schema<U_Types.IBug["meta"]>({
   assigned:Date,
   completed:Date,
   cancelled:Date,
   rejected:Date,
   reopened:Date,
 },{_id:false,timestamps:false});
-const bugSchema = new Schema<UTypes.IBug,Bug,UTypes.IBugMethods>({
+const bugSchema = new Schema<U_Types.IBug,Bug,U_Types.IBugMethods>({
   log:{type:[{type:ObjectId,ref:"upcentric_activity"}],default:() => []},
   project: { type: String,required:true},
   title: { type: String,required:true},
@@ -67,7 +68,7 @@ bugSchema.methods.preview = function () {
   };
 };
 bugSchema.methods.json = function () {
-  const json:Partial<UTypes.IBugOTO> = {};
+  const json:Partial<U_Types.IBugOTO> = {};
   json.id = this._id.toString();
   json.creator = (this.creator as any).preview();
   json.createdOn = this.createdOn;
@@ -95,6 +96,6 @@ bugSchema.methods.json = function () {
   return json as any;
 };
 
-type Bug = Model<UTypes.IBug,{},UTypes.IBugMethods>;
-const Bug:Bug = mongoose.model<UTypes.IBug>('upcentric_bugs',bugSchema);
+type Bug = Model<U_Types.IBug,{},U_Types.IBugMethods>;
+const Bug:Bug = mongoose.model<U_Types.IBug>('upcentric_bugs',bugSchema);
 export default Bug;

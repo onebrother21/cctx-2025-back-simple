@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io";
-import Models from "../models";
-import Utils from "../utils";
+import Models from "@models";
+import Utils from "@utils";
 
 export class WebSocketService {
   private static io: Server;

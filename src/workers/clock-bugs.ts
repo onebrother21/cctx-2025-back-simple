@@ -1,8 +1,8 @@
 import { Job } from 'bullmq';
-import Models from '../apps/upcentric/models';
-import Services from '../services';
-import Types from '../types';
-import Utils from '../utils';
+import Models from '@models';
+import Services from '@services';
+import Types from '@types';
+import Utils from '@utils';
 
 export const clockBugs = async (job:Job) => {
   try {

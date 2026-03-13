@@ -1,4 +1,4 @@
-import Types from "../../../types";
+import Types from "@types";
 
 export enum IUpcentricProfiles {
   ADMIN = "app-admn",

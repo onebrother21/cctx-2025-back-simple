@@ -1,5 +1,5 @@
 import mongoose,{Schema,Model} from 'mongoose';
-import Types from '../types';
+import Types from '@types';
 
 type AuthTokenModel = Model<Types.IAuthToken>;
 

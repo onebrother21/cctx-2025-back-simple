@@ -8,8 +8,7 @@ export * from "./locales";
 export * from "./math";
 
 export * from "./create-bull-queue-ui";
-export * from "./create-queue"
-export * from "./create-worker";
+export * from "./create-bull-queue"
+export * from "./create-bull-worker";
 export * from "./create-redis-conn-opts";
-export * from "./create-redis-cache";
 export * from "./distance-helper";

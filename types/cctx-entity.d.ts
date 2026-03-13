@@ -1,18 +1,17 @@
-type Entity = {
-  id:any;
-  createdOn:Date;
-  updatedOn:Date;
-  status:string;
-  desc?:string;
-  info?:MiscInfo;
-  meta?:any;
+type Entity<Status extends string|number> = 
+{status:Status} &
+Record<"id"|"desc",string> & 
+Record<"info"|"meta",MiscInfo> & 
+Record<"createdOn"|"updatedOn",Date>;
+
+type DocEntity<Status extends string,Creator extends any|never> = Entity<Status> & Document_ & {
+  creator:Creator extends any?Creator:never;
 };
-type DocEntity = Entity & Document_ & {
-  creator:ObjectId_|any;
+
+type CollectionNames = "mine"|"recent"|"search"|"featured"|"trending";
+type Collection<C extends CollectionNames,T> = {
+  items:Record<C,T[]> & {new_:Partial<T>;};
+  selected:{collection:C;i:number;id:string}|null;
 };
-type Collection<T,K extends string = ""> = {
-  new:Partial<T>;
-  items:{[k in K]:T[]};
-  selected:Nullable<{id:string;i:number;item:T}>;
-};
+
 type DeletedEntity = {id:string;ok:AnyBoolean;};

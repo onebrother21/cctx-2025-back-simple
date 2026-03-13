@@ -7,18 +7,18 @@ type sortArg<T> = keyof T | `-${string & keyof T}`;
 const supersecret = process.env.ENCRYPTION_PUBLIC || "";
 const overwriteMerge = (destinationArray:any[], sourceArray:any[], options:any) => sourceArray;
 
-export var pkg = ():string => process.env["npm_package_name"];
-export var app = ():string => /@/.test(pkg())?pkg().split("/")[1]:pkg();
-export var varPrefix = ():string => (app().toLocaleUpperCase()).replace(/-/g,"_");
-export var getvar = (str:string):any => parse(process.env[varPrefix() + str]);
-export var env = ():string => process.env["NODE_ENV"];
-export var mode = ():string => process.env["NODE_MODE"];
-export var version = ():string => process.env["npm_package_version"];
-export var stringify = (o:object) => JSON.stringify(o);
-export var parse = (k:string) => {try {return JSON.parse(k);} catch(e){return k;}};
-export var isProd = (o = false):o is boolean => process.env.NODE_ENV === "production";
-export var is = <T>(o:T):o is T => !(o === undefined || o === null);
-export var isMatch = (test:RegExp|string[],...a:string[]):boolean => {
+export const pkg = ():string => process.env["npm_package_name"];
+export const app = ():string => /@/.test(pkg())?pkg().split("/")[1]:pkg();
+export const constPrefix = ():string => (app().toLocaleUpperCase()).replace(/-/g,"_");
+export const getconst = (str:string):any => parse(process.env[constPrefix() + str]);
+export const env = ():string => process.env["NODE_ENV"];
+export const mode = ():string => process.env["NODE_MODE"];
+export const version = ():string => process.env["npm_package_version"];
+export const stringify = (o:object) => JSON.stringify(o);
+export const parse = (k:string) => {try {return JSON.parse(k);} catch(e){return k;}};
+export const isProd = (o = false):o is boolean => process.env.NODE_ENV === "production";
+export const is = <T>(o:T):o is T => !(o === undefined || o === null);
+export const isMatch = (test:RegExp|string[],...a:string[]):boolean => {
   for(let i = 0;i<a.length;i++){
     switch(true){
       case isArr(test) && test.length && test.indexOf(a[i]) > -1:return true;
@@ -29,16 +29,16 @@ export var isMatch = (test:RegExp|string[],...a:string[]):boolean => {
   }
   return false;
 };
-export var isStr = (o:string|any):o is string => typeof o == "string";
-export var isNum = (o:number|any):o is number => typeof o == "number";
-export var isNumericStr = (s:string) => /^\d+$/.test(s) && typeof Number(s) === "number";
-export var isBool = (o:boolean|any):o is boolean => typeof o == "boolean";
-export var isArr = <T>(o:T[]|any):o is T[] => Array.isArray(<T[]>o);
-export var isObj = (o:{}|any):o is object => !isArr(o) && !isFunc(o) && typeof o === "object";
-export var isFunc = (o:Function|any):o is Function => typeof (<Function>o) == "function";
-export var isErr = (o:Error|any):o is Error => o instanceof Error;
-export var isDate = (o:Date|any):o is Date => o instanceof Date || isISODateStr(o);
-export var isDateString = (s:string) => {
+export const isStr = (o:string|any):o is string => typeof o == "string";
+export const isNum = (o:number|any):o is number => typeof o == "number";
+export const isNumericStr = (s:string) => /^\d+$/.test(s) && typeof Number(s) === "number";
+export const isBool = (o:boolean|any):o is boolean => typeof o == "boolean";
+export const isArr = <T>(o:T[]|any):o is T[] => Array.isArray(<T[]>o);
+export const isObj = (o:{}|any):o is object => !isArr(o) && !isFunc(o) && typeof o === "object";
+export const isFunc = (o:Function|any):o is Function => typeof (<Function>o) == "function";
+export const isErr = (o:Error|any):o is Error => o instanceof Error;
+export const isDate = (o:Date|any):o is Date => o instanceof Date || isISODateStr(o);
+export const isDateString = (s:string) => {
   try{
     return typeof new Date(s).getTime === 'function';
   }
@@ -46,16 +46,16 @@ export var isDateString = (s:string) => {
     return false;
   }
 };
-export var isType = <T extends any,U extends Constructor<T>>(o:any,c:U):o is T => o instanceof c;
-export var isEmpty = (o:any|any[]) => {
+export const isType = <T extends any,U extends Constructor<T>>(o:any,c:U):o is T => o instanceof c;
+export const isEmpty = (o:any|any[]) => {
   if(o === undefined || o === null) return true;
   if(isObj(o)) return !Object.keys(o).length;
   if(isArr(o)) return !o.length;
   else throw(`global "empty" called on non-array or non-object`);
 };
-export var isCtr = <T>(o:any|Constructor<T>):o is Constructor<T> => isFunc((new o));//incorrect implementation
-export var isInstance = <T,U extends Constructor<T> = Constructor<T>>(o:any|T,ctr:U):o is T => o instanceof ctr;
-export var isEnv = (envs:string|string[]) => {
+export const isCtr = <T>(o:any|Constructor<T>):o is Constructor<T> => isFunc((new o));//incorrect implementation
+export const isInstance = <T,U extends Constructor<T> = Constructor<T>>(o:any|T,ctr:U):o is T => o instanceof ctr;
+export const isEnv = (envs:string|string[]) => {
   const env = process.env.NODE_ENV.toLocaleLowerCase();
   if(isArr(envs)){
     for(let i = 0,l = envs.length;i<l;i++){
@@ -66,18 +66,18 @@ export var isEnv = (envs:string|string[]) => {
   }
   else return new RegExp(envs).test(env);
 };
-export var notEmpty = (o:any|any[]) => !isEmpty(o);
-export var randomNumber = (min:number,max:number) => Math.floor(Math.random() * (max - min + 1) + min);
-export var generateSixDigitCode = ():string => {
+export const notEmpty = (o:any|any[]) => !isEmpty(o);
+export const randomNumber = (min:number,max:number) => Math.floor(Math.random() * (max - min + 1) + min);
+export const generateSixDigitCode = ():string => {
   // Generate a random number between 100000 and 999999
   const code = Math.floor(100000 + Math.random() * 900000);
   // Convert the number to a string and pad with leading zeroes if necessary
   return code.toString().padStart(6, '0');
 }
-export var S4 = () => (((1+Math.random())*0x10000)|0).toString(16).substring(1);
-export var longId = () => S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4();
-export var shortId = () => S4()+S4();
-export var hexId = (length:number) => {
+export const S4 = () => (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+export const longId = () => S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4();
+export const shortId = () => S4()+S4();
+export const hexId = (length:number) => {
   const hexChars = '0123456789abcdef';
   let hexString = '';
 
@@ -88,7 +88,7 @@ export var hexId = (length:number) => {
 
   return hexString;
 }
-export var slugify = (str:string,separator:string = "-") => {
+export const slugify = (str:string,separator:string = "-") => {
   str = str.toLowerCase().trim().slice(0,19);
   // remove accents, swap ñ for n, etc
   const from = "åàáãäâèéëêìíïîòóöôùúüûñç·/_,:;";
@@ -104,39 +104,39 @@ export var slugify = (str:string,separator:string = "-") => {
   .replace(/-+$/,"") // trim - from end of text
   .replace(/-/g,separator);
 };
-export var slugId = (s:string) => slugify(s) + "-" + S4() + S4();
-export var cap = (s:string,all?:boolean) => all?s.toUpperCase():(s[0].toUpperCase()+s.slice(1));
-export var low = (s:string,all?:boolean) => all?s.toLowerCase():(s[0].toLowerCase()+s.slice(1));
-export var snake = (s:string) => {
+export const slugId = (s:string) => slugify(s) + "-" + S4() + S4();
+export const cap = (s:string,all?:boolean) => all?s.toUpperCase():(s[0].toUpperCase()+s.slice(1));
+export const low = (s:string,all?:boolean) => all?s.toLowerCase():(s[0].toLowerCase()+s.slice(1));
+export const snake = (s:string) => {
   let newStr = "";
   for(let i =0;i<s.length;i++){
     newStr += !i?s[i].toLowerCase():
     /[A-Z]/.test(s[i])?("-"+s[i].toLowerCase()):s[i];}
   return newStr;
 };
-export var capWSpaces = (s:string) => {
+export const capWSpaces = (s:string) => {
   let parts = s.split(" ");
   parts = parts.map(p => p[0].toLocaleUpperCase() + p.slice(1))
  return parts.join(" ");
 };
-export var replaceData = (str:string,data:any = {}) => {
+export const replaceData = (str:string,data:any = {}) => {
   const dataReplacer = (withDelimiters:string,withoutDelimiters:string):string =>
   data.hasOwnProperty(withoutDelimiters)?
   data[withoutDelimiters]:
   withDelimiters;
   return str.replace(/{(\w+)}/g,dataReplacer);
 };
-export var oProps = (o:{}|any) => {
+export const oProps = (o:{}|any) => {
   if(isObj(o)) return Object.keys(o);
   else throw `global "props" called on non-object`;
 };
-export var oHas = (o:any[]|{}|any,k:string) => {
+export const oHas = (o:any[]|{}|any,k:string) => {
   if(isArr(o)) return o.indexOf(k) > -1;
   if(isObj(o)) return oProps(o).indexOf(k) > -1;
   else throw `global "has" called on non-array or non-object`;
 };
-export var merge = <T>(x:Partial<T>,y:Partial<T>) => deepmerge(x,y,{arrayMerge:overwriteMerge}) as T;
-export var dateParserX = (str:string|Date):Date => {
+export const merge = <T>(x:Partial<T>,y:Partial<T>) => deepmerge(x,y,{arrayMerge:overwriteMerge}) as T;
+export const dateParserX = (str:string|Date):Date => {
   if(str instanceof Date) return str;
   else if(new Date(str) instanceof Date) return new Date(str);
   else{
@@ -148,9 +148,9 @@ export var dateParserX = (str:string|Date):Date => {
     return date;
   }
 };
-export var splitCamelCase = (s:string) => s.replace(/([a-z](?=[A-Z]))/g,'$1 ');
-export var sleep = (t:number) => new Promise((resolve) => setTimeout(resolve, t * 1000));
-export var byPropertiesOf = <T extends object> (sortBy: Array<sortArg<T>>) => {
+export const splitCamelCase = (s:string) => s.replace(/([a-z](?=[A-Z]))/g,'$1 ');
+export const sleep = (t:number) => new Promise((resolve) => setTimeout(resolve, t * 1000));
+export const byPropertiesOf = <T extends object> (sortBy: Array<sortArg<T>>) => {
   function compareByProperty (arg: sortArg<T>) {
     let key: keyof T
     let sortOrder = 1
@@ -178,10 +178,10 @@ export var byPropertiesOf = <T extends object> (sortBy: Array<sortArg<T>>) => {
     return result
   }
 };
-export var sort = <T extends object> (arr: T[], ...sortBy: Array<sortArg<T>>) => {
+export const sort = <T extends object> (arr: T[], ...sortBy: Array<sortArg<T>>) => {
   arr.sort(byPropertiesOf<T>(sortBy));
 };
-export var sortBy = (key:string, reverse?:true|false|1|0|null) => {
+export const sortBy = (key:string, reverse?:true|false|1|0|null) => {
   const moveSmaller = reverse ? 1 : -1;
   const moveLarger = reverse ? -1 : 1;
   return (a:any, b:any) => {
@@ -195,7 +195,7 @@ export var sortBy = (key:string, reverse?:true|false|1|0|null) => {
     return 0;
   };
 };
-export var getFileInfoFromException = (e:Error):any => {
+export const getFileInfoFromException = (e:Error):any => {
   const {stack} = e;
   if (!stack) return {};
   const match = /.*\n\s*at\s.*\s\((.*\/)*(.*):([\d]*):([\d]*)/.exec(stack);
@@ -208,31 +208,31 @@ export var getFileInfoFromException = (e:Error):any => {
   o.str = `${o.file}, Line ${o.line}:${o.column}`;
   return o;
 };
-export var padDigits = (number:number, digits:number) => {
+export const padDigits = (number:number, digits:number) => {
   return Array(Math.max(digits - String(number).length + 1,0)).join("") + number;
 };
-export var getRandomIntInclusive = (min:number, max:number) => {
+export const getRandomIntInclusive = (min:number, max:number) => {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
-export var padNumber = (num:number, size:number) => {return String(num).padStart(size, '0');};
+export const padNumber = (num:number, size:number) => {return String(num).padStart(size, '0');};
 /*
-export var areDateRangesEqual (range1:DateRange, range2:DateRange): boolean => {
+export const areDateRangesEqual (range1:DateRange, range2:DateRange): boolean => {
   return (
     areDatesEqual(new Date(range1.from),new Date(range2.from)) &&
     areDatesEqual(new Date(range1.to),new Date(range2.to))
   );
 };
 */
-export var areDatesEqual = (date1: Date,date2: Date): boolean => {
+export const areDatesEqual = (date1: Date,date2: Date): boolean => {
   return (
     date1.getDate() === date2.getDate() &&
     date1.getMonth() === date2.getMonth() &&
     date1.getFullYear() === date2.getFullYear()
   );
 };
-export var isDateWithinInterval = (interval:string,targetDate:Date): boolean => {
+export const isDateWithinInterval = (interval:string,targetDate:Date): boolean => {
   const now = new Date();
   const futureDate = new Date(now);
 
@@ -261,7 +261,7 @@ export var isDateWithinInterval = (interval:string,targetDate:Date): boolean => 
   // Check if targetDate falls between now and the futureDate
   return targetDate >= now && targetDate <= futureDate;
 }
-export var coerceToMidnight = (o?:Date): Date => {
+export const coerceToMidnight = (o?:Date): Date => {
   if(o){
     const date = new Date(o);
     return new Date(date.getFullYear(), date.getMonth(), date.getDate());
@@ -271,8 +271,8 @@ export var coerceToMidnight = (o?:Date): Date => {
     return new Date(date.getFullYear(), date.getMonth(), date.getDate());
   }
 };
-export var dateAM = coerceToMidnight;
-export var isEighteenOrOlder = (dob:Date) => {
+export const dateAM = coerceToMidnight;
+export const isEighteenOrOlder = (dob:Date) => {
   const birthDate = new Date(dob);
   const today = new Date();
   let age = today.getFullYear() - birthDate.getFullYear();
@@ -282,7 +282,7 @@ export var isEighteenOrOlder = (dob:Date) => {
   if (!isOldEnough) throw new Error('Users must be 18 or older');
   return true;
 };
-export var getHtmlTableType = (k:string,p:any) => {
+export const getHtmlTableType = (k:string,p:any) => {
   switch(true){
     case p === undefined:
     case p === null:
@@ -298,7 +298,7 @@ export var getHtmlTableType = (k:string,p:any) => {
     default:return "object";
   }
 }
-export var isISODateStr = (s:string) => {
+export const isISODateStr = (s:string) => {
   /* eslint-disable max-len */
   // from https://www.myintervals.com/blog/2009/05/20/iso-8601-date-validation-that-doesnt-suck/
   const iso8601 = /^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-3])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$/;
@@ -344,20 +344,54 @@ export var isISODateStr = (s:string) => {
   }
   return isISO8601(s);
 }
-export var flattenObject = (obj:any, parentKey:string = '', result:any = {}) => {
+export const flattenObject = (obj:any, parentKey:string|number = '', result:any = {}) => {
   for (const key in obj) {
     if (obj.hasOwnProperty(key)) {
       const newKey = parentKey ? `${parentKey}.${key}` : key;
       if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
         flattenObject(obj[key], newKey, result);
-      } else {
+      }
+      if (typeof obj[key] === 'object' && obj[key] !== null) {
+        for (let i = 0,l = obj[key].length;i<l;i++){
+          flattenObject(obj[key][i],i,result);
+        }
+      }
+      else {
         result[newKey] = obj[key];
       }
     }
   }
   return result;
 }
-export var jsonFormatter = {
+export const unflattenObject = (obj: any): any => {
+  const result: any = {};
+
+  for (const key in obj) {
+    if (!obj.hasOwnProperty(key)) continue;
+
+    const keys = key.split('.');
+    let current = result;
+
+    for (let i = 0; i < keys.length - 1; i++) {
+      const k = keys[i];
+      const nextKey = keys[i + 1];
+      const nextIsIndex = /^\d+$/.test(nextKey);
+
+      if (current[k] === undefined) {
+        current[k] = nextIsIndex ? [] : {};
+      }
+
+      current = current[k];
+    }
+
+    const lastKey = keys[keys.length - 1];
+    current[lastKey] = obj[key];
+  }
+
+  return result;
+};
+// { a: { b: [ { name: "Alice" }, { name: "Bob" } ], c: 42 } }
+export const jsonFormatter = {
   stringify: function(cipherParams:any){
     let ct = "",iv = "",s = "";
     ct = cipherParams.ciphertext.toString(CryptoJS.enc.Base64);
@@ -373,20 +407,20 @@ export var jsonFormatter = {
     return cipherParams;
   }
 };
-export var encrypt_ = (value:any) => {
+export const encrypt_ = (value:any) => {
   const options = {format:jsonFormatter,mode:CryptoJS.mode.CBC};
   const encrypted = CryptoJS.AES.encrypt(value,supersecret,options).toString();
   return encrypted;
 };
-export var decrypt_ = (value:any) => {
+export const decrypt_ = (value:any) => {
   const options = {format:jsonFormatter};
   const decrypted = CryptoJS.AES.decrypt(value,supersecret,options).toString(CryptoJS.enc.Utf8);
   return decrypted;
 }
-export var encrypt = (o:any) => encrypt_(JSON.stringify(o));
-export var decrypt = (o:any) => JSON.parse(decrypt_(o));
+export const encrypt = (o:any) => encrypt_(JSON.stringify(o));
+export const decrypt = (o:any) => JSON.parse(decrypt_(o));
 
-export var listRoutes = (app:Express.Application) => {
+export const listRoutes = (app:Express.Application) => {
   const routes = expressListRoutes(app,{
     prefix: '', // A prefix for router Path
     spacer: 7,   // Spacer between router Method and Path
@@ -395,7 +429,17 @@ export var listRoutes = (app:Express.Application) => {
   });
   logger.info("App Routes: ",routes);
 };
-export var findReverseIndex = (arr:any[],pred:(o:any) => boolean) => {
+export const findReverseIndex = (arr:any[],pred:(o:any) => boolean) => {
   for (let i = arr.length - 1; i >= 0; i--) if(pred(arr[i])) return i;
   return -1;
+};
+export const selectGrouping = (fields:string[]) => {
+  const o:any = {_id: "$_id"};
+  fields.forEach(k => k !== "id"?o[k] = { $first: "$"+k }:null);
+  return o;
+};
+export const selectProjections = (fields:string[],projections:any) => {
+  const o:any = {_id:0};
+  fields.forEach(k => o[k] = k == "id"?"$_id":projections[k] || 1);
+  return o;
 };

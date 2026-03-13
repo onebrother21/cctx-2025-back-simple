@@ -1,6 +1,8 @@
 import { Schema } from 'mongoose';
-import { stateAbbreviations } from './constants';
-import Types from "../types";
+import { stateAbbreviations, streetAddrRegex } from './constants';
+import Types from "@types";
+
+const ObjectId = Schema.Types.ObjectId;
 
 const attachmentSchema = new Schema<Attachment>({
   originDate:{type:Date},
@@ -26,7 +28,7 @@ const uploadSchema = new Schema<UploadResponse>({
   created_at: Date
 },{_id:false,timestamps:false});
 
-const streetAddrRegex = /^[\d\w]+\s[\w\s\d,\.]+$/;
+const locCoordsSchema = new Schema({type:String,coordinates:[Number]},{timestamps:false,_id:false});
 const addressSchema = new Schema<AddressObj>({
   streetAddr: { type: String,required:true,validate:streetAddrRegex},
   city: { type: String,required:true},
@@ -34,15 +36,27 @@ const addressSchema = new Schema<AddressObj>({
   postal: { type: String},
   country: { type: String,required:true},
   info:{type:String},
-  loc:{type:{type:String,default:"Point"},coordinates:[Number]},
+  loc:locCoordsSchema,//{type:locCoordsSchema,validate:(loc:number[]) => ({type:"Point",coordinates:loc})}
 },{_id:false,timestamps:false});
 addressSchema.index({"loc":"2dsphere"});
-
-
+const addrSchema = new Schema<AddressObj>({
+  info:{type:String},
+  loc:locCoordsSchema,//{type:locCoordsSchema,validate:(loc:number[]) => ({type:"Point",coordinates:loc})}
+},{_id:false,timestamps:false});
+addrSchema.index({"loc":"2dsphere"});
+const noteSchema = new Schema<Types.INote>({
+  type:{type:String,default:"note"},
+  time:Date,
+  body:String,
+  author:{type:ObjectId,ref:"cctx_profiles",required:true},
+},{_id:false,timestamps:false});
 
 export {
+  locCoordsSchema,
+  addrSchema,
   addressSchema,
   attachmentSchema,
   uploadSchema,
+  noteSchema,
 };
 

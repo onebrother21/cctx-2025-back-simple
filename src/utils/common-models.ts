@@ -8,7 +8,7 @@ export class AppError extends Error {
   constructor(o: string,p: Partial<AppError>);
   constructor(o: number,p: Partial<AppError>);
   constructor(o?:string|number|Partial<AppError>,p?:string|Partial<AppError>){
-    let err;
+    let err:Partial<AppError> = {};
     switch(true){
       case typeof o === "undefined":err = {status:500,message:"Oops, something went wrong!"};break;
       case typeof o === "object" && !!o.status && !!o.message:err = {...o};break;
