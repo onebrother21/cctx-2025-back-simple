@@ -4,7 +4,7 @@ import Types from "@types";
 import Utils from '@utils';
 
 import bcrypt from "bcryptjs";
-import AuthUtils from '../../../cctx_auth/apis/user/auth.utils';
+import AuthUtils from '../../../cctx_auth/auth.utils';
 import AdminUIService from './admin-bull-ui.service';
 
 const {EMAIL,SMS} = Types.IContactMethods;

@@ -1,0 +1,296 @@
+import Models from "@models";
+import Types from "@types";
+import Utils from '@utils';
+import Services from '@services';
+
+import PingModels from "../../models";
+import PingTypes from "../../types";
+
+const {MongooseAggHelpers} = Utils;
+
+export class PingQueriesService {
+  static queryExtChains = async (q:PingTypes.IPingExtChainQuery,s:string[],o?:any,t?:number) => {
+    const {results} = await new MongooseAggHelpers<PingTypes.IPingExtChainQuery>({
+      model:PingModels.PingExtChain,
+      query:q,
+      select:s,
+      opts:o,
+      timestamp:t,
+      geoNearFields:[
+        "subject.contact.addrs.loc",
+        "client.contact.addrs.loc",
+        "vendor.contact.addrs.loc",
+        "admin.contact.addrs.loc"
+      ],
+      prePipeline:[
+        { $lookup: {from: "cctx_profiles",localField: "creator",foreignField: "_id",as: "creator"}},
+        { $unwind: "$creator"},
+        { $lookup: {from: "cctx_profiles",localField: "client",foreignField: "_id",as: "client"}},
+        { $unwind: "$client"},
+        { $lookup: {from: "cctx_profiles",localField: "vendor",foreignField: "_id",as: "vendor"}},
+        { $unwind: {path:"$vendor",preserveNullAndEmptyArrays: true}},
+        { $lookup: {from: "cctx_profiles",localField: "admin",foreignField: "_id",as: "admin"}},
+        { $unwind: {path:"$admin",preserveNullAndEmptyArrays: true}},
+        { $lookup: {from: "cctx_profiles",localField: "subjects",foreignField: "_id",as: "subjects"}},
+        { $unwind: "$subjects"},
+        { $unwind: "$subjects.emails"},
+        { $unwind: "$subjects.phns"},
+        { $unwind:{path:"$subjects.addrs",preserveNullAndEmptyArrays: true}},
+        { $addFields: {
+          subject:"$subjects",
+          created_on: { "$toDouble": "$createdOn" },
+          assigned_on: { "$toDouble": "$assignedOn" },
+          start_on: { "$toDouble": "$startOn" },
+          due_on: { "$toDouble": "$dueOn" },
+          creatorId:{$toString:"$creator._id"},
+          clientId:{$toString:"$client._id"},
+          vendorId:{$toString:"$vendor._id"},
+          adminId:{$toString:"$admin._id"},
+          subjectId:{$toString:"$subjects._id"},
+        }},
+      ],
+      projections:INVOICE_PROJECTIONS,
+    }).runQuery();
+    return {results};
+  };
+  static queryExtWallets = async (q:PingTypes.IPingExtWalletQuery,s:string[],o?:any,t?:number) => {
+    const {results} = await new MongooseAggHelpers<PingTypes.IPingExtWalletQuery>({
+      model:PingModels.PingExtWallet,
+      query:q,
+      select:s,
+      opts:o,
+      timestamp:t,
+      geoNearFields:[
+        "subject.contact.addrs.loc",
+        "client.contact.addrs.loc",
+        "vendor.contact.addrs.loc",
+        "admin.contact.addrs.loc"
+      ],
+      prePipeline:[
+        { $lookup: {from: "cctx_profiles",localField: "creator",foreignField: "_id",as: "creator"}},
+        { $unwind: "$creator"},
+        { $lookup: {from: "cctx_profiles",localField: "client",foreignField: "_id",as: "client"}},
+        { $unwind: "$client"},
+        { $lookup: {from: "cctx_profiles",localField: "vendor",foreignField: "_id",as: "vendor"}},
+        { $unwind: {path:"$vendor",preserveNullAndEmptyArrays: true}},
+        { $lookup: {from: "cctx_profiles",localField: "admin",foreignField: "_id",as: "admin"}},
+        { $unwind: {path:"$admin",preserveNullAndEmptyArrays: true}},
+        { $lookup: {from: "cctx_profiles",localField: "subjects",foreignField: "_id",as: "subjects"}},
+        { $unwind: "$subjects"},
+        { $unwind: "$subjects.emails"},
+        { $unwind: "$subjects.phns"},
+        { $unwind:{path:"$subjects.addrs",preserveNullAndEmptyArrays: true}},
+        { $addFields: {
+          subject:"$subjects",
+          created_on: { "$toDouble": "$createdOn" },
+          assigned_on: { "$toDouble": "$assignedOn" },
+          start_on: { "$toDouble": "$startOn" },
+          due_on: { "$toDouble": "$dueOn" },
+          creatorId:{$toString:"$creator._id"},
+          clientId:{$toString:"$client._id"},
+          vendorId:{$toString:"$vendor._id"},
+          adminId:{$toString:"$admin._id"},
+          subjectId:{$toString:"$subjects._id"},
+        }},
+      ],
+      projections:INVOICE_PROJECTIONS,
+    }).runQuery();
+    return {results};
+  };
+  static queryCards = async (q:PingTypes.IPingCardQuery,s:string[],o?:any,t?:number) => {
+    const {results} = await new MongooseAggHelpers<PingTypes.IPingCardQuery>({
+      model:PingModels.PingCard,
+      query:q,
+      select:s,
+      opts:o,
+      timestamp:t,
+      geoNearFields:[
+        "subject.contact.addrs.loc",
+        "client.contact.addrs.loc",
+        "vendor.contact.addrs.loc",
+        "admin.contact.addrs.loc"
+      ],
+      prePipeline:[
+        { $lookup: {from: "cctx_profiles",localField: "creator",foreignField: "_id",as: "creator"}},
+        { $unwind: "$creator"},
+        { $lookup: {from: "cctx_profiles",localField: "client",foreignField: "_id",as: "client"}},
+        { $unwind: "$client"},
+        { $lookup: {from: "cctx_profiles",localField: "vendor",foreignField: "_id",as: "vendor"}},
+        { $unwind: {path:"$vendor",preserveNullAndEmptyArrays: true}},
+        { $lookup: {from: "cctx_profiles",localField: "admin",foreignField: "_id",as: "admin"}},
+        { $unwind: {path:"$admin",preserveNullAndEmptyArrays: true}},
+        { $lookup: {from: "cctx_profiles",localField: "subjects",foreignField: "_id",as: "subjects"}},
+        { $unwind: "$subjects"},
+        { $unwind: "$subjects.emails"},
+        { $unwind: "$subjects.phns"},
+        { $unwind:{path:"$subjects.addrs",preserveNullAndEmptyArrays: true}},
+        { $addFields: {
+          subject:"$subjects",
+          created_on: { "$toDouble": "$createdOn" },
+          assigned_on: { "$toDouble": "$assignedOn" },
+          start_on: { "$toDouble": "$startOn" },
+          due_on: { "$toDouble": "$dueOn" },
+          creatorId:{$toString:"$creator._id"},
+          clientId:{$toString:"$client._id"},
+          vendorId:{$toString:"$vendor._id"},
+          adminId:{$toString:"$admin._id"},
+          subjectId:{$toString:"$subjects._id"},
+        }},
+      ],
+      projections:INVOICE_PROJECTIONS,
+    }).runQuery();
+    return {results};
+  };
+  static queryPos = async (q:PingTypes.IPingPosQuery,s:string[],o?:any,t?:number) => {
+    const {results} = await new MongooseAggHelpers<PingTypes.IPingPosQuery>({
+      model:PingModels.PingPos,
+      query:q,
+      select:s,
+      opts:o,
+      timestamp:t,
+      geoNearFields:[
+        "subject.contact.addrs.loc",
+        "client.contact.addrs.loc",
+        "vendor.contact.addrs.loc",
+        "admin.contact.addrs.loc"
+      ],
+      prePipeline:[
+        { $lookup: {from: "cctx_profiles",localField: "creator",foreignField: "_id",as: "creator"}},
+        { $unwind: "$creator"},
+        { $lookup: {from: "cctx_profiles",localField: "client",foreignField: "_id",as: "client"}},
+        { $unwind: "$client"},
+        { $lookup: {from: "cctx_profiles",localField: "vendor",foreignField: "_id",as: "vendor"}},
+        { $unwind: {path:"$vendor",preserveNullAndEmptyArrays: true}},
+        { $lookup: {from: "cctx_profiles",localField: "admin",foreignField: "_id",as: "admin"}},
+        { $unwind: {path:"$admin",preserveNullAndEmptyArrays: true}},
+        { $lookup: {from: "cctx_profiles",localField: "subjects",foreignField: "_id",as: "subjects"}},
+        { $unwind: "$subjects"},
+        { $unwind: "$subjects.emails"},
+        { $unwind: "$subjects.phns"},
+        { $unwind:{path:"$subjects.addrs",preserveNullAndEmptyArrays: true}},
+        { $addFields: {
+          subject:"$subjects",
+          created_on: { "$toDouble": "$createdOn" },
+          assigned_on: { "$toDouble": "$assignedOn" },
+          start_on: { "$toDouble": "$startOn" },
+          due_on: { "$toDouble": "$dueOn" },
+          creatorId:{$toString:"$creator._id"},
+          clientId:{$toString:"$client._id"},
+          vendorId:{$toString:"$vendor._id"},
+          adminId:{$toString:"$admin._id"},
+          subjectId:{$toString:"$subjects._id"},
+        }},
+      ],
+      projections:INVOICE_PROJECTIONS,
+    }).runQuery();
+    return {results};
+  };
+  static queryTransactions = async (q:PingTypes.IPingTransactionQuery,s:string[],o?:any,t?:number) => {
+    const {results} = await new MongooseAggHelpers<PingTypes.IPingTransactionQuery>({
+      model:PingModels.PingTransaction,
+      query:q,
+      select:s,
+      opts:o,
+      timestamp:t,
+      geoNearFields:[
+        "subject.contact.addrs.loc",
+        "client.contact.addrs.loc",
+        "vendor.contact.addrs.loc",
+        "admin.contact.addrs.loc"
+      ],
+      prePipeline:[
+        { $lookup: {from: "cctx_profiles",localField: "creator",foreignField: "_id",as: "creator"}},
+        { $unwind: "$creator"},
+        { $lookup: {from: "cctx_profiles",localField: "client",foreignField: "_id",as: "client"}},
+        { $unwind: "$client"},
+        { $lookup: {from: "cctx_profiles",localField: "vendor",foreignField: "_id",as: "vendor"}},
+        { $unwind: {path:"$vendor",preserveNullAndEmptyArrays: true}},
+        { $lookup: {from: "cctx_profiles",localField: "admin",foreignField: "_id",as: "admin"}},
+        { $unwind: {path:"$admin",preserveNullAndEmptyArrays: true}},
+        { $lookup: {from: "cctx_profiles",localField: "subjects",foreignField: "_id",as: "subjects"}},
+        { $unwind: "$subjects"},
+        { $unwind: "$subjects.emails"},
+        { $unwind: "$subjects.phns"},
+        { $unwind:{path:"$subjects.addrs",preserveNullAndEmptyArrays: true}},
+        { $addFields: {
+          subject:"$subjects",
+          created_on: { "$toDouble": "$createdOn" },
+          assigned_on: { "$toDouble": "$assignedOn" },
+          start_on: { "$toDouble": "$startOn" },
+          due_on: { "$toDouble": "$dueOn" },
+          creatorId:{$toString:"$creator._id"},
+          clientId:{$toString:"$client._id"},
+          vendorId:{$toString:"$vendor._id"},
+          adminId:{$toString:"$admin._id"},
+          subjectId:{$toString:"$subjects._id"},
+        }},
+      ],
+      projections:INVOICE_PROJECTIONS,
+    }).runQuery();
+    return {results};
+  };
+}
+export default PingQueriesService;
+
+const INVOICE_PROJECTIONS = {
+  creator:{
+    id:"$creator._id",
+    name:"$creator.name",
+    displayName:"$creator.displayName",
+    app:"$creator.app",
+    type:"$creator.type",
+    img:"$creator.img.url",
+  },
+  client:{
+    id:"$creator._id",
+    name:"$creator.name",
+    displayName:"$creator.displayName",
+    app:"$creator.app",
+    type:"$creator.type",
+    img:"$creator.img.url",
+  },
+  vendor:{
+    id:"$vendor._id",
+    name:"$vendor.name",
+    displayName:"$vendor.displayName",
+    app:"$vendor.app",
+    type:"$vendor.type",
+    img:"$vendor.img.url",
+  },
+  admin:{
+    id:"$admin._id",
+    name:"$admin.name",
+    displayName:"$admin.displayName",
+    app:"$admin.app",
+    type:"$admin.type",
+    img:"$admin.img.url",
+  },
+  subjects:{
+    id:"$subjects._id",
+    name:"$subjects.name",
+    displayName:"$subjects.displayName",
+    app:"$subjects.app",
+    type:"$subjects.type",
+    img:"$subjects.img.url",
+  },
+  addr:{
+    info:"$addr.info",
+    loc:"$addr.loc.coordinates",
+  },
+  /*
+  admin:{
+    id:"$admin._id",
+    name:"$admin.name",
+    displayName:"$admin.displayName",
+    org:"$admin.org",
+    img:"$admin.img.url",
+  },
+  pets: { 
+    $filter:{ 
+      input: "$log",
+      as: "log",
+      cond: { $not: { $in: ["$$log.status", [null, "",undefined]] } }
+    }
+  }
+  */
+};

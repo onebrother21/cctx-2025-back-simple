@@ -433,13 +433,3 @@ export const findReverseIndex = (arr:any[],pred:(o:any) => boolean) => {
   for (let i = arr.length - 1; i >= 0; i--) if(pred(arr[i])) return i;
   return -1;
 };
-export const selectGrouping = (fields:string[]) => {
-  const o:any = {_id: "$_id"};
-  fields.forEach(k => k !== "id"?o[k] = { $first: "$"+k }:null);
-  return o;
-};
-export const selectProjections = (fields:string[],projections:any) => {
-  const o:any = {_id:0};
-  fields.forEach(k => o[k] = k == "id"?"$_id":projections[k] || 1);
-  return o;
-};

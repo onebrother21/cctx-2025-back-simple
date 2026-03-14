@@ -5,10 +5,12 @@ import { AuthJWT,PostMiddleware,upload } from '@middleware';
 
 const UserOpsRouter = () => {
   const router = Router();
-  router.post("/profile",[ctrl.queryAppUsage,...PostMiddleware]);
-  router.put("/profile/:profileId",[ctrl.queryAppUsage,...PostMiddleware]);
-  router.delete("/profile/:profileId",[ctrl.queryAppUsage,...PostMiddleware]);
-  router.post("/profile/:profileId/status",[ctrl.queryAppUsage,...PostMiddleware]);
+    router.post("/users",[...validators.registerUser,ctrl.registerUser,...PostMiddleware]);
+    router.get("/users/:profileId",[ctrl.getUserById,...PostMiddleware]);
+    router.put("/users/:profileId",[...validators.updateUser, ctrl.updateUser,...PostMiddleware]);
+    router.delete("/users/:profileId",[ctrl.deleteUser,...PostMiddleware]);
+    router.put("/users/:profileId/status",[...validators.updateUserStatus,ctrl.updateUserStatus,...PostMiddleware]);
+    
   return router;
 };
 export { UserOpsRouter };

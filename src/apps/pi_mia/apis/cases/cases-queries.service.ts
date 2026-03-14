@@ -6,66 +6,52 @@ import Services from '@services';
 import PiMiaModels from "../../models";
 import PiMiaTypes from "../../types";
 
-const {LocationHelpers} = Services;
+const {MongooseAggHelpers} = Utils;
 
 export class CasesQueriesService {
-  static queryCases = async (
-    {locQuery,...query}:PiMiaTypes.ICaseQuery,
-    select:string[],
-    opts?:any,
-    timestamp?:number
-  ) => {
-    const page = opts?.currentPage || 1; // Default to page 1
-    const limit = opts?.limit || 10; // Default to 10 results per page
-    const skip = (page - 1) * limit; // Calculate how many records to skip
-    const sortField = opts?.sort || 'createdOn';
-    const sortOrder = opts?.order || -1;
-    if(locQuery){
-      const {pts,radius = 5,unit = "mi"} = locQuery || {};
-      const searchRadius = radius/(unit == "mi"?3963.2:6371);
-      query["subject.contact.addrs.loc"] = {$geoWithin:{$centerSphere:[pts,searchRadius]}};
-      query["client.contact.addrs.loc"] = {$geoWithin:{$centerSphere:[pts,searchRadius]}};
-      query["vendor.contact.addrs.loc"] = {$geoWithin:{$centerSphere:[pts,searchRadius]}};
-      query["admin.contact.addrs.loc"] = {$geoWithin:{$centerSphere:[pts,searchRadius]}};
-    }
-    const pipeline:any[] = [
-      { $lookup: {from: "cctx_profiles",localField: "creator",foreignField: "_id",as: "creator"}},
-      { $unwind: "$creator"},
-      { $lookup: {from: "cctx_profiles",localField: "client",foreignField: "_id",as: "client"}},
-      { $unwind: "$client"},
-      { $lookup: {from: "cctx_profiles",localField: "vendor",foreignField: "_id",as: "vendor"}},
-      { $unwind: {path:"$vendor",preserveNullAndEmptyArrays: true}},
-      { $lookup: {from: "cctx_profiles",localField: "admin",foreignField: "_id",as: "admin"}},
-      { $unwind: {path:"$admin",preserveNullAndEmptyArrays: true}},
-      { $lookup: {from: "cctx_profiles",localField: "subjects",foreignField: "_id",as: "subjects"}},
-      { $unwind: "$subjects"},
-      { $unwind: "$subjects.emails"},
-      { $unwind: "$subjects.phns"},
-      { $unwind:{path:"$subjects.addrs",preserveNullAndEmptyArrays: true}},
-      { $addFields: {
-        subject:"$subjects",
-        created_on: { "$toDouble": "$createdOn" },
-        assigned_on: { "$toDouble": "$assignedOn" },
-        start_on: { "$toDouble": "$startOn" },
-        due_on: { "$toDouble": "$dueOn" },
-        creatorId:{$toString:"$creator._id"},
-        clientId:{$toString:"$client._id"},
-        vendorId:{$toString:"$vendor._id"},
-        adminId:{$toString:"$admin._id"},
-        subjectId:{$toString:"$subjects._id"},
-      }},
-      { $match: query },
-      { $group: Utils.selectGrouping(select)},
-      { $skip: skip },
-      { $limit: limit },
-      { $sort: { [sortField]: sortOrder } },
-      { $project:  Utils.selectProjections(select,CASE_PROJECTIONS)},
-    ];
-    const results_ = await PiMiaModels.Case.aggregate(pipeline);
-    const results = locQuery?
-    LocationHelpers.formatQueryResultsWithDistCalc(results_,select,locQuery):
-    results_;
-    return { results };
+  static queryCases = async (q:PiMiaTypes.ICaseQuery,s:string[],o?:any,t?:number) => {
+    const {results} = await new MongooseAggHelpers<PiMiaTypes.ICaseQuery>({
+      model:PiMiaModels.Case,
+      query:q,
+      select:s,
+      opts:o,
+      timestamp:t,
+      geoNearFields:[
+        "subject.contact.addrs.loc",
+        "client.contact.addrs.loc",
+        "vendor.contact.addrs.loc",
+        "admin.contact.addrs.loc"
+      ],
+      prePipeline:[
+        { $lookup: {from: "cctx_profiles",localField: "creator",foreignField: "_id",as: "creator"}},
+        { $unwind: "$creator"},
+        { $lookup: {from: "cctx_profiles",localField: "client",foreignField: "_id",as: "client"}},
+        { $unwind: "$client"},
+        { $lookup: {from: "cctx_profiles",localField: "vendor",foreignField: "_id",as: "vendor"}},
+        { $unwind: {path:"$vendor",preserveNullAndEmptyArrays: true}},
+        { $lookup: {from: "cctx_profiles",localField: "admin",foreignField: "_id",as: "admin"}},
+        { $unwind: {path:"$admin",preserveNullAndEmptyArrays: true}},
+        { $lookup: {from: "cctx_profiles",localField: "subjects",foreignField: "_id",as: "subjects"}},
+        { $unwind: "$subjects"},
+        { $unwind: "$subjects.emails"},
+        { $unwind: "$subjects.phns"},
+        { $unwind:{path:"$subjects.addrs",preserveNullAndEmptyArrays: true}},
+        { $addFields: {
+          subject:"$subjects",
+          created_on: { "$toDouble": "$createdOn" },
+          assigned_on: { "$toDouble": "$assignedOn" },
+          start_on: { "$toDouble": "$startOn" },
+          due_on: { "$toDouble": "$dueOn" },
+          creatorId:{$toString:"$creator._id"},
+          clientId:{$toString:"$client._id"},
+          vendorId:{$toString:"$vendor._id"},
+          adminId:{$toString:"$admin._id"},
+          subjectId:{$toString:"$subjects._id"},
+        }},
+      ],
+      projections:CASE_PROJECTIONS,
+    }).runQuery();
+    return {results};
   };
 }
 export default CasesQueriesService;

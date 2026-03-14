@@ -22,7 +22,7 @@ const {AppError} = Utils;
 
 export class DegenSessionsService {
   // 📌 DegenSession CRUD Ops
-  static createDegenSessions = async (creator:string,newDegenSessions:Partial<DegenTypes.IDegenSession>[]) => {
+  static createSessions = async (creator:string,newDegenSessions:Partial<DegenTypes.IDegenSession>[]) => {
     const sessions:DegenTypes.IDegenSession[] = [];
     for(let i = 0,l = newDegenSessions.length;i<l;i++){
       const nt = {creator,...newDegenSessions[i]};
@@ -33,7 +33,7 @@ export class DegenSessionsService {
     await AppUsage.make(`prf/${creator}`,"createdSessions");
     return {sessions};
   };
-  static createDegenSession = async (creator:string,newDegenSession:DegenTypes.IDegenSessionITO) => {
+  static createSession = async (creator:string,newDegenSession:DegenTypes.IDegenSessionITO) => {
     const session = new DegenSession({
       creator,
       meta:{},
@@ -46,14 +46,14 @@ export class DegenSessionsService {
     await AppUsage.make(`prf/${creator}`,"createdSession",{which:`ssn/${session.id}`});
     return {session};
   };
-  static getDegenSessionById = async (creator:string,sessionId:string) => {
+  static getSessionById = async (creator:string,sessionId:string) => {
     const session = await DegenSession.findById(sessionId);
     if(!session) throw new Utils.AppError(422,'Requested session not found');
     await session.populateMe();
     await AppUsage.make(`prf/${creator}`,"fetchSession",{which:`ssn/${session.id}`});
     return {session};
   };
-  static updateDegenSession = async (
+  static updateSession = async (
     creator:string,
     sessionId:string,
     {notes,hands,ledger,...updates}:Partial<DegenTypes.IDegenSession>) => {
@@ -63,13 +63,13 @@ export class DegenSessionsService {
     await AppUsage.make(`prf/${creator}`,"updatedSession",{which:`ssn/${session.id}`});
     return {session};
   };
-  static deleteDegenSession = async (creator:string,sessionId:string) => {
+  static deleteSession = async (creator:string,sessionId:string) => {
     const session = await DegenSession.findByIdAndDelete(sessionId);
     if (!session) throw new Utils.AppError(422,'Requested session not found');
     await AppUsage.make(`prf/${creator}`,"deletedSession",{which:`ssn/${session.id}`});
     return {ok:true};
   };
-  static updateDegenSessionStatus = async (
+  static updateSessionStatus = async (
     sessionId:string,
     status:DegenTypes.IDegenSessionStatuses) => {
     const session = await DegenSession.findByIdAndUpdate(sessionId,{$set:{status}},queryOpts);
@@ -77,7 +77,7 @@ export class DegenSessionsService {
     await session.populateMe();
     return {session};
   };
-  static addUpdateToDegenSession = async (
+  static addUpdateToSession = async (
     sessionId:string,
     type:"ledger"|"note"|"hand",
     item:
@@ -91,7 +91,7 @@ export class DegenSessionsService {
     await session.populateMe();
     return {session};
   };
-  static removeUpdateFromDegenSession = async (sessionId:string,type:"ledger"|"note"|"hand",j:number) => {
+  static removeUpdateFromSession = async (sessionId:string,type:"ledger"|"note"|"hand",j:number) => {
     const type_ = type == "ledger"?type:`${type}s` as "ledger"|"notes"|"hands";
     const session = await DegenSession.findById(sessionId);
     if (!session) throw new Utils.AppError(422,'Requested session not found');
@@ -99,8 +99,7 @@ export class DegenSessionsService {
     await session.saveMe();
     return {session};
   };
-  // 📌 DegenSession Resolution & Invoicing
-  static finalizeDegenSession = async (creator:string,sessionId:string,{status,reason,resolution}:{
+  static finalizeSession = async (creator:string,sessionId:string,{status,reason,resolution}:{
     status:DegenTypes.IDegenSessionStatuses,
     resolution:string,//Partial<Types.IDegenSessionDetails>,
     reason:string}) => {
@@ -117,7 +116,7 @@ export class DegenSessionsService {
     await session.saveMe();
     return {session};
   };
-  static closeDegenSession = async (creator:string,sessionId:string) => {
+  static closeSession = async (creator:string,sessionId:string) => {
     const session = await DegenSession.findById(sessionId);
     if (!session) throw new Utils.AppError(422,'Requested session not found');
     //if (session.status == CLOSED || !session.invoice.meta.paid) throw new Utils.AppError(422,'Requested session cannot be closed');
@@ -132,3 +131,4 @@ export class DegenSessionsService {
     return {session};
   };
 }
+export default DegenSessionsService;

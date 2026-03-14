@@ -1,3 +1,4 @@
+
 import { Router } from 'express';
 import { DegenSessionsController as ctrl } from './sessions.controller';
 import { DegenSessionsValidators as validators } from './sessions.validators';
@@ -7,20 +8,20 @@ const DegenSessionsRouter = () => {
   const router = Router();
   
   // 📌 DegenSession Queries
-  router.get("/q",[ctrl.queryDegenSessions,...PostMiddleware]);
-  router.get("/desc/q",[ctrl.queryDegenSessionDescriptions,...PostMiddleware]);
-  //router.post("/many",[ctrl.createDegenSessions,...PostMiddleware]);
-  router.post("/",[...validators.createDegenSession,ctrl.createDegenSession,...PostMiddleware]);
-  router.get("/:sessionId",[ctrl.getDegenSessionById,...PostMiddleware]);
-  router.put("/:sessionId",[...validators.updateDegenSession, ctrl.updateDegenSession,...PostMiddleware]);
-  router.delete("/:sessionId",[ctrl.deleteDegenSession,...PostMiddleware]);
+  router.get("/q",[ctrl.querySessions,...PostMiddleware]);
+  router.get("/desc/q",[ctrl.queryDescriptions,...PostMiddleware]);
+  //router.post("/many",[ctrl.createSessions,...PostMiddleware]);
+  router.post("/",[...validators.createSession,ctrl.createSession,...PostMiddleware]);
+  router.get("/:sessionId",[ctrl.getSessionById,...PostMiddleware]);
+  router.put("/:sessionId",[...validators.updateSession, ctrl.updateSession,...PostMiddleware]);
+  router.delete("/:sessionId",[ctrl.deleteSession,...PostMiddleware]);
 
-  router.put("/:sessionId/update/status",[ctrl.updateDegenSessionStatus,...PostMiddleware]);
-  router.post("/:sessionId/update/:updateType",[ctrl.addUpdateToDegenSession,...PostMiddleware]);
-  router.delete("/:sessionId/update/:updateType/:itemIdx",[ctrl.removeUpdateToDegenSession,...PostMiddleware]);
+  router.put("/:sessionId/update/status",[ctrl.updateSessionStatus,...PostMiddleware]);
+  router.post("/:sessionId/update/:updateType",[ctrl.addUpdateToSession,...PostMiddleware]);
+  router.delete("/:sessionId/update/:updateType/:itemIdx",[ctrl.removeUpdateToSession,...PostMiddleware]);
 
-  router.post("/:sessionId/start",[ctrl.finalizeDegenSession,...PostMiddleware]);
-  router.post("/:sessionId/end",[ctrl.closeDegenSession,...PostMiddleware]);
+  router.post("/:sessionId/start",[ctrl.finalizeSession,...PostMiddleware]);
+  router.post("/:sessionId/end",[ctrl.closeSession,...PostMiddleware]);
 
   return router;
 };

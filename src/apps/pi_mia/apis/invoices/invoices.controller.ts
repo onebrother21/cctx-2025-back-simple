@@ -1,5 +1,5 @@
-import { InvoicesService } from './invoices.service';
-import { InvoicesQueriesService } from './invoices-queries.service';
+import InvoicesService from './invoices.service';
+import InvoicesQueries from './invoices-queries.service';
 
 import Types from "@types";
 import Utils from '@utils';
@@ -17,9 +17,9 @@ export class InvoicesController {
     try {
       const profileId = req.profile.id;
       const data = req.body.data;
-      const {pimiaInvoice} = await InvoicesService.createInvoice(profileId,data);
+      const {invoice} = await InvoicesService.createInvoice(profileId,data);
       res.locals.success = true;
-      res.locals.data = pimiaInvoice.json();
+      res.locals.data = invoice.json();
       next();
     }
     catch (e) { next(e); }
@@ -28,9 +28,9 @@ export class InvoicesController {
     try {
       const profileId = req.profile.id;
       const {invoiceId} = req.params;
-      const {pimiaInvoice} = await InvoicesService.getInvoiceById(profileId,invoiceId);
+      const {invoice} = await InvoicesService.getInvoiceById(profileId,invoiceId);
       res.locals.success = true;
-      res.locals.data = pimiaInvoice.json();
+      res.locals.data = invoice.json();
       next();
     } catch (e) { next(e); }
   };
@@ -39,9 +39,9 @@ export class InvoicesController {
       const profileId = req.profile.id;
       const data = req.body.data;
       const {invoiceId} = req.params;
-      const {pimiaInvoice} = await InvoicesService.updateInvoice(profileId,invoiceId,data);
+      const {invoice} = await InvoicesService.updateInvoice(profileId,invoiceId,data);
       res.locals.success = true;
-      res.locals.data = pimiaInvoice.json();
+      res.locals.data = invoice.json();
       next();
     } catch (e) { next(e); }
   };
@@ -60,9 +60,9 @@ export class InvoicesController {
       const {invoiceId} = req.params;
       const admin = req.profile.displayName;
       const data = req.body.data;
-      const {pimiaInvoice} = await InvoicesService.updateInvoiceStatus(invoiceId,data);
+      const {invoice} = await InvoicesService.updateInvoiceStatus(invoiceId,data);
       res.locals.success = true;
-      res.locals.data = pimiaInvoice.json();
+      res.locals.data = invoice.json();
       next();
     } catch (e) { next(e); }
   };
@@ -87,7 +87,7 @@ export class InvoicesController {
   static queryInvoices:IHandler = async (req,res,next) => {
      try{
       const {q,s,o,t} = JSON.parse(req.query.qstr as string);
-      const data = await InvoicesQueriesService.queryInvoices(q,s,o,t);
+      const data = await InvoicesQueries.queryInvoices(q,s,o,t);
       res.locals.success = true,
       res.locals.data = data;
       next();

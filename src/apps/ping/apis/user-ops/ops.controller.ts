@@ -1,4 +1,5 @@
-import { UserOpsService } from './ops.service';
+import UserOpsService from './ops.service';
+import UserOpsQueries from './ops-queries.service';
 
 import Models from "@models";
 import Types from "@types";
@@ -57,11 +58,51 @@ export class UserOpsController {
       next();
     } catch (e) { next(e); }
   };
-  static queryAppUsage:IHandler = async (req,res,next) => {
+  static queryExtChains:IHandler = async (req,res,next) => {
     try{
       const profileId = req.profile.id;
       const {q,s,o,t} = JSON.parse(req.query.qstr as string);
-      const data = await UserOpsService.queryAppUsage(q,s,o,t);
+      const data = await UserOpsQueries.queryExtChains(q,s,o,t);
+      res.locals.success = true,
+      res.locals.data = data;
+      next();
+    } catch(e) { next(e); }
+  };
+  static queryExtWallets:IHandler = async (req,res,next) => {
+    try{
+      const profileId = req.profile.id;
+      const {q,s,o,t} = JSON.parse(req.query.qstr as string);
+      const data = await UserOpsQueries.queryExtWallets(q,s,o,t);
+      res.locals.success = true,
+      res.locals.data = data;
+      next();
+    } catch(e) { next(e); }
+  };
+  static queryCards:IHandler = async (req,res,next) => {
+    try{
+      const profileId = req.profile.id;
+      const {q,s,o,t} = JSON.parse(req.query.qstr as string);
+      const data = await UserOpsQueries.queryCards(q,s,o,t);
+      res.locals.success = true,
+      res.locals.data = data;
+      next();
+    } catch(e) { next(e); }
+  };
+  static queryPos:IHandler = async (req,res,next) => {
+    try{
+      const profileId = req.profile.id;
+      const {q,s,o,t} = JSON.parse(req.query.qstr as string);
+      const data = await UserOpsQueries.queryPos(q,s,o,t);
+      res.locals.success = true,
+      res.locals.data = data;
+      next();
+    } catch(e) { next(e); }
+  };
+  static queryTransactions:IHandler = async (req,res,next) => {
+    try{
+      const profileId = req.profile.id;
+      const {q,s,o,t} = JSON.parse(req.query.qstr as string);
+      const data = await UserOpsQueries.queryTransactions(q,s,o,t);
       res.locals.success = true,
       res.locals.data = data;
       next();

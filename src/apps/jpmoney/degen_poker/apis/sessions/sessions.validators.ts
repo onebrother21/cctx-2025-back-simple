@@ -10,8 +10,7 @@ import DegenModels from "../../models";
 import DegenTypes from "../../types";
 
 export class DegenSessionsValidators {
-  // 📌 DegenSession & Fulfillment Validators
-  static createDegenSession = [[
+  static createSession = [[
     body('data.type').isString().isIn(["C","T"]).withMessage('Invalid game type'),
     body('data.venue').isMongoId().withMessage('Invalid venue'),
     body('data.desc').isString().withMessage('Invalid description').optional(),
@@ -22,8 +21,7 @@ export class DegenSessionsValidators {
     body('data.info.startingStack').isNumeric().withMessage('Invalid starting stack').optional(),
     //body('data.info.place').isString().withMessage('Invalid description').optional(),
   ],CheckValidation()] as IHandler[];
-  
-  static updateDegenSession = [[
+  static updateSession = [[
     body('data.type').isString().isIn(["C","T"]).withMessage('Invalid game type').optional(),
     body('data.venue').isMongoId().withMessage('Invalid venue').optional(),
     body('data.desc').isString().withMessage('Invalid description').optional(),
@@ -47,8 +45,7 @@ export class DegenSessionsValidators {
     //body('data.hand.river').isString().withMessage('Invalid ledger update'),
     //body('data.info.place').isString().withMessage('Invalid description').optional(),
   ],CheckValidation()] as IHandler[];
-  
-  static updateDegenSessionStatus = [[
+  static updateSessionStatus = [[
     param('sessionId').isMongoId().withMessage('Invalid session ID'),
     body('data.name').isIn(Object.values(DegenTypes.IDegenSessionStatuses)).withMessage('Invalid status value').optional(),
     body('data.info').isString().withMessage('Invalid msg').optional(),

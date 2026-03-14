@@ -1,5 +1,4 @@
-import { AuthUtilsService as AuthUtils } from '../../../cctx_auth/apis/user/auth.utils';
-import { AdminService } from './admin.service';
+import AdminService from './admin.service';
 
 export class AdminController {
   static registerAdmin:IHandler = async (req,res,next) => {

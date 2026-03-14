@@ -32,7 +32,7 @@ export class DegenPlayersValidators {
     body('confirmDelete').equals('YES').withMessage('You must confirm account deletion')
   ],CheckValidation()] as IHandler[];
   
-  static updateDegenPlayerStatus = [[
+  static updatePlayerStatus = [[
     param('sessionId').isMongoId().withMessage('Invalid session ID'),
     body('data.name').isIn(Object.values(Types.IProfileStatuses)).withMessage('Invalid status value').optional(),
     body('data.info').isString().withMessage('Invalid msg').optional(),

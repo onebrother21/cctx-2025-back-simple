@@ -9,7 +9,6 @@ const CasesRouter = () => {
   
   // 📌 Case Queries
   router.get("/search",[ctrl.queryCases,...PostMiddleware]);
-  router.get("/invoices/search",[ctrl.queryInvoices,...PostMiddleware]);
 
   // 📌 Case CRUD Ops
   router.post("/",[...validators.createCase,ctrl.createCase,...PostMiddleware]);

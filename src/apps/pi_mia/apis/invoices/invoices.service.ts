@@ -23,7 +23,7 @@ const {AppError} = Utils;
 
 export class InvoicesService {
   static createInvoice = async (creator:string,newInvoice:PiMiaTypes.IInvoiceITO) => {
-    const pimiaInvoice = new Invoice({
+    const invoice = new Invoice({
       creator,
       meta:{},
       ledger:[],
@@ -31,46 +31,46 @@ export class InvoicesService {
       hands:[],
       ...newInvoice
     });
-    await pimiaInvoice.saveMe();
-    await AppUsage.make(`prf/${creator}`,"createdInvoice",{which:`ssn/${pimiaInvoice.id}`});
-    return {pimiaInvoice};
+    await invoice.saveMe();
+    await AppUsage.make(`prf/${creator}`,"createdInvoice",{which:`ssn/${invoice.id}`});
+    return {invoice};
   };
   static getInvoiceById = async (creator:string,invoiceId:string) => {
-    const pimiaInvoice = await Invoice.findById(invoiceId);
-    if(!pimiaInvoice) throw new Utils.AppError(422,'Requested pimiaInvoice not found');
-    await pimiaInvoice.populateMe();
-    await AppUsage.make(`prf/${creator}`,"fetchInvoice",{which:`ssn/${pimiaInvoice.id}`});
-    return {pimiaInvoice};
+    const invoice = await Invoice.findById(invoiceId);
+    if(!invoice) throw new Utils.AppError(422,'Requested invoice not found');
+    await invoice.populateMe();
+    await AppUsage.make(`prf/${creator}`,"fetchInvoice",{which:`ssn/${invoice.id}`});
+    return {invoice};
   };
   static updateInvoice = async (
     creator:string,
     invoiceId:string,
     {...updates}:Partial<PiMiaTypes.IInvoice>) => {
-    const pimiaInvoice = await Invoice.findByIdAndUpdate(invoiceId,{$set:updates},queryOpts);
-    if (!pimiaInvoice) throw new Utils.AppError(422,'Requested pimiaInvoice not found');
-    await pimiaInvoice.populateMe();
-    await AppUsage.make(`prf/${creator}`,"updatedInvoice",{which:`ssn/${pimiaInvoice.id}`});
-    return {pimiaInvoice};
+    const invoice = await Invoice.findByIdAndUpdate(invoiceId,{$set:updates},queryOpts);
+    if (!invoice) throw new Utils.AppError(422,'Requested invoice not found');
+    await invoice.populateMe();
+    await AppUsage.make(`prf/${creator}`,"updatedInvoice",{which:`ssn/${invoice.id}`});
+    return {invoice};
   };
   static deleteInvoice = async (creator:string,invoiceId:string) => {
-    const pimiaInvoice = await Invoice.findByIdAndDelete(invoiceId);
-    if (!pimiaInvoice) throw new Utils.AppError(422,'Requested pimiaInvoice not found');
-    await AppUsage.make(`prf/${creator}`,"deletedInvoice",{which:`ssn/${pimiaInvoice.id}`});
+    const invoice = await Invoice.findByIdAndDelete(invoiceId);
+    if (!invoice) throw new Utils.AppError(422,'Requested invoice not found');
+    await AppUsage.make(`prf/${creator}`,"deletedInvoice",{which:`ssn/${invoice.id}`});
     return {ok:true};
   };
   static updateInvoiceStatus = async (
     invoiceId:string,
     status:PiMiaTypes.IInvoiceStatuses) => {
-    const pimiaInvoice = await Invoice.findByIdAndUpdate(invoiceId,{$set:{status}},queryOpts);
-    if (!pimiaInvoice) throw new Utils.AppError(422,'Requested pimiaInvoice not found');
-    await pimiaInvoice.populateMe();
-    return {pimiaInvoice};
+    const invoice = await Invoice.findByIdAndUpdate(invoiceId,{$set:{status}},queryOpts);
+    if (!invoice) throw new Utils.AppError(422,'Requested invoice not found');
+    await invoice.populateMe();
+    return {invoice};
   };
   static sendInvoice = async (invoiceId:string,{recipient,sentAt}:{recipient:"client"|"vendor",sentAt?:Date}) => {
-    const pimiaInvoice = await PiMiaModels.Invoice.findById(invoiceId);
-    const addressee = pimiaInvoice.addressee;
-    if(!pimiaInvoice) throw new Utils.AppError(422,'Requested invoice not found');
-    await pimiaInvoice.populateMe();
+    const invoice = await PiMiaModels.Invoice.findById(invoiceId);
+    const addressee = invoice.addressee;
+    if(!invoice) throw new Utils.AppError(422,'Requested invoice not found');
+    await invoice.populateMe();
     console.log("sending invoice to:",addressee.name);
      //send registration notification
     await notify({
@@ -79,19 +79,19 @@ export class InvoicesService {
       audience:[addressee.id],
       data:{
         name:addressee.name.split(" ")[0],
-        invoice:pimiaInvoice.toString()
+        invoice:invoice.toString()
       }
     });
-    pimiaInvoice.meta.sent = sentAt?new Date(sentAt):new Date();
-    await pimiaInvoice.saveMe();
-    return pimiaInvoice;
+    invoice.meta.sent = sentAt?new Date(sentAt):new Date();
+    await invoice.saveMe();
+    return invoice;
   };
   static markInvoiceAsPaid = async (invoiceId:string,{paidAt}:{paidAt?:Date}) => {
-    const pimiaInvoice = await PiMiaModels.Invoice.findById(invoiceId);
-    if(!pimiaInvoice) throw new Utils.AppError(422,'Requested invoice not found');
-    pimiaInvoice.meta.paid = paidAt?new Date(paidAt):new Date();
-    await pimiaInvoice.saveMe();
-    return pimiaInvoice;
+    const invoice = await PiMiaModels.Invoice.findById(invoiceId);
+    if(!invoice) throw new Utils.AppError(422,'Requested invoice not found');
+    invoice.meta.paid = paidAt?new Date(paidAt):new Date();
+    await invoice.saveMe();
+    return invoice;
   };
   static generateInvoice = ({
     id:invoiceId,
@@ -206,3 +206,4 @@ export class InvoicesService {
     return descArr;
   };
 }
+export default InvoicesService;

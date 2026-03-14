@@ -28,8 +28,8 @@ import {
 
 import getAppPublicRouter from './init-app-public.router';
 
-import getTasksRouter from "./modules/tasks";
 import getCCTXAuthRouter from './apps/cctx_auth';
+import getCCTXTasksRouter from "./apps/cctx_tasks";
 import getCCTXAdminRouter from './apps/cctx_admn';
 import getDegenPokerRouter from "./apps/jpmoney/degen_poker";
 import getPiMiaRouter from './apps/pi_mia';
@@ -86,7 +86,7 @@ export class App {
     app.use("/",getAppPublicRouter());
     app.use("/av3/cctx/auth",getCCTXAuthRouter());
     app.use("/av3/cctx/admn",getCCTXAdminRouter());
-    app.use("/av3/cctx/tasks",[AuthJWT(),getTasksRouter()]);
+    app.use("/av3/cctx/tasks",[AuthJWT(),getCCTXTasksRouter()]);
     app.use("/av3/jpmoney/degen_poker",getDegenPokerRouter());
     app.use("/av3/pi_mia",getPiMiaRouter());
     app.use("/av3/ping",getPingRouter());

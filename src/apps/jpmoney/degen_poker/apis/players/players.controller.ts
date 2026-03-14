@@ -25,7 +25,7 @@ export class DegenPlayersController {
       next();
     } catch (e) { next(e); }
   };
-  static getDegenPlayerById:IHandler = async (req,res,next) => {
+  static getPlayerById:IHandler = async (req,res,next) => {
     try {
       const {playerId} = req.params;
       const {player} = await DegenPlayersService.getDegenPlayerById(playerId);
@@ -34,7 +34,7 @@ export class DegenPlayersController {
       next();
     } catch (e) { next(e); }
   };
-  static updateDegenPlayer:IHandler = async (req,res,next) => {
+  static updatePlayer:IHandler = async (req,res,next) => {
     try {
       const data = req.body.data;
       const {playerId} = req.params;
@@ -44,7 +44,7 @@ export class DegenPlayersController {
       next();
     } catch (e) { next(e); }
   };
-  static deleteDegenPlayer:IHandler = async (req,res,next) => {
+  static deletePlayer:IHandler = async (req,res,next) => {
     try {
       const {playerId} = req.params;
       const {ok} = await DegenPlayersService.deleteDegenPlayer(playerId);
@@ -53,36 +53,7 @@ export class DegenPlayersController {
       next();
     } catch (e) { next(e); }
   };
-  static createDegenPlayers:IHandler = async (req,res,next) => {
-    try {
-      const {players} = await DegenPlayersService.createDegenPlayers(req);
-      res.locals.success = true;
-      res.locals.data = {created:players.length,ok:true};
-      next();
-    } catch (e) { next(e); }
-  };
-
-  
-  // 📌 DegenPlayer Queries
-  static queryDegenPlayers:IHandler = async (req,res,next) => {
-     try{
-      const {q,s,o,t} = JSON.parse(req.query.qstr as string);
-      const data = await DegenPlayersQueriesService.queryDegenPlayers(q,s,o,t);
-      res.locals.success = true,
-      res.locals.data = data;
-      next();
-    } catch(e) { next(e); }
-  };
-  static queryProfiles:IHandler = async (req,res,next) => {
-     try{
-      const {q,s,o,t} = JSON.parse(req.query.qstr as string);
-      const data = await DegenPlayersQueriesService.queryProfiles(q,s,o,t);
-      res.locals.success = true,
-      res.locals.data = data;
-      next();
-    } catch(e) { next(e); }
-  };
-  static updateDegenPlayerStatus:IHandler = async (req,res,next) => {
+  static updatePlayerStatus:IHandler = async (req,res,next) => {
     try {
       const {playerId} = req.params;
       const admin = req.profile.displayName;

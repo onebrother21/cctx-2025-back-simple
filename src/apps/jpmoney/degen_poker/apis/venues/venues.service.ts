@@ -34,7 +34,7 @@ export class DegenVenuesService {
     return {results};
   };
   // 📌 DegenVenue CRUD Ops
-  static createDegenVenues = async (creator:string,newDegenVenues:Partial<DegenTypes.IDegenVenue>[]) => {
+  static createVenues = async (creator:string,newDegenVenues:Partial<DegenTypes.IDegenVenue>[]) => {
     const venues:DegenTypes.IDegenVenue[] = [];
     for(let i = 0,l = newDegenVenues.length;i<l;i++){
       const n = {creator,...newDegenVenues[i]};
@@ -44,34 +44,31 @@ export class DegenVenuesService {
     }
     return {venues};
   };
-  static createDegenVenue = async (creator:string,{addr,...newDegenVenue}:Partial<DegenTypes.IDegenVenue>) => {
+  static createVenue = async (creator:string,{addr,...newDegenVenue}:Partial<DegenTypes.IDegenVenue>) => {
     const venue = new DegenVenue({creator,info:{},meta:{timesPlayed:0,tags:[]},...newDegenVenue});
     venue.addr = {...addr,loc:{type:"Point",coordinates:addr.loc}} as any;
     await venue.saveMe();
     return {venue};
   };
-  static getDegenVenueById = async (venueId:string) => {
+  static getVenueById = async (venueId:string) => {
     const venue = await DegenVenue.findById(venueId);
     if(!venue) throw new Utils.AppError(422,'Requested venue not found');
     await venue.populateMe();
     return {venue};
   };
-  static updateDegenVenue = async (venueId:string,upd:Partial<DegenTypes.IDegenVenue>) => {
+  static updateVenue = async (venueId:string,upd:Partial<DegenTypes.IDegenVenue>) => {
     if(upd.addr) upd.addr = {...upd.addr,loc:{type:"Point",coordinates:upd.addr.loc}} as any;
     const venue = await DegenVenue.findByIdAndUpdate(venueId,{$set:upd},queryOpts);
     if (!venue) throw new Utils.AppError(422,'Requested venue not found');
     await venue.populateMe();
     return {venue};
   };
-  static deleteDegenVenue = async (venueId:string) => {
+  static deleteVenue = async (venueId:string) => {
     const venue = await DegenVenue.findByIdAndDelete(venueId);
     if (!venue) throw new Utils.AppError(422,'Requested venue not found');
     return {ok:true};
   };
-
-
-  // DegenVenue Updates
-  static updateDegenVenueStatus = async (
+  static updateVenueStatus = async (
     admin:string,
     venueId:string,
     {progress,priority,...o}:{progress?:number,priority?:number}) => {
@@ -80,54 +77,5 @@ export class DegenVenuesService {
     await venue.saveMe();
     return {venue};
   };
-  /*
-  static addFilesToDegenVenue = async (venueId:string,files:DegenTypes.IDegenVenue["files"]) => {
-    const venue = await DegenVenue.findByIdAndUpdate(venueId,
-      { $push: { files }},
-      { new: true, runValidators: true } // Ensure validators are run
-    );
-    if (!venue) throw new Utils.AppError(422,'Requested venue not found');
-    await venue.populateMe();
-    return {venue};
-  };
-  static removeFileFromDegenVenue = async (venueId:string,fileIdx:number) => {
-    const venue = await DegenVenue.findById(venueId);
-    if (!venue) throw new Utils.AppError(422,'Requested venue not found');
-    venue.files = venue.files.filter((o,i) => i !== fileIdx);
-    await venue.saveMe();
-    return {venue};
-  };
-  */
-  // 📌 DegenVenue Resolution & Invoicing
-  static finalizeDegenVenue = async (venueId:string,{status,reason,resolution}:{
-    status:typeof venueStats,
-    resolution:string,//Partial<Types.IDegenVenueDetails>,
-    reason:string}) => {
-    const venue = await DegenVenue.findById(venueId);
-    if (!venue) throw new Utils.AppError(422,'Requested venue not found');
-    
-    const update = {
-      status,
-      action:`status changed to '${status}'`,
-      user:"sys-admn",
-      time:new Date()
-    };
-    //venue.invoice = DegenVenuesService.generateInvoice(venue);
-    await venue.saveMe();
-    return {venue};
-  };
-  static closeDegenVenue = async (venueId:string) => {
-    const venue = await DegenVenue.findById(venueId);
-    if (!venue) throw new Utils.AppError(422,'Requested venue not found');
-    //if (venue.status == CLOSED || !venue.invoice.meta.paid) throw new Utils.AppError(422,'Requested venue cannot be closed');
-    
-    const update = {
-      //status:approvalStats.CLOSED,
-      //action:`status changed to '${profileStats.CLOSED}'`,
-      user:"sys-admn",
-      time:new Date()
-    };
-    await venue.saveMe();
-    return {venue};
-  };
 }
+export default DegenVenuesService;

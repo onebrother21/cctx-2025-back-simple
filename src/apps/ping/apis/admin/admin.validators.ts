@@ -19,6 +19,7 @@ export class AdminValidators {
   ],CheckValidation()] as IHandler[];
 
   static updateAdmin = [[
+    param('adminId').isMongoId().withMessage('Invalid admin ID'),
     body('data.displayName').trim().escape().matches(/^[a-zA-Z0-9]{2,20}$/).withMessage('Invalid display name').optional(),
     body('data.img').trim().escape().notEmpty().withMessage('Invalid image').optional(),
     body('data.loc').isArray({min:2,max:2}).withMessage('Invalid location'),
@@ -26,11 +27,12 @@ export class AdminValidators {
   ],CheckValidation()] as IHandler[];
 
   static deleteAdmin = [[
+    param('adminId').isMongoId().withMessage('Invalid admin ID'),
     body('confirmDelete').equals('YES').withMessage('You must confirm account deletion')
   ],CheckValidation()] as IHandler[];
   
-  static updateDegenAdminStatus = [[
-    param('sessionId').isMongoId().withMessage('Invalid session ID'),
+  static updateAdminStatus = [[
+    param('adminId').isMongoId().withMessage('Invalid admin ID'),
     body('data.name').isIn(Object.values(Types.IProfileStatuses)).withMessage('Invalid status value').optional(),
     body('data.info').isString().withMessage('Invalid msg').optional(),
     body('data.progress').isNumeric().withMessage('Invalid value').optional(),

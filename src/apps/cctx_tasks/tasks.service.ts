@@ -16,9 +16,8 @@ const {Profile,AppUsage,Task} = Models;
 const {Notifications:NotificationSvc} = Services;
 const {AppError} = Utils;
 
-export class CCTXTasksService {
-  // 📌 Task CRUD Ops
-  static createCCTXTasks = async (creator:string,newCCTXTasks:Partial<Types.ITask>[]) => {
+export class TasksService {
+  static createTasks = async (creator:string,newCCTXTasks:Partial<Types.ITask>[]) => {
     const tasks:Types.ITask[] = [];
     for(let i = 0,l = newCCTXTasks.length;i<l;i++){
       const nt = {
@@ -36,7 +35,7 @@ export class CCTXTasksService {
     await AppUsage.make(`prf/${creator}`,"createdTasks");
     return {tasks};
   };
-  static createCCTXTask = async (creator:string,newCCTXTask:Types.ITaskITO) => {
+  static createTask = async (creator:string,newCCTXTask:Types.ITaskITO) => {
     const task = new Task({
       creator,
       info:{},
@@ -49,14 +48,14 @@ export class CCTXTasksService {
     await AppUsage.make(`prf/${creator}`,"createdTask",{which:`tsk/${task.id}`});
     return {task};
   };
-  static getCCTXTaskById = async (creator:string,taskId:string) => {
+  static getTaskById = async (creator:string,taskId:string) => {
     const task = await Task.findById(taskId);
     if(!task) throw new Utils.AppError(422,'Requested task not found');
     await task.populateMe();
     await AppUsage.make(`prf/${creator}`,"fetchTask",{which:`tsk/${task.id}`});
     return {task};
   };
-  static updateCCTXTask = async (
+  static updateTask = async (
     creator:string,
     taskId:string,
     {notes,...updates}:Partial<Types.ITask>) => {
@@ -66,13 +65,13 @@ export class CCTXTasksService {
     await AppUsage.make(`prf/${creator}`,"updatedTask",{which:`tsk/${task.id}`});
     return {task};
   };
-  static deleteCCTXTask = async (creator:string,taskId:string) => {
+  static deleteTask = async (creator:string,taskId:string) => {
     const task = await Task.findByIdAndDelete(taskId);
     if (!task) throw new Utils.AppError(422,'Requested task not found');
     await AppUsage.make(`prf/${creator}`,"deletedTask",{which:`tsk/${task.id}`});
     return {ok:true};
   };
-  static updateCCTXTaskStatus = async (
+  static updateTaskStatus = async (
     taskId:string,
     {status,reason,progress,priority}:Partial<{
     status:Types.ITaskStatuses,
@@ -91,7 +90,7 @@ export class CCTXTasksService {
     await task.populateMe();
     return {task};
   };
-  static addUpdateToCCTXTask = async (
+  static addUpdateToTask = async (
     taskId:string,
     type:"note",
     item:
@@ -103,7 +102,7 @@ export class CCTXTasksService {
     await task.populateMe();
     return {task};
   };
-  static removeUpdateFromCCTXTask = async (taskId:string,type:"note",j:number) => {
+  static removeUpdateFromTask = async (taskId:string,type:"note",j:number) => {
     const type_ = `${type}s` as "notes";
     const task = await Task.findById(taskId);
     if (!task) throw new Utils.AppError(422,'Requested task not found');
@@ -111,7 +110,7 @@ export class CCTXTasksService {
     await task.saveMe();
     return {task};
   };
-  static finalizeCCTXTask = async (creator:string,taskId:string,{status,reason,resolution}:{
+  static finalizeTask = async (creator:string,taskId:string,{status,reason,resolution}:{
     status:Types.ITaskStatuses,
     resolution:string,//Partial<Types.ICCTXTaskDetails>,
     reason:string}) => {
@@ -126,7 +125,7 @@ export class CCTXTasksService {
     await AppUsage.make(`prf/${creator}`,"finalizedTask",{which:`tsk/${task.id}`});
     return {task};
   };
-  static closeCCTXTask = async (taskId:string) => {
+  static closeTask = async (taskId:string) => {
     const task = await Task.findById(taskId);
     if (!task) throw new Utils.AppError(422,'Requested task not found');
     
@@ -135,3 +134,4 @@ export class CCTXTasksService {
     return {task};
   };
 }
+export default TasksService;

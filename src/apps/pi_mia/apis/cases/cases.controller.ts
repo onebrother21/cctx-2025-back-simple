@@ -1,5 +1,5 @@
-import { CasesService } from './cases.service';
-import { CasesQueriesService } from './cases-queries.service';
+import CasesService from './cases.service';
+import CasesQueries from './cases-queries.service';
 
 import Types from "@types";
 import Utils from '@utils';
@@ -81,22 +81,12 @@ export class CasesController {
   static queryCases:IHandler = async (req,res,next) => {
      try{
       const {q,s,o,t} = JSON.parse(req.query.qstr as string);
-      const data = await CasesQueriesService.queryCases(q,s,o,t);
+      const data = await CasesQueries.queryCases(q,s,o,t);
       res.locals.success = true,
       res.locals.data = data;
       next();
     } catch(e) { next(e); }
   };
-  static queryInvoices:IHandler = async (req,res,next) => {
-     try{
-      const {q,s,o,t} = JSON.parse(req.query.qstr as string);
-      const data = await CasesQueriesService.queryInvoices(q,s,o,t);
-      res.locals.success = true,
-      res.locals.data = data;
-      next();
-    } catch(e) { next(e); }
-  };
-
   static addSubjectsToCase:IHandler = async (req,res,next) => {
     try {
       const {caseId} = req.params;
@@ -266,8 +256,6 @@ export class CasesController {
       next();
     } catch (e) { next(e); }
   };
-
-  // 📌 Case Resolution & Invoicing
   static finalizeCase:IHandler = async (req,res,next) => {
     try {
       const admin = req.profile.id;

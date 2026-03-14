@@ -5,7 +5,12 @@ import { AuthJWT,PostMiddleware,upload } from '@middleware';
 
 const AdminRouter = () => {
   const router = Router();
-  router.get("/app-usage/q",[ctrl.queryAppUsage,...PostMiddleware]);
+  router.post("/",[...validators.registerAdmin,ctrl.registerAdmin,...PostMiddleware]);
+  router.get("/:adminId",[ctrl.getAdminById,...PostMiddleware]);
+  router.put("/:adminId",[...validators.updateAdmin, ctrl.updateAdmin,...PostMiddleware]);
+  router.delete("/:adminId",[ctrl.deleteAdmin,...PostMiddleware]);
+  router.put("/:adminId/status",[...validators.updateAdminStatus,ctrl.updateAdminStatus,...PostMiddleware]);
+  
   return router;
 };
 export { AdminRouter };

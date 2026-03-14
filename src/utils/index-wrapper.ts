@@ -12,3 +12,4 @@ export * from "./create-bull-queue"
 export * from "./create-bull-worker";
 export * from "./create-redis-conn-opts";
 export * from "./distance-helper";
+export * from "./mongoose-agg-helpers";

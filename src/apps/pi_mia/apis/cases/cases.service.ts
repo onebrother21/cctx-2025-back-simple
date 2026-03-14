@@ -373,3 +373,4 @@ export class CasesService {
     return {pimiaCase};
   };
 }
+export default CasesService;

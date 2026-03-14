@@ -10,7 +10,7 @@ import DegenModels from "../../models";
 import DegenTypes from "../../types";
 
 export class DegenVenuesValidators {
-  static createDegenVenue = [[
+  static createVenue = [[
     body('data.type').isString().withMessage('Invalid type'),
     body('data.name').trim().matches(/^[A-Z0-9 &'()]+$/i).withMessage('Invalid name'),
     body('data.org').trim().matches(/^[A-Z0-9 &'()]+$/i).withMessage('Invalid org').optional(),
@@ -23,7 +23,7 @@ export class DegenVenuesValidators {
     body('data.phn').isString().withMessage('Invalid phone number').optional(),
     body('data.img').trim().notEmpty().withMessage('Invalid image').optional(),
   ],CheckValidation()] as IHandler[];
-  static updateDegenVenue = [[
+  static updateVenue = [[
     param("venueId").isMongoId().withMessage('Invalid venue ID'),
     body('data.type').isString().withMessage('Invalid type').optional(),
     body('data.name').trim().matches(/^[A-Za-z0-9 &'()]{3-20}$/i).withMessage('Invalid name').optional(),
@@ -37,13 +37,13 @@ export class DegenVenuesValidators {
     body('data.phn').isString().withMessage('Invalid phone number').optional(),
     body('data.img').trim().notEmpty().withMessage('Invalid image').optional(),
   ],CheckValidation()] as IHandler[];
-  static updateDegenVenueStatus = [[
+  static updateVenueStatus = [[
     param('venueId').isMongoId().withMessage('Invalid venue ID'),
     body('data.name').isIn(Object.values(Types.IProfileStatuses)).withMessage('Invalid status value').optional(),
     body('data.info').isString().withMessage('Invalid msg').optional(),
     body('data.progress').isNumeric().withMessage('Invalid value').optional(),
   ],CheckValidation()] as IHandler[];
-  static deleteVenueAccount = [[
+  static deleteVenue = [[
     param("venueId").isMongoId().withMessage('Invalid venue ID'),
     body('confirmDelete').equals('YES').withMessage('You must confirm account deletion')
   ],CheckValidation()] as IHandler[];
