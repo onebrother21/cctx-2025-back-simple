@@ -6,8 +6,9 @@ import { AuthJWT,PostMiddleware,upload } from '@middleware';
 const AdminRouter = () => {
   const router = Router();
   router.get("/app-usage/q",[ctrl.queryAppUsage,...PostMiddleware]);
-  router.get("/users/q",[ctrl.queryUsers,...PostMiddleware]);
   router.get("/devices/q",[ctrl.queryDevices,...PostMiddleware]);
+  router.get("/users/q",[ctrl.queryUsers,...PostMiddleware]);
+  router.get("/tasks/q",[ctrl.queryTasks,...PostMiddleware]);
   router.get("/degen/profiles/q",[ctrl.queryDegenProfiles,...PostMiddleware]);
   router.get("/degen/players/q",[ctrl.queryDegenPlayers,...PostMiddleware]);
   router.get("/degen/sessions/q",[ctrl.queryDegenSessions,...PostMiddleware]);

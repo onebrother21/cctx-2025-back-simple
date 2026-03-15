@@ -1,4 +1,4 @@
-import * as Profiles from './profile.types';
+import * as PROFILE from './profile.types';
 
 export enum INoteStatuses {
   NEW = "new",
@@ -20,7 +20,7 @@ export enum INoteStatuses {
   UPLANNED = "unplanned",
 }
 export type INoteType<t extends string = "note"> = DocEntity<INoteStatuses,never> & {
-  author:Profiles.IProfile;
+  author:PROFILE.IProfile;
   body:string;
   time:Date;
   type:t;

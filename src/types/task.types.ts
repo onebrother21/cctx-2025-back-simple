@@ -1,5 +1,5 @@
-import * as Profiles from "./profile.types";
-import * as Notes from "./note.types";
+import * as PROFILE from "./profile.types";
+import * as NOTE from "./note.types";
 
 export enum ITaskStatuses {
   NEW = "new",
@@ -20,14 +20,14 @@ export enum ITaskStatuses {
   STALLED = "stalled",
   UPLANNED = "unplanned",
 }
-export type ITaskType = DocEntity<ITaskStatuses,Profiles.IProfile> & {
+export type ITaskType = DocEntity<ITaskStatuses,PROFILE.IProfile> & {
   app:string;
   type:"bug"|"improvement"|"suggestion"|"other";
   title:string;
   desc:string;
   tasks:ITask[];
-  notes:Notes.INote[];
-  admin:Profiles.IProfile|null;
+  notes:NOTE.INote[];
+  admin:PROFILE.IProfile|null;
   priority:1|2|3|4,
   progress:number;
   resolution?:string;

@@ -31,7 +31,6 @@
       "@types":["types"],
       "@utils":["utils"],
       "@workers":["workers"],
-      "@workers/*":["workers/*"],
     }
   },
   "exclude": [

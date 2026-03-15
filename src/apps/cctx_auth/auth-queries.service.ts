@@ -3,7 +3,7 @@ import Types from "@types";
 import Utils from '@utils';
 import Services from '@services';
 
-const {MongooseAggHelpers} = Utils;
+const {MongooseAggHelpers} = Services;
 
 export class AuthQueriesService {
   static queryUsers = async (q:Types.IUserQuery,s:string[],o?:any,t?:number) => {

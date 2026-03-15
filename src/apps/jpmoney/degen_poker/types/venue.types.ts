@@ -1,7 +1,7 @@
-import * as Profiles from "./profiles.types";
+import * as PROFILES from "./profiles.types";
 
 export type IDegenTag = {
-  creator:Profiles.IDegenPlayer;
+  creator:PROFILES.IDegenPlayer;
   createdOn:Date;
   text:string
 };
@@ -14,7 +14,7 @@ export enum IDegenVenueStatuses {
   LOCKED = "locked",
   DELETED = "deleted"
 }
-export type IDegenVenueType = DocEntity<IDegenVenueStatuses,Profiles.IDegenPlayer> & {
+export type IDegenVenueType = DocEntity<IDegenVenueStatuses,PROFILES.IDegenPlayer> & {
   type:"home"|"bar"|"poker"|"other";
   meta:{timesPlayed:number;tags:IDegenTag[];};
   name:string;

@@ -6,7 +6,7 @@ import Services from '@services';
 import PiMiaModels from "../../models";
 import PiMiaTypes from "../../types";
 
-const {MongooseAggHelpers} = Utils;
+const {MongooseAggHelpers} = Services;
 
 export class InvoicesQueriesService {
   static queryInvoices = async (q:PiMiaTypes.IInvoiceQuery,s:string[],o?:any,t?:number) => {

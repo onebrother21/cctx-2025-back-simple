@@ -12,7 +12,10 @@ export enum IUserStatuses {
   DELETED = "deleted",
   VERIFIED = "verified",
 }
-export type IUserPre = {
+export type IUserType = 
+Omit<DocEntity<IUserStatuses,never>,"meta"> 
+& AUTH.IAuthParams 
+& {
   email:string;
   mobile:string;
   name:{first:string;last:string;};
@@ -21,12 +24,6 @@ export type IUserPre = {
   dob:Date;
   sex:"M"|"F"|"O";
   loc:{type:"Point",coordinates:[number,number]};
-};
-export type IUserType = 
-Omit<DocEntity<IUserStatuses,never>,"meta"> 
-& AUTH.IAuthParams 
-& IUserPre 
-& {
   info:Partial<{
     isTwoFactorReq:boolean;
     isAgeVerifyReq:boolean;
@@ -48,10 +45,13 @@ Omit<DocEntity<IUserStatuses,never>,"meta">
   location:AddressObj;
   role:string;
 };
+
+
+export type IUserPre = Pick<IUserType,"id"|"email"|"dob"|"loc">;
+export type IUserPreview = Pick<IUserType,"id"|"username"|"fullname"|"location">;
 export type IUserJson = Omit<IUserType,|"profiles"|"profile"|"devices"|"device"|"dob"|"sex"|"loc"> & {
   profile:PROFILE.IProfileJson|PROFILE.IProfileJsonAuth|null;
 };
-export type IUserPreview = Pick<IUserType,|"id"|"username"|"fullname"|"location">;
 
 export interface IUserMethods {
   toAge():number;

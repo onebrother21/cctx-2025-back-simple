@@ -1,47 +1,26 @@
-import dotenv from 'dotenv';
-dotenv.config();
+import doRandomSleep from "./random-sleep";
+import sendNotifications from "./send-notifications";
+// import autoAssignCouriers from "./random-sleep";
+import bulkEditCollection from "./bulk-edit-collection";
+import logData from "./log-data";
+import clockBugs from "./clock-bugs";
+import tokenCleanUp from "./random-sleep";
 
-import db from '../init-db';
-import Utils from '@utils';
-
-import doRandomSleep from './random-sleep';
-import sendNotifications from './send-notifications';
-//import autoAssignCouriers from './auto-assign-couriers';
-import bulkEditCollection from './bulk-edit-collection';
-import logData from './log-data';
-import clockBugs from './clock-bugs';
-import tokenCleanUp from './token-cleanup';
-
-enum MyQueueNames {
+export enum MyQueueNames {
   RANDOM_SLEEP = "random-sleep",
   SEND_NOTIFICATIONS = "send-notifications",
-  BULK_EDIT_COLLECTION = "bulk-edit-collection",
-  LOG_DATA = "log-data",
-  CLOCK_BUGS = "clock-bugs",
-  TOKEN_CLEANUP = 'token-cleanup',
+  //BULK_EDIT_COLLECTION = "bulk-edit-collection",
+  //LOG_DATA = "log-data",
+  // CLOCK_BUGS = "clock-bugs",
+  //TOKEN_CLEANUP = 'token-cleanup',
 }
-const MyWorkerProcessors = {
+
+export const MyWorkerProcessors = {
   [MyQueueNames.RANDOM_SLEEP]:doRandomSleep,
   [MyQueueNames.SEND_NOTIFICATIONS]:sendNotifications,
-  //[MyQueueNames.AUTO_ASSIGN_COURIERS]:autoAssignCouriers,
-  [MyQueueNames.BULK_EDIT_COLLECTION]:bulkEditCollection,
-  [MyQueueNames.LOG_DATA]:logData,
-  [MyQueueNames.CLOCK_BUGS]:clockBugs,
-  [MyQueueNames.TOKEN_CLEANUP]:tokenCleanUp,
+ // [MyQueueNames.AUTO_ASSIGN_COURIERS]:autoAssignCouriers,
+ // [MyQueueNames.BULK_EDIT_COLLECTION]:bulkEditCollection,
+  //[MyQueueNames.LOG_DATA]:logData,
+  //[MyQueueNames.CLOCK_BUGS]:clockBugs,
+  //[MyQueueNames.TOKEN_CLEANUP]:tokenCleanUp,
 }
-const logItems = ['error','closed','init','failed','completed'];
-
-export class MyWorkers {
-  init = async () => {
-    try{
-      await db.connect();
-      Object.values(MyQueueNames).forEach(k => Utils.createWorker(k,MyWorkerProcessors[k],{logItems}));
-    }
-    catch(e){
-      Utils.error(e);
-      process.exit(1);
-    }
-  }
-}
-export default MyWorkers;
-export { MyQueueNames };

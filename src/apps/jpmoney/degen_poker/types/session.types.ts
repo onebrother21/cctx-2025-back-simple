@@ -1,5 +1,5 @@
-import * as Profiles from "./profiles.types";
-import * as Venues from "./venue.types";
+import * as PROFILES from "./profiles.types";
+import * as VENUE from "./venue.types";
 
 import Types from "@types";
 
@@ -10,8 +10,8 @@ export enum IDegenSessionStatuses {
   COMPLETED = "completed",
   CLOSED = "closed",
 }
-export type IDegenSessionType = DocEntity<IDegenSessionStatuses,Profiles.IDegenPlayer> & {
-  venue:Venues.IDegenVenue;
+export type IDegenSessionType = DocEntity<IDegenSessionStatuses,PROFILES.IDegenPlayer> & {
+  venue:VENUE.IDegenVenue;
   desc:string;
   type:"C"|"T";
   dateOfPlay:Date;
@@ -31,7 +31,7 @@ export type IDegenSessionType = DocEntity<IDegenSessionStatuses,Profiles.IDegenP
   meta:{
     score:number;
   };
-  player:Profiles.IDegenPlayer;
+  player:PROFILES.IDegenPlayer;
 };
 export type IDegenSessionITO = Partial<IDegenSessionType>;
 export type IDegenSessionPTO = Pick<IDegenSessionType,"id">;

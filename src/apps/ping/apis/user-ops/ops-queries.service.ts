@@ -6,7 +6,7 @@ import Services from '@services';
 import PingModels from "../../models";
 import PingTypes from "../../types";
 
-const {MongooseAggHelpers} = Utils;
+const {MongooseAggHelpers} = Services;
 
 export class PingQueriesService {
   static queryExtChains = async (q:PingTypes.IPingExtChainQuery,s:string[],o?:any,t?:number) => {

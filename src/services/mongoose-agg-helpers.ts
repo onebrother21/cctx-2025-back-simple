@@ -1,10 +1,5 @@
 import mongoose from "mongoose";
-import Services from '@services';
-import {AppError} from "./common-models";
-import * as Utils from "./common-utils";
-import * as Logger from "./console-logger";
-
-const {LocationHelpers} = Services;
+import {LocationHelpers} from "./location-helpers.service";
 
 export type MongooseAggParams<Q extends StrongQuery<QueryKeys>> = {
   model:mongoose.Model<Document_>;
@@ -22,62 +17,63 @@ export interface MongooseAggHelpers<Q extends StrongQuery<QueryKeys>> extends Mo
 export class MongooseAggHelpers<Q extends StrongQuery<QueryKeys>> {
   constructor(o:MongooseAggParams<Q>){Object.assign(this,o);}
   selectGrouping = (fields:string[]) => {
-    const o:any = {_id: "$_id"};
+    const o:any = { _id: {$toString:"$_id"}};
     fields.forEach((k) => {
-      if (k === "id") return;
-      
-      if (k === "notes") {
-        o[k] = {
-          $push: {
-            $cond: [
-              { $ne:[{ $ifNull: ["$notes.author", ""] }, ""] },
-              {
-                author: {
-                  id: "$notes.author._id",
-                  name: "$notes.author.name",
-                  displayName: "$notes.author.displayName",
-                  app: "$notes.author.app",
-                  type: "$notes.author.type",
-                  img: "$notes.author.img.url",
+      switch(k){
+        case"id":return;
+        case "notes":{
+          o[k] = {
+            $push: {
+              $cond: [
+                { $ne:[{ $ifNull: ["$notes.author", ""] }, ""] },
+                {
+                  author: {
+                    id: {$toString:"$notes.author._id"},
+                    name: "$notes.author.name",
+                    displayName: "$notes.author.displayName",
+                    app: "$notes.author.app",
+                    type: "$notes.author.type",
+                    img: "$notes.author.img.url",
+                  },
+                  body: "$notes.body",
+                  time: "$notes.time",
                 },
-                body: "$notes.body",
-                time: "$notes.time",
-              },
-              null,
-            ],
-          },
-        };
-        return;
-      }
-      if (k === "tasks") {
-        o[k] = {
-          $push: {
-            $cond: [
-              { $ne:[{ $ifNull: ["$tasks.creator", ""] }, ""] },
-              {
-                creator: {
-                  id: "$tasks.creator._id",
-                  name: "$tasks.creator.name",
-                  displayName: "$tasks.creator.displayName",
-                  app: "$tasks.creator.app",
-                  type: "$tasks.creator.type",
-                  img: "$tasks.creator.img.url",
+                null,
+              ],
+            },
+          };
+          break;
+        }
+        case "tasks":{
+          o[k] = {
+            $push: {
+              $cond: [
+                { $ne:[{ $ifNull: ["$tasks.creator", ""] }, ""] },
+                {
+                  creator: {
+                    id: {$toString:"$tasks.creator._id"},
+                    name: "$tasks.creator.name",
+                    displayName: "$tasks.creator.displayName",
+                    app: "$tasks.creator.app",
+                    type: "$tasks.creator.type",
+                    img: "$tasks.creator.img.url",
+                  },
+                  app:"$tasks.app",
+                  project: "$tasks.project",
+                  type: "$tasks.type",
+                  title: "$tasks.title",
+                  desc: "$tasks.desc",
+                  createdOn: "$tasks.createdOn",
+                  dueOn: "$tasks.dueOn",
                 },
-                app:"$tasks.app",
-                project: "$tasks.project",
-                type: "$tasks.type",
-                title: "$tasks.title",
-                desc: "$tasks.desc",
-                createdOn: "$tasks.createdOn",
-                dueOn: "$tasks.dueOn",
-              },
-              null,
-            ],
-          },
-        };
-        return;
+                null,
+              ],
+            },
+          };
+          break;
+        }
+        default:o[k] = { $first: "$" + k };break;
       }
-      o[k] = { $first: "$" + k };
     });
     return o;
   };
@@ -146,7 +142,6 @@ export class MongooseAggHelpers<Q extends StrongQuery<QueryKeys>> {
       { $project:  this.selectProjections(select,projections)},
     ];
     const results_ = await model.aggregate(pipeline);
-    Logger.log(Utils.flattenObject(results_[0]));
     const results = locQuery?
     LocationHelpers.formatQueryResultsWithDistCalc(results_,select,locQuery):
     results_;

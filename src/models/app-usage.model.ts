@@ -8,7 +8,10 @@ const appUsageSchema = new Schema<Types.IAppUsage,AppUsage,Types.IAppUsageMethod
   who:{type:String,required:true},
   what:{type:Schema.Types.Mixed,required:true},
   which:String,
-  where:Utils.locCoordsSchema,
+  where:{
+    type:Utils.locCoordsSchema,
+    validate:(loc:number[]) => ({type:"Point",coordinates:loc})
+  },
   when:{type:Date,default:() => Date.now()},
   how:String,
   to:String,

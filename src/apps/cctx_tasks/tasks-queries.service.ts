@@ -3,7 +3,7 @@ import Types from "@types";
 import Utils from '@utils';
 import Services from '@services';
 
-const {MongooseAggHelpers} = Utils;
+const {MongooseAggHelpers} = Services;
 
 export class TasksQueriesService {
   static queryTasks = async (q:Types.ITaskQuery,s:string[],o?:any,t?:number) => {
@@ -64,7 +64,7 @@ export default TasksQueriesService;
 
 const TASK_PROJECTIONS:any = {
   creator: {
-    id: "$creator._id",
+    id: {$toString:"$creator._id"},
     name: "$creator.name",
     displayName: "$creator.displayName",
     app: "$creator.app",
@@ -76,7 +76,7 @@ const TASK_PROJECTIONS:any = {
       if: { $eq: [{ $ifNull: ["$admin", ""] }, ""] },
       then: null,
       else: {
-        id: "$admin._id",
+        id: {$toString:"$admin._id"},
         name: "$admin.name",
         displayName: "$admin.displayName",
         app: "$admin.app",

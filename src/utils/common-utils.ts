@@ -346,19 +346,26 @@ export const isISODateStr = (s:string) => {
 }
 export const flattenObject = (obj:any, parentKey:string|number = '', result:any = {}) => {
   for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      const newKey = parentKey ? `${parentKey}.${key}` : key;
-      if (typeof obj[key] === 'object' && obj[key] !== null && !Array.isArray(obj[key])) {
-        flattenObject(obj[key], newKey, result);
-      }
-      if (typeof obj[key] === 'object' && obj[key] !== null) {
+    const newKey = parentKey ? `${parentKey}.${key}` : key;
+    switch(true){
+      //case !obj[key]:result[newKey] = obj[key];break;
+      case Array.isArray(obj[key]):{
         for (let i = 0,l = obj[key].length;i<l;i++){
-          flattenObject(obj[key][i],i,result);
+          flattenObject(obj[key][i],`${newKey}.${i}`,result);
         }
+        break;
       }
-      else {
-        result[newKey] = obj[key];
+      case isDate(obj[key]):{
+        console.log("date",obj[key]);
+        result[newKey] = obj[key];break;
       }
+      case typeof obj[key] === 'object':{
+        flattenObject(obj[key],newKey,result);
+        break;
+      }
+      default:
+        console.log(typeof obj[key],obj[key]);
+        result[newKey] = obj[key];break;
     }
   }
   return result;

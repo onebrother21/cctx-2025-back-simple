@@ -6,7 +6,7 @@ import Services from '@services';
 import DegenModels from "../../models";
 import DegenTypes from "../../types";
 
-const {MongooseAggHelpers} = Utils;
+const {MongooseAggHelpers} = Services;
 
 export class DegenSessionsQueriesService {
   static querySessions = async (q:DegenTypes.IDegenSessionQuery,s:string[],o?:any,t?:number) => {

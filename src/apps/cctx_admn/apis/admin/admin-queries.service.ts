@@ -3,7 +3,7 @@ import Types from "@types";
 import Utils from '@utils';
 import Services from '@services';
 
-const {MongooseAggHelpers} = Utils;
+const {MongooseAggHelpers} = Services;
 
 export class AdminQueriesService {
   static queryDevices = async (q:Types.IAppDeviceQuery,s:string[],o?:any,t?:number) => {

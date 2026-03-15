@@ -36,12 +36,12 @@ const addressSchema = new Schema<AddressObj>({
   postal: { type: String},
   country: { type: String,required:true},
   info:{type:String},
-  loc:locCoordsSchema,//{type:locCoordsSchema,validate:(loc:number[]) => ({type:"Point",coordinates:loc})}
+  loc:{type:locCoordsSchema,validate:(loc:number[]) => ({type:"Point",coordinates:loc})}
 },{_id:false,timestamps:false});
 addressSchema.index({"loc":"2dsphere"});
 const addrSchema = new Schema<AddressObj>({
   info:{type:String},
-  loc:locCoordsSchema,//{type:locCoordsSchema,validate:(loc:number[]) => ({type:"Point",coordinates:loc})}
+  loc:{type:locCoordsSchema,validate:(loc:number[]) => ({type:"Point",coordinates:loc})}
 },{_id:false,timestamps:false});
 addrSchema.index({"loc":"2dsphere"});
 const noteSchema = new Schema<Types.INote>({

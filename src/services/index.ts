@@ -8,6 +8,7 @@ import { AnalyticsService as Analytics } from "./prev/analytics.service";
 import { LocationHelpers } from "./location-helpers.service";
 import { WebSocketService as Sockets } from "./websocket.service";
 import { NotificationService as Notifications } from "./notification.service";
+import { MongooseAggHelpers } from "./mongoose-agg-helpers";
 
 export const Services = {
   /*
@@ -18,6 +19,7 @@ export const Services = {
   */
   Notifications,
   LocationHelpers,
+  MongooseAggHelpers,
   Sockets,
 };
 export default Services;

@@ -25,7 +25,7 @@ export interface IAppUsageStatics {
 }
 export type IAppUsageQueryKeys = {
   strings:|"who"|"what"|"which"|"how"|"to"|"with"|"why";
-  dates:|"when";
+  dates:|"when_date";
   geoNear:"where";
 };
 export type IAppUsageQuery = StrongQuery<IAppUsageQueryKeys>;
