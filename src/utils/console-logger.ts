@@ -24,7 +24,8 @@ const here_ = ():{functionName:string,fileInfo:string} => {
   const realStack = stack.slice(firstAt);
   const stackArr = realStack.split("at ").map(s => s.trim()).slice(1);
   const here = stackArr[numOfLinesToDisgardInHere];
-  const functionName = here.split("C:")[0].trim().replace(/[\s\(\)]+$/,"");
+  const cdrive = /C:/.test(here);
+  const functionName = (cdrive?here.split("C:")[0].trim():"").replace(/[\s\(\)]+$/,"");
   const filepath = here.split("C:")[1].trim().replace(/[\s\(\)]+$/,"");
   if(!filepath) throw new AppError({status:500,info:here,message:"Logger failed!"});
   const filePathParts = filepath.split("\\");
