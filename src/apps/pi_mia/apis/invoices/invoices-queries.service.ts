@@ -9,7 +9,7 @@ import PiMiaTypes from "../../types";
 const {MongooseAggHelpers} = Services;
 
 export class InvoicesQueriesService {
-  static queryInvoices = async (q:PiMiaTypes.IInvoiceQuery,s:string[],o?:any,t?:number) => {
+  static queryInvoices = async (q:PiMiaTypes.IInvoiceQuery,s:string[],o?:any,t:number = 0) => {
     const {results} = await new MongooseAggHelpers<PiMiaTypes.IInvoiceQuery>({
       model:PiMiaModels.Invoice,
       query:q,

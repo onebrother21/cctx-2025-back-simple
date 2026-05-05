@@ -22,7 +22,7 @@ export type IDegenSessionType = DocEntity<IDegenSessionStatuses,PROFILES.IDegenP
     amt:number;
     reason:string;
   }[];
-  notes:Types.INote[];
+  notes:Types.IMessage[];
   hands:any[];
   info:{
     startingStack?:string;
@@ -34,8 +34,8 @@ export type IDegenSessionType = DocEntity<IDegenSessionStatuses,PROFILES.IDegenP
   player:PROFILES.IDegenPlayer;
 };
 export type IDegenSessionITO = Partial<IDegenSessionType>;
-export type IDegenSessionPTO = Pick<IDegenSessionType,"id">;
-export type IDegenSessionOTO = Partial<IDegenSessionType>;
+export type IDegenSessionPTO = Partial<IDegenSessionType>;// Pick<"id"|"venue"|"dateOfPlay">;
+export type IDegenSessionOTO = Partial<IDegenSessionType & {notes:Types.IMessageJson[]}>;
 
 export interface IDegenSessionMethods {
   saveMe():Promise<void>;

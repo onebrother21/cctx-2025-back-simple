@@ -1,15 +1,15 @@
 import mongoose,{Schema,Model} from 'mongoose';
-import uniqueValidator from "mongoose-unique-validator";
 import Utils from '@utils';
 import Types from "@types";
 import PingTypes from "../types";
 
 const ObjectId = Schema.Types.ObjectId;
 const {NEW} = PingTypes.IPingExtChainStatuses;
+const uniqueValidator = require("mongoose-unique-validator").default;
 
 const chainSchema = new Schema<PingTypes.IPingExtChain,PingExtChain,PingTypes.IPingExtChainMethods>({
   status:{type:String,enum:Object.values(PingTypes.IPingExtChainStatuses),default:NEW},
-  chainId:{type:String,required:true},
+  chainId:{type:Number,required:true},
   info:Object,
   meta:Object,
 },{timestamps:{createdAt:"createdOn",updatedAt:"updatedOn"}});

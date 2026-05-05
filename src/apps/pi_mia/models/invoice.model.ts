@@ -1,11 +1,11 @@
 import mongoose,{Schema,Model} from 'mongoose';
-import uniqueValidator from "mongoose-unique-validator";
 import Utils from '@utils';
 import Types from "@types";
 import PiMiaTypes from "../types";
 
 const ObjectId = Schema.Types.ObjectId;
 const {NEW} = PiMiaTypes.IInvoiceStatuses;
+const uniqueValidator = require("mongoose-unique-validator").default;
 
 const invoiceItemSchema = new Schema<PiMiaTypes.IInvoiceItem>({
   type:{type:String,enum:["hr","attempt"]},

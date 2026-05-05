@@ -5,6 +5,13 @@ import Types from "@types";
 import Utils from '@utils';
 
 export class TasksValidators {
+  static createTasks = [[
+    body('data').isArray(),
+    body('data.*.app').isString().withMessage('Invalid app'),
+    body('data.*.type').isString().isIn(["bug","improvements","suggestion","other"]).withMessage('Invalid type'),
+    body('data.*.title').isString().withMessage('Invalid title'),
+    body('data.*.desc').isString().withMessage('Invalid description'),
+  ],CheckValidation()] as IHandler[];
   static createTask = [[
     body('data.app').isString().withMessage('Invalid app'),
     body('data.type').isString().isIn(["bug","improvements","suggestion","other"]).withMessage('Invalid type'),

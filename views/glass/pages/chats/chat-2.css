@@ -1,0 +1,106 @@
+.app-container {
+    display: flex;
+    max-width: 1200px;
+    height: 90vh;
+    margin: 20px auto;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+}
+
+/* Responsive Stacking: Stacks components on screens < 768px */
+@media (max-width: 768px) {
+    .app-container {
+        flex-direction: column;
+        height: auto;
+    }
+    .sidebar { border-right: none; border-bottom: 1px solid #eee; }
+}
+
+/* Sidebar Styles (Original preservation) */
+.sidebar { flex: 1; border-right: 1px solid #eee; overflow-y: auto; }
+.avatar { width: 48px; height: 48px; border-radius: 50%; margin-right: 12px; }
+.message-card { display: flex; padding: 15px; border-bottom: 1px solid #f9f9f9; }
+
+/* Chat Detail View (Updated) */
+.chat-view {
+    flex: 2.5;
+    display: flex;
+    flex-direction: column;
+    background-color: #fafafa;
+}
+
+.chat-header {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    border-bottom: 1px solid #eee;
+    background: #fff;
+}
+
+.avatar-small { width: 40px; height: 40px; border-radius: 50%; margin-right: 12px; }
+.user-info { display: flex; flex-direction: column; }
+.user-name { font-weight: bold; }
+.online-status { font-size: 12px; color: #4caf50; }
+
+.chat-content {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.date-divider {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 12px;
+    color: #999;
+}
+
+/* Bubble Styling */
+.message-bubble {
+    max-width: 70%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    position: relative;
+    font-size: 14px;
+}
+
+.incoming { background: #eee; align-self: flex-start; }
+.outgoing { background: #0088cc; color: #fff; align-self: flex-end; }
+
+.msg-time {
+    display: block;
+    font-size: 10px;
+    margin-top: 4px;
+    opacity: 0.7;
+    text-align: right;
+}
+
+/* Fixed Input Bar */
+.chat-input {
+    padding: 15px;
+    display: flex;
+    background: #fff;
+    border-top: 1px solid #eee;
+}
+
+.chat-input input {
+    flex: 1;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 10px 15px;
+    outline: none;
+}
+
+.send-icon {
+    background: none;
+    border: none;
+    color: #0088cc;
+    font-size: 20px;
+    margin-left: 10px;
+    cursor: pointer;
+}

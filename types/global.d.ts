@@ -1,6 +1,7 @@
-declare type Request_ = import('express').Request;
+declare type Request_= import('express').Request;
 declare type Response_ = import('express').Response;
 declare type Next_ = import('express').NextFunction;
+
 declare type Document_ = import('mongoose').Document;
 declare type ObjectId_ = import('mongoose').Schema.Types.ObjectId;
 

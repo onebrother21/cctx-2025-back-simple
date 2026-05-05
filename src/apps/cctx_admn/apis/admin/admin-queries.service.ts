@@ -6,7 +6,7 @@ import Services from '@services';
 const {MongooseAggHelpers} = Services;
 
 export class AdminQueriesService {
-  static queryDevices = async (q:Types.IAppDeviceQuery,s:string[],o?:any,t?:number) => {
+  static queryDevices = async (q:Types.IAppDeviceQuery,s:string[],o?:any,t:number = 0) => {
     const {results} = await new MongooseAggHelpers<Types.IAppDeviceQuery>({
       model:Models.AppDevice,
       query:q,
@@ -24,7 +24,7 @@ export class AdminQueriesService {
     }).runQuery();
     return {results};
   };
-  static queryAppUsages = async (q:Types.IAppUsageQuery,s:string[],o?:any,t?:number) => {
+  static queryAppUsages = async (q:Types.IAppUsageQuery,s:string[],o?:any,t:number = 0) => {
     const {results} = await new MongooseAggHelpers<Types.IAppUsageQuery>({
       model:Models.AppUsage,
       query:q,

@@ -3,8 +3,8 @@ import Utils from '@utils';
 
 const getAppPublicRouter = () => {
   const router = Router();
-  router.get("/hm",(req:IRequest,res) => {res.json({success:true,message:"ready"});});
-  router.get('/decrypt',(req:IRequest, res) => {
+  router.get("/hm",(req,res) => {res.json({success:true,message:"ready"});});
+  router.get('/decrypt',(req,res) => {
     try {
       const {encryptedData} = req.body;
       if(!encryptedData) {
@@ -26,7 +26,7 @@ const getAppPublicRouter = () => {
       });
     }
   });
-  router.get('/encrypt',(req:IRequest, res) => {
+  router.get('/encrypt',(req, res) => {
     try {
       const data = { message: 'This is sensitive data' };
       const encryptedData = Utils.encrypt(data);
@@ -40,7 +40,7 @@ const getAppPublicRouter = () => {
       });
     }
   });
-  router.get("/connect",(req:IRequest,res) => {
+  router.get("/connect",(req,res) => {
     res.json({
       success:true,
       message:"ready",

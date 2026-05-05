@@ -13,7 +13,7 @@ export enum IUserStatuses {
   VERIFIED = "verified",
 }
 export type IUserType = 
-Omit<DocEntity<IUserStatuses,never>,"meta"> 
+DocEntity<IUserStatuses>
 & AUTH.IAuthParams 
 & {
   email:string;
@@ -54,7 +54,7 @@ export type IUserJson = Omit<IUserType,|"profiles"|"profile"|"devices"|"device"|
 };
 
 export interface IUserMethods {
-  toAge():number;
+  toAge():number|null;
   getUserContactByMethod(method:AUTH.IContactMethods):string;
   saveMe():Promise<void>;
   populateMe():Promise<void>;

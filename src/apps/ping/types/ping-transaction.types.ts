@@ -10,7 +10,7 @@ export enum IPingTransactionStatuses {
   OK = "connected",
   ERR = "error",
 }
-export type IPingTransactionType = DocEntity<IPingTransactionStatuses,never> & {
+export type IPingTransactionType = DocEntity<IPingTransactionStatuses> & {
   payer:string;
   payee:string;
   amount:number;

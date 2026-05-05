@@ -2,6 +2,7 @@ import Models from "@models";
 import Types from "@types";
 import Utils from '@utils';
 import Services from '@services';
+import { QueryOptions } from 'mongoose';
 
 import PingModels from "../../models";
 import PingTypes from "../../types";
@@ -10,7 +11,7 @@ const {LocationHelpers} = Services;
 
 const notify = Services.Notifications.createNotification;
 
-const queryOpts = { new:true,runValidators: true,context:'query' };
+const queryOpts:QueryOptions = { returnDocument:"after",runValidators: true,context:'query' };
 const saltRounds = Number(process.env.SALT_ROUNDS || 10);
 
 const approvalStats = Types.IApprovalStatuses;
@@ -26,12 +27,14 @@ export class AdminService {
     type AdminInit = Partial<Types.IProfile> & LocationObj;
     const {loc,...data} = req.body.data as AdminInit;
     const user = req.user as Types.IUser;
-    if(!/degen_poker/.test(data.app)) throw new AppError(400,"wrong app!");
-    const role = data.app+"-"+data.type;
+    const app = data.app;
+    if(!app) throw new AppError(400,"unrecognized appspace!");
+    if(!/degen_poker/.test(app)) throw new AppError(400,"wrong app!");
+    const role = app+"-"+data.type;
 
     const admin = new Profile({
       creator:req.user.id,
-      app:data.app,
+      app,
       type:data.type,
       name:user.fullname,
       displayName:user.username,
@@ -48,7 +51,7 @@ export class AdminService {
     await notify({
       type:"PLAYER_REGISTERED",
       method:EMAIL,
-      audience:[{user:user.id,info:user.email}],
+      audience:[{user:user.id as any,info:user.email}],
       data:{adminName:admin.name}
     });
     user.role = role;

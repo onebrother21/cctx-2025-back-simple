@@ -6,5 +6,6 @@ export * from "./user-action.types";
 export * from "./profile.types";
 export * from "./notification.types";
 export * from "./notification-templates.types";
-export * from "./note.types";
 export * from "./task.types";
+export * from "./message.types";
+export * from "./msg-chain.types";

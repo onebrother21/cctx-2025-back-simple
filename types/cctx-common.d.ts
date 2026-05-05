@@ -31,7 +31,7 @@ type BooleanQuery<K extends string> = Partial<Record<K,boolean>>;
 type NumberQuery<K extends string> = Partial<Record<K,Partial<Record<"$eq"|"$ne"|"$lt"|"$lte"|"$gt"|"$gte",number>>>>;
 type PrimitiveQuery<K extends string> = StringQuery<K>|BooleanQuery<K>|NumberQuery<K>;
 
-type GeoNearQueryPre = Partial<Record<"locQuery",{pts:[number,number],radius:number,unit:"mi"|"km"}>>;
+type GeoNearQueryPre = Record<"locQuery",{pts:[number,number],radius:number,unit:"mi"|"km"}>;
 type GeoNearQuery<K extends string> = Partial<Record<K,{$geoWithin:{$centerSphere:[[number,number],number]}}>>;
 type MetaQuery<K extends string = "meta"> = Partial<{[k in `${K}.${string}`]:PrimitiveQuery<k>;}>;
 type InfoQuery<K extends string = "info"> = Partial<{[k in `${K}.${string}`]:PrimitiveQuery<k>;}>;
@@ -42,10 +42,26 @@ type QueryTypes = "strings"|"booleans"|"numbers"|"dates"|"geoNear"|"any";
 type QueryKeys = Partial<Record<QueryTypes,string>>;
 
 type BasicQuery<K extends QueryKeys> =
-StringQuery<K["strings"]>
-& BooleanQuery<K["booleans"]>
-& NumberQuery<K["numbers"]>
-& NumberQuery<K["dates"]>
-& GeoNearQuery<K["geoNear"]> & GeoNearQueryPre
-& MetaQuery & InfoQuery & ObjectQuery<K["any"]>;
+(K["strings"] extends string?StringQuery<K["strings"]>:{})
+& (K["booleans"] extends string?BooleanQuery<K["booleans"]>:{})
+& (K["numbers"] extends string?NumberQuery<K["numbers"]>:{})
+& (K["dates"] extends string?NumberQuery<K["dates"]>:{})
+& (K["geoNear"] extends string?GeoNearQuery<K["geoNear"]>:{})
+& (K["any"] extends string?ObjectQuery<K["any"]>:{})
+& MetaQuery & InfoQuery & GeoNearQueryPre;
 type StrongQuery<K extends QueryKeys> = BasicQuery<K> & LogicalQuery<BasicQuery<K>>;
+
+type MiscModelRef = {id:string;ref:string;};
+type Status<K extends string> = {name:K;time:string|Date;info?:MiscInfo;};
+type LocaleDateOpts = Record<"weekday"|"month"|"day"|"year"|"hour"|"minute"|"second",string> & {hour12?:boolean;};
+type HrsOfOperation = `${number}${"am"|"pm"} - ${number}${"am"|"pm"}`;
+type PhoneNumber = `+${number}-${number}-${number}-${number}`;
+type ZipCode = `${number}`;
+type LocationObj = {loc:[number,number]};
+type AddressObj = Partial<Record<"streetAddr"|"city"|"state"|"postal"|"country"|"info",string> & {loc:[number,number]}>;
+type AddressResult = Pick<AddressObj,"info"|"loc">;
+type MinutesToTheNearestFive = "00"|"05"|"10"|"15"|"20"|"25"|"30"|"35"|"40"|"45"|"50"|"55";
+type Hours = 
+|"01"|"02"|"03"|"04"|"05"|"06"|"07"|"08"|"09"|"10"|"11"|"12"
+|"13"|"14"|"15"|"16"|"17"|"18"|"19"|"20"|"21"|"22"|"23"|"24";
+type TimeToTheNearestFive = `${Hours}:${MinutesToTheNearestFive}`;

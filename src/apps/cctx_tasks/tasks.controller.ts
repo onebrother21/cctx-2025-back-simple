@@ -3,14 +3,6 @@ import TasksQueries from './tasks-queries.service';
 
 import Types from "@types";
 import Utils from '@utils';
-import fs from "fs";
-import {v2 as cloudinary} from "cloudinary";
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
-});
 
 export class TasksController {
   static createTask:IHandler = async (req,res,next) => {
@@ -29,14 +21,14 @@ export class TasksController {
       const {items} = req.body.data;
       const {tasks} = await TasksService.createTasks(profileId,items);
       res.locals.success = true;
-      res.locals.data = {created:tasks.length,ok:true};
+      res.locals.data = {results:tasks.map(t => t.json())};
       next();
     } catch (e) { next(e); }
   };
   static getTaskById:IHandler = async (req,res,next) => {
     try {
       const profileId = req.profile.id;
-      const {taskId} = req.params;
+      const {taskId} = req.params as Record<string,string>;
       const {task} = await TasksService.getTaskById(profileId,taskId);
       res.locals.success = true;
       res.locals.data = task.json();
@@ -46,8 +38,8 @@ export class TasksController {
   static updateTask:IHandler = async (req,res,next) => {
     try {
       const profileId = req.profile.id;
+      const taskId = req.params.taskId as string;
       const data = req.body.data;
-      const {taskId} = req.params;
       const {task} = await TasksService.updateTask(profileId,taskId,data);
       res.locals.success = true;
       res.locals.data = task.json();
@@ -57,7 +49,7 @@ export class TasksController {
   static deleteTask:IHandler = async (req,res,next) => {
     try {
       const profileId = req.profile.id;
-      const {taskId} = req.params;
+      const taskId = req.params.taskId as string;
       const {ok} = await TasksService.deleteTask(profileId,taskId);
       res.locals.success = ok;
       res.locals.data = {removed:taskId,ok};
@@ -66,7 +58,7 @@ export class TasksController {
   };
   static updateTaskStatus:IHandler = async (req,res,next) => {
     try {
-      const taskId = req.params.taskId;
+      const taskId = req.params.taskId as string;
       const statusUpdates = req.body.data;
       if(!taskId) throw new Utils.AppError(422,'Requested parameters not found');
       const {task} = await TasksService.updateTaskStatus(taskId,statusUpdates);
@@ -77,7 +69,7 @@ export class TasksController {
   };
   static addUpdateToTask:IHandler = async (req,res,next) => {
     try {
-      const taskId = req.params.taskId;
+      const taskId = req.params.taskId as string;
       const updateType = req.params.updateType as "note";
       const data = req.body.data;
       if(!taskId) throw new Utils.AppError(422,'Requested parameters not found');
@@ -89,7 +81,7 @@ export class TasksController {
   };
   static removeUpdateToTask:IHandler = async (req,res,next) => {
     try {
-      const taskId = req.params.taskId;
+      const taskId = req.params.taskId as string;
       const updateType = req.params.updateType as "note";
       const itemIdx = req.params.itemIdx;
       if(!taskId) throw new Utils.AppError(422,'Requested parameters not found');
@@ -102,8 +94,8 @@ export class TasksController {
   static finalizeTask:IHandler = async (req,res,next) => {
     try {
       const profileId = req.profile.id;
+      const taskId = req.params.taskId as string;
       const data = req.body.data;
-      const {taskId} = req.params;
       const {task} = await TasksService.finalizeTask(profileId,taskId,data);
       res.locals.success = true;
       res.locals.data = task.json();
@@ -113,7 +105,7 @@ export class TasksController {
   static closeTask:IHandler = async (req,res,next) => {
     try {
       const profileId = req.profile.id;
-      const {taskId} = req.params;
+      const taskId = req.params.taskId as string;
       const {task} = await TasksService.closeTask(taskId);
       res.locals.success = true;
       res.locals.data = task.json();

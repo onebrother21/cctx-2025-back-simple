@@ -1,13 +1,13 @@
 import mongoose,{Schema,Model} from 'mongoose';
-import uniqueValidator from "mongoose-unique-validator";
 import Utils from '@utils';
 import Types from "@types";
 import DegenTypes from "../types";
 
 const ObjectId = Schema.Types.ObjectId;
 const {NEW} = DegenTypes.IDegenSessionStatuses;
+const uniqueValidator = require("mongoose-unique-validator").default;
 
-const legderItemSchema = new Schema<DegenTypes.IDegenSession["ledger"]>({
+const legderItemSchema = new Schema<DegenTypes.IDegenSession["ledger"][0]>({
   time:Date,
   amt:Number,
   reason:String
@@ -23,7 +23,7 @@ const sessionSchema = new Schema<DegenTypes.IDegenSession,DegenSession,DegenType
   startTime:String,
   endTime:String,
   ledger:[legderItemSchema],
-  notes:[Utils.noteSchema],
+  notes:[{type:ObjectId,ref:"cctx_messages",required:true},],
   hands:[Object],
   info:Object,
   meta:Object,

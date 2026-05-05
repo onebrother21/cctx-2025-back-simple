@@ -1,16 +1,18 @@
 import { UAParser } from "ua-parser-js";
+import { QueryOptions } from "mongoose";
 import Models from '@models';
 import Utils from '@utils';
 
 const deviceCookie = process.env.DEVICE_COOKIE || 'deviceCookie';
-const queryOpts = {new:true,runValidators:true};
+const queryOpts:QueryOptions = {returnDocument:"after",runValidators:true};
 
 export const SetUserDevice:() => IHandler = () => async (req, res, next) => {
   if(["POST","PUT","PATCH"].includes(req.method)){
     const cookie = req.signedCookies[deviceCookie];
     const data = req.body.device;
 
-    const ip = req.ip.replace(/:/gi,"").replace(/f/gi,"");
+    const ip_ = req.ip;
+    const ip = (ip_ || "").replace(/:/gi,"").replace(/f/gi,"");
     const deviceParser:any = new UAParser(req.headers["user-agent"]);
     const deviceData:any = deviceParser.getResult() || {};
     const device_ = {...deviceData,...data};
@@ -30,7 +32,7 @@ export const SetUserDevice:() => IHandler = () => async (req, res, next) => {
     else {
       const device = await Models.AppDevice.create({
         ...device_,
-        addrs:[ip],
+        addrs:[...ip?[ip]:[]],
         meta:{
           lastUse:new Date(),
           lastAddr:ip,

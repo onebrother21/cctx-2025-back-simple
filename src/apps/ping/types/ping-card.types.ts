@@ -12,7 +12,7 @@ export enum IPingCardStatuses {
   OK = "connected",
   ERR = "error",
 }
-export type IPingCardType = DocEntity<IPingCardStatuses,never> & {
+export type IPingCardType = DocEntity<IPingCardStatuses> & {
   cardId:number;
   cardNo:string;
   expiry:string;

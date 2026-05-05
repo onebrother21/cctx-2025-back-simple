@@ -44,7 +44,7 @@ export type IProfileType = DocEntity<IProfileStatuses,USER.IUser> & {
   org?:string;
   img?:ImageObj;
 };
-export type IProfileJson = Omit<IProfileType,"img"> & {img:string;age:number;};
+export type IProfileJson = Omit<IProfileType,"img"> & {img:string;age:number|null;};
 export type IProfileJsonAuth = IProfileJson & Pick<IProfileType,|"approval">;
 export type IProfilePreview = Pick<IProfileJson,"id"|"app"|"type"|"name"|"displayName"|"org"|"img">;
 

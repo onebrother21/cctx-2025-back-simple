@@ -21,7 +21,7 @@ export class RedisCache {
   public print = async () => {
     try {
       const cache = await this.get();
-      Utils.print("debug","redisCache","AppVars ->",cache);
+      Utils.print("debug","cctx-dev-back","redisCache","AppVars ->",cache);
     }
     catch (e) {
       console.error(e);
@@ -34,7 +34,7 @@ export class RedisCache {
     const cache = new this();
     cache.redis = new Redis(Utils.getRedisConnectionOpts());
     cache.redis.on("error",e => {
-      Utils.error(e);
+      Utils.print("error","cctx-dev-back","redis",e);
       reject(e);
     });
     cache.redis.on("connect",async () => {
@@ -42,7 +42,7 @@ export class RedisCache {
       const bvars_ = o.clear || o.reload?await cache.load():{};
       const data = {...bvars,...bvars_};
       await cache.set(data);
-      Utils.print("ok","ok","Redis connected");
+      Utils.print("ok","cctx-dev-back","Redis (connected)");
       done(cache);
     });
   });

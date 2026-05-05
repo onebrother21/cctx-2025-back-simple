@@ -12,7 +12,7 @@ const resetSecret = process.env.REFRESH_SECRET || 'resetsecret';
 const saltRounds = Number(process.env.SALT_ROUNDS || 10);
 const devStaticVerify = process.env.DEV_STATIC_VERIFY;
 
-const TOKEN_EXPIRATION = '3h'; // 24 hour
+const TOKEN_EXPIRATION = '24h'; // 24 hour
 const REFRESH_EXPIRATION = '7d'; // 7 days
 const RESET_EXPIRATION = '15m'; // 7 days
 
@@ -52,20 +52,21 @@ export class AuthUtilsService {
   }
   static validateVerify = async (user:Types.IUser,verification:string) => {
     const devVerify = devStaticVerify && devStaticVerify === verification;
-    const isMatch = !devVerify && await bcrypt.compare(verification,user.verification);
+    const userCode = user.verification || "0;";
+    const isMatch = !devVerify && await bcrypt.compare(verification,userCode);
     const didVerify = devVerify || isMatch;
     if(!didVerify) throw new Utils.AppError(401,"Email verification failed!");
     return didVerify;
   };
   static recognizeUserLogin = async (user:Types.IUser,device:Types.IAppDevice) => {
-    const unrecognized = !user.devices.filter(d => d._id == device.id).length;
+    const unrecognized = !user.devices.filter(d => d._id.toString() == device.id).length;
     if(unrecognized) {
-      user.devices.push(device.id);
+      user.devices.push(device.id as any);
       await user.saveMe();
       await notify({
         type:"UNRECOGNIZED_LOGIN",
         method:EMAIL,
-        audience:[{user:user.id,info:user.email}],
+        audience:[{user:user.id as any,info:user.email}],
         data:{name:Utils.cap(user.name.first as string)}
       });
       await AppUsage.make(`usr/${user.id}`,"userLoggedIn (Unrecognized)");
@@ -75,8 +76,8 @@ export class AuthUtilsService {
     return unrecognized;
   };
   static sendVerificationReq = async (user:Types.IUser,type:Types.IContactMethods) => {
-    const verification = Utils.shortId();
-    const audience = [{user:user.id as Types.IUser,info:user.getUserContactByMethod(type)}];
+    const verification = Utils.alphanum(6);
+    const audience = [{user:user.id as any,info:user.getUserContactByMethod(type)}];
     user.set({
       verification:bcrypt.hashSync(verification,saltRounds),
       meta:{
@@ -104,14 +105,17 @@ export class AuthUtilsService {
       case "refresh":secret = refreshSecret;expiresIn = REFRESH_EXPIRATION;break;
       case "reset":secret = resetSecret;expiresIn = RESET_EXPIRATION;break;
     }
-    const sub = Utils.hexId(32);
+    const sub = Utils.alphanum(32,"hex");
     const payload:Partial<Types.IAuthToken> = {type,userId,username,role,sub};
     const token = jwt.sign(payload,secret,{expiresIn,issuer:"cctx-auth"});
     const decoded = jwt.verify(token,secret) as Types.IAuthToken;
     const unixTime = Number(String(decoded.exp).padEnd(13,'0'));
     const expires = new Date(unixTime);
     
-    if(type == "refresh") await Models.AuthToken.findOneAndUpdate({userId},decoded,{upsert:true});
+    if(type == "refresh") await Models.AuthToken.findOneAndUpdate({userId},decoded,{
+      upsert:true,
+      returnDocument: 'after',
+    });
     return {token,expires};
   };
 }

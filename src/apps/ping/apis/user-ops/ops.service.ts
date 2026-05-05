@@ -2,6 +2,7 @@ import Models from "@models";
 import Types from "@types";
 import Utils from '@utils';
 import Services from '@services';
+import { QueryOptions } from 'mongoose';
 
 import PingModels from "../../models";
 import PingTypes from "../../types";
@@ -10,7 +11,7 @@ const {LocationHelpers} = Services;
 
 const notify = Services.Notifications.createNotification;
 
-const queryOpts = { new:true,runValidators: true,context:'query' };
+const queryOpts:QueryOptions = { returnDocument:"after",runValidators: true,context:'query' };
 const saltRounds = Number(process.env.SALT_ROUNDS || 10);
 
 const approvalStats = Types.IApprovalStatuses;
@@ -26,13 +27,15 @@ export class UserOpsService {
     type UserInit = Partial<Types.IProfile> & LocationObj;
     const {loc,...data} = req.body.data as UserInit;
     const user = req.user as Types.IUser;
-    if(!/ping/.test(data.app)) throw new Utils.AppError(400,"wrong app!");
-    const role = data.app+"-"+data.type;
+    const app = data.app;
+    if(!app) throw new Utils.AppError(400,"unrecognized appspace!");
+    if(!/ping/.test(app)) throw new Utils.AppError(400,"wrong app!");
+    const role = app+"-"+data.type;
 
     const profile = new Profile({
       creator:req.user.id,
       status:profileStats.NEW,
-      app:data.app,
+      app,
       type:data.type,
       name:user.fullname,
       displayName:user.username,
@@ -49,7 +52,7 @@ export class UserOpsService {
     await notify({
       type:"PLAYER_REGISTERED",//chng to USER_REGISTERED
       method:EMAIL,
-      audience:[{user:user.id,info:user.email}],
+      audience:[{user:user.id as any,info:user.email}],
       data:{profileName:profile.name}
     });
     user.role = role;

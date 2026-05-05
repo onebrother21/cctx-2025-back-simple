@@ -2,21 +2,26 @@ import CryptoJS from "crypto-js";
 import expressListRoutes from 'express-list-routes';
 import { deepmerge } from "deepmerge-ts";
 import * as logger from "./console-logger";
+import path from "path";
+import fs from "fs";
+import Types from "@types";
 
 type sortArg<T> = keyof T | `-${string & keyof T}`;
 const supersecret = process.env.ENCRYPTION_PUBLIC || "";
 const overwriteMerge = (destinationArray:any[], sourceArray:any[], options:any) => sourceArray;
 
-export const pkg = ():string => process.env["npm_package_name"];
+export const pkg = ():string => process.env["npm_package_name"] || "";
 export const app = ():string => /@/.test(pkg())?pkg().split("/")[1]:pkg();
 export const constPrefix = ():string => (app().toLocaleUpperCase()).replace(/-/g,"_");
-export const getconst = (str:string):any => parse(process.env[constPrefix() + str]);
-export const env = ():string => process.env["NODE_ENV"];
-export const mode = ():string => process.env["NODE_MODE"];
-export const version = ():string => process.env["npm_package_version"];
+export const getconst = (str:string):any => parse(process.env[constPrefix() + str] || "");
+export const env = ():string => process.env["NODE_ENV"] || "";
+export const mode = ():string => process.env["NODE_MODE"] || "";
+export const version = ():string => process.env["npm_package_version"] || "";
+export const isProd = (o = false):o is boolean => process.env.NODE_ENV === "production";
+
+
 export const stringify = (o:object) => JSON.stringify(o);
 export const parse = (k:string) => {try {return JSON.parse(k);} catch(e){return k;}};
-export const isProd = (o = false):o is boolean => process.env.NODE_ENV === "production";
 export const is = <T>(o:T):o is T => !(o === undefined || o === null);
 export const isMatch = (test:RegExp|string[],...a:string[]):boolean => {
   for(let i = 0;i<a.length;i++){
@@ -56,7 +61,8 @@ export const isEmpty = (o:any|any[]) => {
 export const isCtr = <T>(o:any|Constructor<T>):o is Constructor<T> => isFunc((new o));//incorrect implementation
 export const isInstance = <T,U extends Constructor<T> = Constructor<T>>(o:any|T,ctr:U):o is T => o instanceof ctr;
 export const isEnv = (envs:string|string[]) => {
-  const env = process.env.NODE_ENV.toLocaleLowerCase();
+  const envStr = process.env.NODE_ENV || "";
+  const env = envStr.toLocaleLowerCase();
   if(isArr(envs)){
     for(let i = 0,l = envs.length;i<l;i++){
       const r = new RegExp(envs[i]);
@@ -67,6 +73,8 @@ export const isEnv = (envs:string|string[]) => {
   else return new RegExp(envs).test(env);
 };
 export const notEmpty = (o:any|any[]) => !isEmpty(o);
+
+
 export const randomNumber = (min:number,max:number) => Math.floor(Math.random() * (max - min + 1) + min);
 export const generateSixDigitCode = ():string => {
   // Generate a random number between 100000 and 999999
@@ -77,16 +85,18 @@ export const generateSixDigitCode = ():string => {
 export const S4 = () => (((1+Math.random())*0x10000)|0).toString(16).substring(1);
 export const longId = () => S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4();
 export const shortId = () => S4()+S4();
-export const hexId = (length:number) => {
-  const hexChars = '0123456789abcdef';
-  let hexString = '';
+export const alphanum = (length:number,type?:"hex") => {
+  const hexChars = '0123456789ABCDEF';
+  const allChars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let myStr = '';
 
   for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * hexChars.length);
-    hexString += hexChars[randomIndex];
+    const chars = type == "hex"?hexChars:allChars;
+    const randomIndex = Math.floor(Math.random() * chars.length);
+    myStr += chars[randomIndex];
   }
 
-  return hexString;
+  return myStr;
 }
 export const slugify = (str:string,separator:string = "-") => {
   str = str.toLowerCase().trim().slice(0,19);
@@ -297,6 +307,25 @@ export const getHtmlTableType = (k:string,p:any) => {
     case typeof p === "string":return "text";
     default:return "object";
   }
+}
+export const loadHtmlTemplateAsString = async (templateName:string) => {
+  const filename = `public/templates/${templateName.toLocaleLowerCase()}.html`;
+  try {
+    const html = await new Promise<string>((done,reject) => {
+      const dir = path.join(__dirname,"../../",filename);
+      fs.readFile(dir,'utf8',(err,data) => {
+        if(err) reject(err);
+        done(data);
+      });
+    });
+    if(html) return html;
+  }
+  catch(e){
+    const templates = Object.fromEntries(Object.entries(Types.INotificationTemplates));
+    const test = templates[templateName];
+    if(test) return test;
+  }
+  return null;
 }
 export const isISODateStr = (s:string) => {
   /* eslint-disable max-len */

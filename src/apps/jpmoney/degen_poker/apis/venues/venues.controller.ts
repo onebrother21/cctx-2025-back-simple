@@ -33,7 +33,7 @@ export class DegenVenuesController {
   };
   static getVenueById:IHandler = async (req,res,next) => {
     try {
-      const {venueId} = req.params;
+      const venueId = req.params.venueId as string;
       const {venue} = await DegenVenuesService.getVenueById(venueId);
       res.locals.success = true;
       res.locals.data = venue.json();
@@ -42,8 +42,8 @@ export class DegenVenuesController {
   };
   static updateVenue:IHandler = async (req,res,next) => {
     try {
+      const venueId = req.params.venueId as string;
       const data = req.body.data;
-      const {venueId} = req.params;
       const {venue} = await DegenVenuesService.updateVenue(venueId,data);
       res.locals.success = true;
       res.locals.data = venue.json();
@@ -52,7 +52,7 @@ export class DegenVenuesController {
   };
   static deleteVenue:IHandler = async (req,res,next) => {
     try {
-      const {venueId} = req.params;
+      const venueId = req.params.venueId as string;
       const {ok} = await DegenVenuesService.deleteVenue(venueId);
       res.locals.success = ok;
       res.locals.data = {removed:venueId,ok};
@@ -61,7 +61,7 @@ export class DegenVenuesController {
   };
   static updateVenueStatus:IHandler = async (req,res,next) => {
     try {
-      const {venueId} = req.params;
+      const venueId = req.params.venueId as string;
       const admin = req.profile.displayName;
       const data = req.body.data;
       const {venue} = await DegenVenuesService.updateVenueStatus(admin,venueId,data);

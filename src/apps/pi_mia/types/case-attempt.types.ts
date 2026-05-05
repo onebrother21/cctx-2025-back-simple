@@ -58,8 +58,8 @@ export type ICaseInterview = {
     affidavitSigned:Date;
   };
 };
-export type ICaseArtifactPre = Types.INote|ICaseStop|ICaseInterview|UploadResponse;
-export type ICaseArtifact = Types.INote|ICaseStop|ICaseInterview|ICaseUpload;
+export type ICaseArtifactPre = Types.IMessageJson|ICaseStop|ICaseInterview|UploadResponse;
+export type ICaseArtifact = Types.IMessageJson|ICaseStop|ICaseInterview|ICaseUpload;
 export type ICaseAttemptType = DocEntity<ICaseAttemptStatuses,Profiles.ICaseAdmin> & {
   start:Date;
   end:Date;

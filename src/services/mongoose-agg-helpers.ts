@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
 import {LocationHelpers} from "./location-helpers.service";
 
-export type MongooseAggParams<Q extends StrongQuery<QueryKeys>> = {
+export type inferedQ<T> = T extends StrongQuery<infer Q>?T:never;
+export type MongooseAggParams<Q> = {
   model:mongoose.Model<Document_>;
-  query:Q;
+  query:inferedQ<Q>;
   select:string[];
   opts:any;
   timestamp:number;
@@ -11,16 +12,39 @@ export type MongooseAggParams<Q extends StrongQuery<QueryKeys>> = {
   projections:any;
   prePipeline:any[];
 };
-export interface MongooseAggHelpers<Q extends StrongQuery<QueryKeys>> extends MongooseAggParams<Q>{
+export interface MongooseAggHelpers<Q> extends MongooseAggParams<Q>{
   runQuery():Promise<{results:any[]}>;
 }
-export class MongooseAggHelpers<Q extends StrongQuery<QueryKeys>> {
+export class MongooseAggHelpers<Q> {
   constructor(o:MongooseAggParams<Q>){Object.assign(this,o);}
   selectGrouping = (fields:string[]) => {
     const o:any = { _id: {$toString:"$_id"}};
     fields.forEach((k) => {
       switch(k){
         case"id":return;
+        case "msgs":{
+          o[k] = {
+            $push: {
+              $cond: [
+                { $ne:[{ $ifNull: ["$msgs.author", ""] }, ""] },
+                {
+                  author: {
+                    id: {$toString:"$msgs.author._id"},
+                    name: "$msgs.author.name",
+                    displayName: "$msgs.author.displayName",
+                    app: "$msgs.author.app",
+                    type: "$msgs.author.type",
+                    img: "$msgs.author.img.url",
+                  },
+                  body: "$msgs.body",
+                  time: "$msgs.time",
+                },
+                null,
+              ],
+            },
+          };
+          break;
+        }
         case "notes":{
           o[k] = {
             $push: {

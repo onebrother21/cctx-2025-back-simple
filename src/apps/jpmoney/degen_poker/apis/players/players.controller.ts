@@ -1,15 +1,6 @@
 import { DegenPlayersService } from './players.service';
 import { DegenPlayersQueriesService } from './players-queries.service';
 
-import fs from "fs";
-import {v2 as cloudinary} from "cloudinary";
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
-});
-
 export class DegenPlayersController { 
   // 📌 DegenPlayer Profile CRUD Ops
   static registerPlayer:IHandler = async (req,res,next) => {
@@ -27,7 +18,7 @@ export class DegenPlayersController {
   };
   static getPlayerById:IHandler = async (req,res,next) => {
     try {
-      const {playerId} = req.params;
+      const playerId = req.params.playerId as string;
       const {player} = await DegenPlayersService.getDegenPlayerById(playerId);
       res.locals.success = true;
       res.locals.data = player.json();
@@ -37,7 +28,7 @@ export class DegenPlayersController {
   static updatePlayer:IHandler = async (req,res,next) => {
     try {
       const data = req.body.data;
-      const {playerId} = req.params;
+      const playerId = req.params.playerId as string;
       const {player} = await DegenPlayersService.updateDegenPlayer(playerId,data);
       res.locals.success = true;
       res.locals.data = player.json();
@@ -46,7 +37,7 @@ export class DegenPlayersController {
   };
   static deletePlayer:IHandler = async (req,res,next) => {
     try {
-      const {playerId} = req.params;
+      const playerId = req.params.playerId as string;
       const {ok} = await DegenPlayersService.deleteDegenPlayer(playerId);
       res.locals.success = ok;
       res.locals.data = {removed:playerId,ok};
@@ -55,7 +46,7 @@ export class DegenPlayersController {
   };
   static updatePlayerStatus:IHandler = async (req,res,next) => {
     try {
-      const {playerId} = req.params;
+      const playerId = req.params.playerId as string;
       const admin = req.profile.displayName;
       const data = req.body.data;
       const {player} = await DegenPlayersService.updateDegenPlayerStatus(admin,playerId,data);

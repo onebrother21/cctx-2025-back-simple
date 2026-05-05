@@ -1,11 +1,11 @@
 import mongoose,{Schema,Model} from 'mongoose';
-import uniqueValidator from "mongoose-unique-validator";
 import Utils from '@utils';
 import Types from "@types";
 import PiMiaTypes from "../types";
 
 const ObjectId = Schema.Types.ObjectId;
 const {NEW} = PiMiaTypes.ICaseAttemptStatuses;
+const uniqueValidator = require("mongoose-unique-validator").default;
 
 const caseAttemptSchema = new Schema<PiMiaTypes.ICaseAttempt,CaseAttempt,PiMiaTypes.ICaseAttemptMethods>({
   status:{type:String,enum:Object.values(PiMiaTypes.ICaseAttemptStatuses),default:NEW},

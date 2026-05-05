@@ -58,14 +58,14 @@ export type ICaseDetails = Partial<{
   questions:string[];
   answers:string[];
 }>;
-export type ICaseType = DocEntity<ICaseStatuses,PROFILES.ICaseAdmin|PROFILES.ICaseClient> & {
+export type ICaseType = DocEntity<ICaseStatuses,PROFILES.ICaseAdmin> & {
   objective:"full"|"adoption"|"canvas"|"serivce";
   reqNo:string;
   rush:boolean;
   startOn:Date;
   dueOn:Date;
   assignedOn:Date;
-  notes:Types.INote[];
+  notes:Types.IMessage[];
   info:ICaseDetails;
   admin:PROFILES.ICaseAdmin;
   vendor:PROFILES.ICaseVendor;
@@ -79,7 +79,7 @@ export type ICaseType = DocEntity<ICaseStatuses,PROFILES.ICaseAdmin|PROFILES.ICa
 
 export type ICaseITO = Partial<ICaseType>;
 export type ICasePTO = Pick<ICaseType,"id">;
-export type ICaseOTO = Partial<ICaseType>;
+export type ICaseOTO = Partial<ICaseType & {notes:Types.IMessageJson[]}>;
 
 export interface ICaseMethods {
   saveMe():Promise<void>;

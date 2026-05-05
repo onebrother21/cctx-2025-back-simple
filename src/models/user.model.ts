@@ -1,10 +1,10 @@
 import mongoose,{Schema,Model} from 'mongoose';
-import uniqueValidator from "mongoose-unique-validator";
 import Types from "@types";
 import Utils from '@utils';
 
 const ObjectId = Schema.Types.ObjectId;
-const {NEW} = Types.INotificationStatuses;
+const {NEW} = Types.IUserStatuses;
+const uniqueValidator = require("mongoose-unique-validator").default;
 
 const nameSchema = new Schema({
   first: { type: String},
@@ -109,7 +109,7 @@ userSchema.methods.json = function (auth) {
     json.info = this.info;
     json.meta = this.meta;
     json.createdOn = this.createdOn;
-    json.profile = p.json();
+    json.profile = p?.json() || null;
   };
   return json;
 };

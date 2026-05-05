@@ -4,16 +4,22 @@ import Types from "@types";
 import Utils from '@utils';
 
 import bcrypt from "bcryptjs";
-import AuthUtils from '../../../cctx_auth/auth.utils';
 import AdminUIService from './admin-bull-ui.service';
 
 const {EMAIL,SMS} = Types.IContactMethods;
-const {NEW,VERIFIED,ENABLED,ACTIVE,INACTIVE} = Types.IUserStatuses;
+const {ACTIVE,INACTIVE} = Types.IUserStatuses;
 
 export class AdminUIController {
   static featureUrl = `/av3/cctx/admn/sys/ui`;
+  static CheckUrlForUiUi:IHandler = async (req,res,next) => {
+    if(/\/ui\/ui/i.test(req.originalUrl)){
+      const newUrl = req.originalUrl.replace("/ui/ui","/ui");
+      res.redirect(newUrl);
+    }
+    else next();
+  };
   static CheckLogin:IHandler = async (req,res,next) => {
-    Utils.info({...req.session});
+    //Utils.info({...req.session});
     switch(true){
       case !req.session.user:
       case !req.session.localSessionExp:{
@@ -33,7 +39,8 @@ export class AdminUIController {
   };
   static RenderLogin:IHandler = async (req,res,next) => res.render('login', {
     invalid: req.query.invalid === 'true',
-    expired: req.query.expired === 'true'
+    expired: req.query.expired === 'true',
+    user:null,
   });
   static Login:IHandler = async (req,res,next) => {
     type Login = Pick<Types.IUser,"pin"|"role"> & {emailOrUsername:string};
@@ -52,8 +59,8 @@ export class AdminUIController {
             res.redirect(`${this.featureUrl}/login?invalid=true`);
             break;
           }
-          case !await bcrypt.compare(pin,user.pin):{
-            console.log("bad pin");
+          case user && !await bcrypt.compare(pin,user.pin):{
+            //console.log("bad pin");
             req.session.user = null;
             res.redirect(`${this.featureUrl}/login?invalid=true`);
             break;
@@ -64,10 +71,9 @@ export class AdminUIController {
             //await AuthUtils.recognizeUserLogin(user,req.device);
             //user.device = req.device;
             user.role = role;
-            Utils.ok(user);
+            // Utils.ok(user);
             //await AppUsage.make(`usr/${user.id}`,"loggedIn",{loc});
-
-            req.session.user = {id:user.id,username:user.username,role};
+            req.session.user = user.json(true);
             req.session.pageViews = (req.session.pageViews || 0) + 1;
             req.session.lastAction = req.method.toLocaleUpperCase() + " " + req.url;
             req.session.localSessionExp = Date.now() + 30 * 60000;
@@ -77,11 +83,14 @@ export class AdminUIController {
         }
       }
     }
-  }
-  static RenderDash:IHandler = async (req,res,next) => res.render('dash');
-  static RenderPostJob:IHandler = async (req,res,next) => res.render('post-job', {
-    invalid: req.query.invalid === 'true'
-  });
+  };
+  static RenderDash:IHandler = async (req,res,next) => res.render('dash',{data:{user:req.session.user}});
+  static RenderChat:IHandler = async (req,res,next) => res.render('chat',{data:{user:req.session.user}});
+  static RenderPostJob:IHandler = async (req,res,next) => res.render('post-job',{data:{user:req.session.user}});
+  static PostJob:IHandler = async (req,res,next) => {
+    const result = await AdminUIService.launchSystemJob(req.body.data);
+    res.json({success:true,result})
+  };
   static CreateNotification:IHandler = async (req,res,next) => {
     const {id,username,role} = req.session.user;
     const notification = await Services.Notifications.createNotification({
@@ -90,16 +99,12 @@ export class AdminUIController {
       audience:[{user:id,info:"service.onebrother@gmail.com"}],
       data:{name:username}
     });
-    res.json({success:true,data:notification.json()})
-  };
-  static PostJob:IHandler = async (req,res,next) => {
-    const result = await AdminUIService.launchSystemJob(req.body);
-    res.json({success:true,result})
+    res.json({success:true,data:notification?.json() || {}})
   };
   static Logout:IHandler = async (req,res,next) => {
     req.session.user = null;
     req.session.localSessionExp = null;
-    res.redirect('/av3/cctx/admn/sys/ui/login');
+    res.redirect(`${this.featureUrl}/login`);
   };
 }
 export default AdminUIController;

@@ -26,7 +26,7 @@ export class LocationHelpers {
 
     return typeof toFixed === "number"?Number((raw).toFixed(toFixed)):raw;
   }
-  static calculateMileage([lon1,lat1],[lon2,lat2]){
+  static calculateMileage([lon1,lat1]:number[],[lon2,lat2]:number[]){
     const r = 3963.0; // mi
     const p = Math.PI / 180;
     const a = 0.5 - Math.cos((lat2 - lat1) * p) / 2 + Math.cos(lat1 * p) * Math.cos(lat2 * p) * (1 - Math.cos((lon2 - lon1) * p)) / 2;
@@ -39,8 +39,8 @@ export class LocationHelpers {
   ) => {
     const r = Utils.flattenObject(results);
     const rr = r.map((o:any) => Object.keys(o).reduce((acc,k) => {
+      if(!(/loc/.test(k) && locQuery)) return acc;
       const {pts,unit} =  locQuery;
-      if(!/loc/.test(k)) return acc;
       return {
         ...acc,
         [k]:o[k],
@@ -80,7 +80,7 @@ export class LocationHelpers {
           ...res.data.map((o:any) => ({info:o.display_name,loc:[o.lon,o.lat]}))
         );
       }
-      catch(err){console.error(err.message);}
+      catch(err:any){console.error(err.message);}
     }
     return results;
   };

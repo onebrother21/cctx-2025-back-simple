@@ -57,9 +57,10 @@ const write = (k:LogTypes,...args:any[]):boolean => {
   return true;
 };
 export const print = (k:string,title:string,...args:any[]):boolean => {
+  const K = k as keyof DefaultLogColors;
   const isProd = Utils.isProd();
   const flag = `⚡️ [${title}]:`;
-  const color = colors[k];
+  const color = colors[K];
   const reset = colors.reset;
   const log = console.log.bind(console,color,flag,reset);
   if(!isProd) log(...args);

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <%- include("../components/vault-head.html") %>
+  <body>
+    <%- include("../components/mobile-menu-toggle.html") %>
+    <%- include("../components/sidebar-overlay.html") %>
+    <div class="dashboard">
+      <%- include("../components/sidebar.html") %>
+      <main class="main-content">
+        <%- include("../components/page-header.html",{
+          heading:"Settings",
+          subheading:"Manage your account preferences and security"
+        }) %>
+        <%- include("settings-menu.html") %>
+        <%- include("settings-profile.html") %>
+        <%- include("settings-security.html") %>
+        <%- include("settings-notifications.html") %>
+        <%- include("settings-preferences.html") %>
+        <%- include("settings-accounts.html") %>
+        <%- include("../components/footer.html") %>
+      </main>
+    </div>
+    <script type="module" src="/js/vault/index.js"></script>
+  </body>
+</html>

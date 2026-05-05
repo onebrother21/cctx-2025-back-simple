@@ -1,19 +1,19 @@
 import mongoose,{Schema,Model} from 'mongoose';
-import uniqueValidator from "mongoose-unique-validator";
 import Types from "@types";
 import Utils from '@utils';
 
 const ObjectId = Schema.Types.ObjectId;
 const {NEW} = Types.ITaskStatuses;
+const uniqueValidator = require("mongoose-unique-validator").default;
 
 const taskSchema = new Schema<Types.ITask,Task,Types.ITaskMethods>({
   creator:{type:ObjectId,ref:"cctx_profiles",required:true},
   status:{type:String,enum:Object.values(Types.ITaskStatuses),default:NEW},
   app:{type:String,required:true},
-  type:{type:String,enum:["bug","improvement","suggestion","other"]},
+  type:{type:String,enum:["bug","improvement","suggestion","other","test"]},
   title:{type:String,required:true},
   desc:{type:String,required:true},
-  notes:[Utils.noteSchema],
+  notes:[{type:ObjectId,ref:"cctx_messages",required:true}],
   tasks:[{type:ObjectId,ref:"cctx_tasks",required:true}],
   admin:{type:ObjectId,ref:"cctx_profiles"},
   priority:{type:Number,default:4},

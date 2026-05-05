@@ -1,8 +1,8 @@
 import mongoose,{Schema,Model} from 'mongoose';
-import uniqueValidator from "mongoose-unique-validator";
 import Types from "@types";
 
 const {NEW} = Types.IAppDeviceStatuses;
+const uniqueValidator = require("mongoose-unique-validator").default;
 
 const appDeviceSchema = new Schema<Types.IAppDevice,AppDevice,Types.IAppDeviceMethods>({
   status:{type:String,enum:Object.values(Types.IAppDeviceStatuses),default:NEW},

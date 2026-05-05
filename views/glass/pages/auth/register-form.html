@@ -1,0 +1,51 @@
+<form data-validate id="registerForm">
+  <div class="form-group">
+    <label class="form-label" for="firstname">First Name</label>
+    <input type="text" id="firstname" name="firstname" 
+    class="form-input" placeholder="First name" required>
+
+    <label class="form-label" for="lastname">Last Name</label>
+    <input type="text" id="lastname" name="lastname"
+    class="form-input" placeholder="Last name" required>
+  </div>
+  <div class="form-group">
+    <label class="form-label" for="dob">DOB</label>
+    <input type="date" id="dob" name="dob" 
+    class="form-input dob-input" placeholder="Enter your DOB" required>
+  </div>
+  <div class="form-group">
+    <label class="form-label" for="username">Username</label>
+    <input type="text" id="username" name="username" 
+    class="form-input" placeholder="Enter your username" required>
+  </div>
+  <div class="form-group">
+    <label class="form-label" for="mobile">Mobile</label>
+    <input type="text" id="mobile" name="mobile" 
+    class="form-input mobile-input" placeholder="Enter your phone" required>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label" for="pin">PIN</label>
+    <input type="password" id="pin" name="pin"
+    class="form-input pin-input" placeholder="Create a pin" required>
+    
+    <label class="form-label" for="confirm-pin">Confirm PIN</label>
+    <input type="password" id="confirm-pin" name="confirm-pin" 
+    class="form-input pin-input" placeholder="Confirm your pin" required>
+  </div>
+
+  <div class="form-row" style="margin-bottom: 24px;">
+    <label class="checkbox-label">
+      <input type="checkbox" id="agree" name="agree" required>
+      I agree to the <a href="#" style="color: var(--emerald-light);">Terms & Conditions</a>
+    </label>
+  </div>
+
+  <button type="submit" class="btn btn-primary">
+    Complete Registration
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <line x1="5" y1="12" x2="19" y2="12"/>
+      <polyline points="12 5 19 12 12 19"/>
+    </svg>
+  </button>
+</form>

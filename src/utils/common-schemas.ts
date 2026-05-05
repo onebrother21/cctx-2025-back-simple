@@ -44,11 +44,10 @@ const addrSchema = new Schema<AddressObj>({
   loc:{type:locCoordsSchema,validate:(loc:number[]) => ({type:"Point",coordinates:loc})}
 },{_id:false,timestamps:false});
 addrSchema.index({"loc":"2dsphere"});
-const noteSchema = new Schema<Types.INote>({
-  type:{type:String,default:"note"},
-  time:Date,
-  body:String,
-  author:{type:ObjectId,ref:"cctx_profiles",required:true},
+const tagSchema = new Schema<Types.ITaskTag>({
+  text:String,
+  createdOn:Date,
+  creator:{type:ObjectId,ref:"cctx_profiles",required:true},
 },{_id:false,timestamps:false});
 
 export {
@@ -57,6 +56,6 @@ export {
   addressSchema,
   attachmentSchema,
   uploadSchema,
-  noteSchema,
+  tagSchema,
 };
 

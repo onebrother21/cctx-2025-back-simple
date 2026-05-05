@@ -1,11 +1,11 @@
 import mongoose,{Schema,Model} from 'mongoose';
-import uniqueValidator from "mongoose-unique-validator";
 import Utils from '@utils';
 import Types from "@types";
 import PiMiaTypes from "../types";
 
 const ObjectId = Schema.Types.ObjectId;
 const {NEW} = PiMiaTypes.ICaseStatuses;
+const uniqueValidator = require("mongoose-unique-validator").default;
 
 const detailsSchema = new Schema<PiMiaTypes.ICaseDetails>({
   dateOfAccident:Date,
@@ -60,11 +60,11 @@ const caseSchema = new Schema<PiMiaTypes.ICase,Case,PiMiaTypes.ICaseMethods>({
     },
     required:true
   },
-  admin:{type:ObjectId,ref:"cctx_profiles"},
-  notes:[Utils.noteSchema],
   info:detailsSchema,
   files:[Utils.attachmentSchema],
-  attempts:[{type:ObjectId,ref:"pimia_case_attempts",required:true}],
+  admin:{type:ObjectId,ref:"cctx_profiles"},
+  notes:[{type:ObjectId,ref:"cctx_messages"}],
+  attempts:[{type:ObjectId,ref:"pimia_case_attempts"}],
   invoice:{type:ObjectId,ref:"pimia_invoices"}
 },{timestamps:{createdAt:"createdOn",updatedAt:"updatedOn"}});
 

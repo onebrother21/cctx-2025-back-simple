@@ -3,7 +3,7 @@ export enum IAppDeviceStatuses {
   ACTIVE = "active",
   INACTIVE = "inactive",
 }
-export type IAppDeviceType = DocEntity<IAppDeviceStatuses,never> & {
+export type IAppDeviceType = DocEntity<IAppDeviceStatuses> & {
   ua:string;
   mobile:boolean;
   browser:Record<"name"|"version"|"major"|"type",string>;

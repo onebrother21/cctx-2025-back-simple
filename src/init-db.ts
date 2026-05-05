@@ -3,14 +3,15 @@ import Utils from '@utils';
 
 mongoose.Promise = import("bluebird");
 
-process.env.DB = process.env[`DB_URI_${/live/.test(process.env.NODE_ENV)?"LIVE":"LOCAL"}`];
+const env = process.env["NODE_ENV"] || "";
+process.env.DB = process.env[`DB_URI_${/live/.test(env)?"LIVE":"LOCAL"}`] || "";
 
 const dbString = process.env.DB;
 const dbName = process.env.DB_NAME;
 let options = {
-    //user:process.env.DB_USER,
-    //pass: process.env.DB_PASS,
-    dbName
+  //user:process.env.DB_USER,
+  //pass: process.env.DB_PASS,
+  dbName
 };
 
 class Db {
@@ -21,16 +22,16 @@ class Db {
         "connectTimeoutMS":10000,
         "socketTimeoutMS":10000
       });
-      Utils.print("ok","ok","MongoDb connected");
+      Utils.print("ok","cctx-dev-back","MongoDb (connected)");
       return conn;
     }
-    catch(err) {
+    catch(err:any) {
       if(err.message.indexOf("ECONNREFUSED") !== -1) {
-        Utils.print("debug",'db',"Error: The server was not able to reach MongoDB. Check your internet connection and MDB service.");
+        Utils.print("error","cctx-dev-back","mongodb","The server was not able to connect. Check your internet connection and MDB service.");
         process.exit(1);
       }
       else {
-        Utils.print("debug",'db',`MongoDB connection error. ${err}`);
+        Utils.print("error","cctx-dev-back","mongodb",`Connection error. ${err}`);
         throw err;
       }
     }

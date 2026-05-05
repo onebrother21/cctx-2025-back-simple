@@ -3,15 +3,6 @@ import DegenSessionsQueries from './sessions-queries.service';
 
 import Utils from '@utils';
 
-import fs from "fs";
-import {v2 as cloudinary} from "cloudinary";
-
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
-});
-
 export class DegenSessionsController {
   static createSession:IHandler = async (req,res,next) => {
     try {
@@ -36,7 +27,7 @@ export class DegenSessionsController {
   static getSessionById:IHandler = async (req,res,next) => {
     try {
       const profileId = req.profile.id;
-      const {sessionId} = req.params;
+      const sessionId = req.params.sessionId as string;
       const {session} = await DegenSessionsService.getSessionById(profileId,sessionId);
       res.locals.success = true;
       res.locals.data = session.json();
@@ -46,8 +37,8 @@ export class DegenSessionsController {
   static updateSession:IHandler = async (req,res,next) => {
     try {
       const profileId = req.profile.id;
+      const sessionId = req.params.sessionId as string;
       const data = req.body.data;
-      const {sessionId} = req.params;
       const {session} = await DegenSessionsService.updateSession(profileId,sessionId,data);
       res.locals.success = true;
       res.locals.data = session.json();
@@ -57,7 +48,7 @@ export class DegenSessionsController {
   static deleteSession:IHandler = async (req,res,next) => {
     try {
       const profileId = req.profile.id;
-      const {sessionId} = req.params;
+      const sessionId = req.params.sessionId as string;
       const {ok} = await DegenSessionsService.deleteSession(profileId,sessionId);
       res.locals.success = ok;
       res.locals.data = {removed:sessionId,ok};
@@ -66,7 +57,7 @@ export class DegenSessionsController {
   };
   static updateSessionStatus:IHandler = async (req,res,next) => {
     try {
-      const sessionId = req.params.sessionId;
+      const sessionId = req.params.sessionId as string;
       const status = req.body.data.status;
       if(!sessionId) throw new Utils.AppError(422,'Requested parameters not found');
       const {session} = await DegenSessionsService.updateSessionStatus(sessionId,status);
@@ -77,7 +68,7 @@ export class DegenSessionsController {
   };
   static addUpdateToSession:IHandler = async (req,res,next) => {
     try {
-      const sessionId = req.params.sessionId;
+      const sessionId = req.params.sessionId as string;
       const updateType = req.params.updateType as "ledger"|"note"|"hand";
       const data = req.body.data;
       if(!sessionId) throw new Utils.AppError(422,'Requested parameters not found');
@@ -89,7 +80,7 @@ export class DegenSessionsController {
   };
   static removeUpdateToSession:IHandler = async (req,res,next) => {
     try {
-      const sessionId = req.params.sessionId;
+      const sessionId = req.params.sessionId as string;
       const updateType = req.params.updateType as "ledger"|"note"|"hand";
       const itemIdx = req.params.itemIdx;
       if(!sessionId) throw new Utils.AppError(422,'Requested parameters not found');
@@ -102,8 +93,8 @@ export class DegenSessionsController {
   static finalizeSession:IHandler = async (req,res,next) => {
     try {
       const profileId = req.profile.id;
+      const sessionId = req.params.sessionId as string;
       const data = req.body.data;
-      const {sessionId} = req.params;
       const {session} = await DegenSessionsService.finalizeSession(profileId,sessionId,data);
       res.locals.success = true;
       res.locals.data = session.json();
@@ -113,7 +104,7 @@ export class DegenSessionsController {
   static closeSession:IHandler = async (req,res,next) => {
     try {
       const profileId = req.profile.id;
-      const {sessionId} = req.params;
+      const sessionId = req.params.sessionId as string;
       const {session} = await DegenSessionsService.closeSession(profileId,sessionId);
       res.locals.success = true;
       res.locals.data = session.json();

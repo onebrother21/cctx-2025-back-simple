@@ -1,0 +1,86 @@
+<!-- Billing Tab -->
+<div class="settings-tab-content" id="tab-billing">
+  <div class="settings-section">
+    <h3 class="settings-section-title">Current Plan</h3>
+    <div class="billing-plan-card" style="background: linear-gradient(135deg, rgba(5, 150, 105, 0.15), rgba(212, 165, 116, 0.15)); padding: 24px; border-radius: 16px; margin-bottom: 20px; border: 1px solid var(--glass-border);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div>
+                <h4 style="font-size: 20px; font-weight: 600; margin-bottom: 4px;">Pro Plan</h4>
+                <p style="color: var(--text-muted); font-size: 14px;">Billed monthly</p>
+            </div>
+            <div style="text-align: right;">
+                <span style="font-family: 'Space Mono', monospace; font-size: 32px; font-weight: 700;">$29</span>
+                <span style="color: var(--text-muted);">/month</span>
+            </div>
+        </div>
+        <div style="display: flex; gap: 12px;">
+            <button class="btn btn-primary" style="width: auto; padding: 10px 20px;">Upgrade Plan</button>
+            <button class="btn btn-secondary" style="width: auto; padding: 10px 20px;">Cancel Subscription</button>
+        </div>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <h3 class="settings-section-title">Payment Method</h3>
+    <div class="settings-row">
+        <div class="settings-label" style="display: flex; align-items: center; gap: 16px;">
+            <div style="width: 48px; height: 32px; background: linear-gradient(135deg, #1a1f71, #00579f); border-radius: 6px; display: flex; align-items: center; justify-content: center;">
+                <span style="color: white; font-size: 10px; font-weight: bold;">VISA</span>
+            </div>
+            <div>
+                <span class="settings-label-title">Visa ending in 4242</span>
+                <span class="settings-label-desc">Expires 12/2026</span>
+            </div>
+        </div>
+        <button class="card-btn" style="padding: 6px 12px;">Edit</button>
+    </div>
+    <div style="margin-top: 16px;">
+        <button class="btn btn-secondary" style="width: auto; padding: 10px 20px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 8px;">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            Add Payment Method
+        </button>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <h3 class="settings-section-title">Billing History</h3>
+    <div class="table-wrapper" style="margin: 0;">
+        <table class="data-table" style="min-width: 100%;">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Invoice</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Jan 1, 2025</td>
+                    <td>Pro Plan - Monthly</td>
+                    <td><span class="table-amount">$29.00</span></td>
+                    <td><span class="status-badge completed">Paid</span></td>
+                    <td><a href="#" style="color: var(--emerald-light);">Download</a></td>
+                </tr>
+                <tr>
+                    <td>Dec 1, 2024</td>
+                    <td>Pro Plan - Monthly</td>
+                    <td><span class="table-amount">$29.00</span></td>
+                    <td><span class="status-badge completed">Paid</span></td>
+                    <td><a href="#" style="color: var(--emerald-light);">Download</a></td>
+                </tr>
+                <tr>
+                    <td>Nov 1, 2024</td>
+                    <td>Pro Plan - Monthly</td>
+                    <td><span class="table-amount">$29.00</span></td>
+                    <td><span class="status-badge completed">Paid</span></td>
+                    <td><a href="#" style="color: var(--emerald-light);">Download</a></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+  </div>
+</div>

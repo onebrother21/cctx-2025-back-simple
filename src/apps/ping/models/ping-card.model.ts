@@ -1,18 +1,18 @@
 import mongoose,{Schema,Model} from 'mongoose';
-import uniqueValidator from "mongoose-unique-validator";
 import Utils from '@utils';
 import Types from "@types";
 import PingTypes from "../types";
 
 const ObjectId = Schema.Types.ObjectId;
 const {NEW} = PingTypes.IPingCardStatuses;
+const uniqueValidator = require("mongoose-unique-validator").default;
 
 const cardSchema = new Schema<PingTypes.IPingCard,PingCard,PingTypes.IPingCardMethods>({
   status:{type:String,enum:Object.values(PingTypes.IPingCardStatuses),default:NEW},
   owner:{type:ObjectId,ref:"cctx_profiles",required:true},
   cardId:{type:Number,required:true},
   cardNo:{type:String,required:true},
-  expiry:{type:Date,required:true},
+  expiry:{type:String,required:true},
   cvv:{type:String,required:true},
   info:Object,
   meta:Object,

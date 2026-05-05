@@ -7,8 +7,7 @@ import Services from '@services';
 
 export const AuthValidators = {
   Signup:[[
-    body('data.email').isEmail().withMessage('Invalid email'),
-    body('data.dob').isISO8601().withMessage('Invalid DOB').custom(Utils.isEighteenOrOlder),                      
+    body('data.email').isEmail().withMessage('Invalid email'),                  
   ],CheckValidation()] as IHandler[],
   Send2FA:[[
     body('data.id').isMongoId().withMessage('Invalid userId'), 
@@ -31,6 +30,7 @@ export const AuthValidators = {
     body('data.name.first').isString().withMessage('Invalid name').matches(/^[a-zA-Z\s]{2,20}$/).withMessage('Invalid name'),
     body('data.name.last').isString().withMessage('Invalid name').matches(/^[a-zA-Z\s]{2,20}$/).withMessage('Invalid name'),
     body('data.username').trim().escape().matches(/^[a-zA-Z0-9]{2,20}$/).withMessage('Invalid username'),
+    body('data.dob').isISO8601().withMessage('Invalid DOB').custom(Utils.isEighteenOrOlder),    
     body('data.pin').isString().isLength({min:4,max:4}).withMessage('Invalid pin'),
   ],CheckValidation()] as IHandler[],
   Login:[[

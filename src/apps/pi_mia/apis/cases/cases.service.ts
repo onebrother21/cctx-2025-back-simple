@@ -6,11 +6,12 @@ import Services from '@services';
 import PiMiaModels from "../../models";
 import PiMiaTypes from "../../types";
 import { uploadFields } from "@middleware";
+import { QueryOptions } from 'mongoose';
 
 const notify = Services.Notifications.createNotification;
 const {LocationHelpers} = Services;
 
-const queryOpts = { new:true,runValidators: true,context:'query' };
+const queryOpts:QueryOptions = { returnDocument:"after",runValidators: true,context:'query' };
 const saltRounds = Number(process.env.SALT_ROUNDS || 10);
 
 const approvalStats = Types.IApprovalStatuses;
@@ -95,7 +96,7 @@ export class CasesService {
     const type_ = `${type}s`;//type == "ledger"?type:`${type}s` as "ledger"|"notes"|"hands";
     const pimiaCase = await Case.findById(caseId);
     if (!pimiaCase) throw new Utils.AppError(422,'Requested pimiaCase not found');
-    pimiaCase[type_] = pimiaCase[type_].filter((o,i) => i !== j) as any[];
+    pimiaCase[type_ as "notes"] = pimiaCase[type_ as "notes"].filter((o,i) => i !== j) as any[];
     await pimiaCase.saveMe();
     return {pimiaCase};
   };
@@ -173,6 +174,7 @@ export class CasesService {
   };
   static assignAdminToCase = async (caseId:string,adminId:string) => {
     const pimiaCase = await PiMiaModels.Case.findById(caseId);
+    if(!pimiaCase) throw new Utils.AppError(422,'Requested case not found');
     pimiaCase.admin = adminId as any,pimiaCase.assignedOn = new Date();
     pimiaCase.status = ASSIGNED;
     await pimiaCase.saveMe();
@@ -180,14 +182,16 @@ export class CasesService {
   };
   static unassignAdminFromCase = async (caseId:string) => {
     const pimiaCase = await PiMiaModels.Case.findById(caseId);
-    pimiaCase.admin = null,pimiaCase.assignedOn = null;
+    if(!pimiaCase) throw new Utils.AppError(422,'Requested case not found');
+    pimiaCase.admin = null as any,
+    pimiaCase.assignedOn = null as any;
     pimiaCase.status = ACTIVE;
     await pimiaCase.saveMe();
     return {pimiaCase};
   };
 
   // 📌 Case Notation
-  static addNotes = async (caseId:string,notes:Types.INote[]) => {
+  static addNotes = async (caseId:string,notes:Types.IMessage[]) => {
     const pimiaCase = await PiMiaModels.Case.findById(caseId);
     if (!pimiaCase) throw new Utils.AppError(422,'Requested case not found');
     pimiaCase.notes.push(...notes);
@@ -195,7 +199,7 @@ export class CasesService {
     await pimiaCase.saveMe();
     return {pimiaCase};
   };
-  static updateNote = async (caseId:string,noteIdx:number,note:Types.INote) => {
+  static updateNote = async (caseId:string,noteIdx:number,note:Types.IMessage) => {
     const pimiaCase = await PiMiaModels.Case.findById(caseId);
     if (!pimiaCase) throw new Utils.AppError(422,'Requested case not found');
     pimiaCase.notes[noteIdx] = note;
@@ -308,7 +312,7 @@ export class CasesService {
         break;
       }
       case "upload":{
-        const meta = uploadFields.reduce((n,k) => ({...n,[k]:o[k]}),{}) as any;
+        const meta = uploadFields.reduce((n,k) => ({...n,[k]:o[k as keyof UploadResponse]}),{}) as any;
         //const m = o as ;
         n = {
           id:o.public_id,

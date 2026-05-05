@@ -2,8 +2,8 @@ import { doubleCsrf, DoubleCsrfConfigOptions,DoubleCsrfConfig } from "csrf-csrf"
 import Utils from "@utils";
 
 const doubleCsrfOptions:DoubleCsrfConfigOptions = {
-  getSecret: () => process.env.CSRF_SECRET,
-  //getSessionIdentifier: (req:IRequest) => req.session["id"] || "", // A function that should return the session identifier for a given request
+  getSecret: () => process.env.CSRF_SECRET || "supersecret",
+  getSessionIdentifier:req => req.session["id"] || "", // A function that should return the session identifier for a given request
   cookieName:"x-csrf-token-pre", // The name of the cookie to be used, recommend using Host prefix. "__Host-psifi."
   cookieOptions: {
     sameSite:"lax",
@@ -13,7 +13,7 @@ const doubleCsrfOptions:DoubleCsrfConfigOptions = {
   },
   // size: 64, // The size of the generated tokens in bits
   ignoredMethods: ["GET", "HEAD", "OPTIONS"] as any[], // A list of request methods that will not be protected.
-  getTokenFromRequest: (req:IRequest) => {
+  getCsrfTokenFromRequest:req => {
     const fromHeader = req.headers["x-csrf-token"];
     const fromCookie = req.cookies["XSRF-TOKEN"];
     // Utils.trace({fromHeader,fromCookie});
@@ -25,10 +25,8 @@ const doubleCsrfUtils = doubleCsrf(doubleCsrfOptions);
 
 const SetCsrfToken:() => IHandler = () => async (req, res, next) => {
   try{
-    const csrfToken = doubleCsrfUtils.generateToken(req,res,true);
-    // Utils.trace({csrfToken});
+    const csrfToken = doubleCsrfUtils.generateCsrfToken(req,res);
     res.locals.tokens = {csrf:csrfToken};
-    res.setHeader("x-cctx-e2e","1");
     res.cookie('XSRF-TOKEN',csrfToken,{
       sameSite:"lax",
       path: '/',

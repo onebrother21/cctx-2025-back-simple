@@ -25,7 +25,7 @@ export enum INotificationActions {
   NOTIFICATION_FAILED = 14
 };
 export type INotificationMeta = {job: string;retries:number;};
-export type INotificationType = DocEntity<INotificationStatuses,never> & INotificationPre & INotificationMeta;
+export type INotificationType = DocEntity<INotificationStatuses> & INotificationPre & INotificationMeta;
 
 export interface INotificationMethods {
   saveMe():Promise<void>;

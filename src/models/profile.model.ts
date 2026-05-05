@@ -1,12 +1,11 @@
 import mongoose,{Schema,Model} from 'mongoose';
-import uniqueValidator from "mongoose-unique-validator";
-
 import Types from "@types";
 import Utils from '@utils';
 
 const ObjectId = Schema.Types.ObjectId;
 const {NEW} = Types.IProfileStatuses;
 const {REQUESTED} = Types.IApprovalStatuses;
+const uniqueValidator = require("mongoose-unique-validator").default;
 
 const profileContactSchema = new Schema<Types.IProfile["info"]>({
   emails:[{type: String,lowercase: true}],
@@ -38,7 +37,7 @@ profileSchema.methods.saveMe = async function (){
   await this.save();
   await this.populateMe();
 };
-profileSchema.methods.populateMe = async function () {};
+profileSchema.methods.populateMe = async function () {await this.populate("creator");};
 
 profileSchema.methods.preview = function (){
   return {
@@ -52,8 +51,8 @@ profileSchema.methods.preview = function (){
   };
 };
 profileSchema.methods.json = function (isMe) {
-  const json:Partial<Types.IProfileJsonAuth> =  {...this.preview() as any};
-  json.creator = this.creator.preview() as any;
+  const json:Types.IProfileJsonAuth =  {...this.preview() as any};
+  json.creator = isMe?this.creator.id:this.creator.preview() as any;
   json.status = this.status;
   json.age = this.creator.toAge();
   json.meta = this.meta;

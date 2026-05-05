@@ -11,6 +11,11 @@ export enum INotificationTemplates {
   TEST_EMAIL = "test-email",
   SEND_INVOICE = "Welcome {{name}}, here is your invoice {{invoice}}",
 
+  USER_REGISTERED = "Welcome {{user}}, thank you for registering your user account {{userName}} with us!",
+  USER_ACCT_TEMP_PSWD = "Your temporary passcode to add a user is {{tempPswd}}, It expires in 15 minutes.",
+  USER_DISABLED = "User account {{userName}} has been disabled.",
+  USER_REMOVED = "User account {{userName}} has been removed.",
+
   PLAYER_REGISTERED = "Welcome {{user}}, thank you for registering your admin account {{adminName}} with us!",
   PLAYER_ACCT_TEMP_PSWD = "Your temporary passcode to add a user is {{tempPswd}}, It expires in 15 minutes.",
   PLAYER_ACCT_USER_JOINED = "{{user}} has joined the {{adminName}} admin account.",

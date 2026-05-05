@@ -9,7 +9,7 @@ import PingTypes from "../../types";
 const {MongooseAggHelpers} = Services;
 
 export class PingQueriesService {
-  static queryExtChains = async (q:PingTypes.IPingExtChainQuery,s:string[],o?:any,t?:number) => {
+  static queryExtChains = async (q:PingTypes.IPingExtChainQuery,s:string[],o?:any,t:number = 0) => {
     const {results} = await new MongooseAggHelpers<PingTypes.IPingExtChainQuery>({
       model:PingModels.PingExtChain,
       query:q,
@@ -53,7 +53,7 @@ export class PingQueriesService {
     }).runQuery();
     return {results};
   };
-  static queryExtWallets = async (q:PingTypes.IPingExtWalletQuery,s:string[],o?:any,t?:number) => {
+  static queryExtWallets = async (q:PingTypes.IPingExtWalletQuery,s:string[],o?:any,t:number = 0) => {
     const {results} = await new MongooseAggHelpers<PingTypes.IPingExtWalletQuery>({
       model:PingModels.PingExtWallet,
       query:q,
@@ -97,7 +97,7 @@ export class PingQueriesService {
     }).runQuery();
     return {results};
   };
-  static queryCards = async (q:PingTypes.IPingCardQuery,s:string[],o?:any,t?:number) => {
+  static queryCards = async (q:PingTypes.IPingCardQuery,s:string[],o?:any,t:number = 0) => {
     const {results} = await new MongooseAggHelpers<PingTypes.IPingCardQuery>({
       model:PingModels.PingCard,
       query:q,
@@ -141,7 +141,7 @@ export class PingQueriesService {
     }).runQuery();
     return {results};
   };
-  static queryPos = async (q:PingTypes.IPingPosQuery,s:string[],o?:any,t?:number) => {
+  static queryPos = async (q:PingTypes.IPingPosQuery,s:string[],o?:any,t:number = 0) => {
     const {results} = await new MongooseAggHelpers<PingTypes.IPingPosQuery>({
       model:PingModels.PingPos,
       query:q,
@@ -185,7 +185,7 @@ export class PingQueriesService {
     }).runQuery();
     return {results};
   };
-  static queryTransactions = async (q:PingTypes.IPingTransactionQuery,s:string[],o?:any,t?:number) => {
+  static queryTransactions = async (q:PingTypes.IPingTransactionQuery,s:string[],o?:any,t:number = 0) => {
     const {results} = await new MongooseAggHelpers<PingTypes.IPingTransactionQuery>({
       model:PingModels.PingTransaction,
       query:q,

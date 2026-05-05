@@ -1,0 +1,73 @@
+<!-- Chat Feed -->
+<div class="glass-card chat-card">
+  <div class="card-header">
+    <div>
+      <h2 class="card-title">Conversations</h2>
+      <p class="card-subtitle">Most recent</p>
+    </div>
+  </div>
+  <div class="chat-list">
+    <ul>
+      <% users.forEach(user => { %>
+        <li><%= user.name %></li>
+      <% }) %>
+    </ul>
+    <div class="chat-item">
+      <img class="chat-avatar-img" src="/images/avatar6.png" alt="Angela">
+      <div class="chat-content">
+        <span class="chat-time">2 minutes ago</span>
+        <p class="chat-avatar-name"><strong>John Doe</strong></p>
+        <p class="chat-text"> purchased Premium Plan</p>
+      </div>
+    </div>
+    <div class="chat-item">
+      <img class="chat-avatar-img" src="/images/avatar5.png" alt="Anna">
+      <div class="chat-content">
+        <span class="chat-time">15 minutes ago</span>
+        <p class="chat-avatar-name"><strong>Anna Smith</strong></p>
+        <p class="chat-text"> submitted a support ticket</p>
+      </div>
+    </div>
+    <div class="chat-item">
+      <img class="chat-avatar-img" src="/images/mike.jpg" alt="Mike">
+      <div class="chat-content">
+        <span class="chat-time">1 hour ago</span>
+        <p class="chat-avatar-name"><strong>Mike Johnson</strong></p>
+        <p class="chat-text"> I upgraded my subscription...</p>
+      </div>
+    </div>
+    <div class="chat-item">
+      <img class="chat-avatar-img" src="/images/emilyz.jpg" alt="Emily">
+      <div class="chat-content">
+        <span class="chat-time">2 hour ago</span>
+        <p class="chat-avatar-name"><strong>Emily White</strong></p>
+        <p class="chat-text"> completed onboarding...</p>
+      </div>
+    </div>
+    <div class="chat-item">
+      <img class="chat-avatar-img" src="/images/avatar2.png" alt="Robert">
+      <div class="chat-content">
+        <span class="chat-time">3 hour ago</span>
+        <p class="chat-avatar-name"><strong>Rober Brown</strong></p>
+        <p class="chat-text"> requested refund...</p>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  const gridElement = document.getElementsByClassName("chat-container")[0];
+  const conversations = document.getElementsByClassName("conversations")[0];
+  const backButton = document.getElementById("back-button");
+  const conversationsModeClass = "conversations-mode";
+  const messagesModeClass = "messages-mode";
+
+  conversations.addEventListener("click", () => {
+    gridElement.classList.remove(conversationsModeClass);
+    gridElement.classList.add(messagesModeClass);
+  });
+
+  backButton.addEventListener("click", () => {
+    gridElement.classList.remove(messagesModeClass);
+    gridElement.classList.add(conversationsModeClass);
+  });
+</script>

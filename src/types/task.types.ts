@@ -1,6 +1,11 @@
 import * as PROFILE from "./profile.types";
-import * as NOTE from "./note.types";
+import * as MESSAGE from "./message.types";
 
+export type ITaskTag = {
+  creator:PROFILE.IProfile;
+  createdOn:Date;
+  text:string
+};
 export enum ITaskStatuses {
   NEW = "new",
   ACTIVE = "active",
@@ -22,11 +27,11 @@ export enum ITaskStatuses {
 }
 export type ITaskType = DocEntity<ITaskStatuses,PROFILE.IProfile> & {
   app:string;
-  type:"bug"|"improvement"|"suggestion"|"other";
+  type:"bug"|"improvement"|"suggestion"|"other"|"test";
   title:string;
   desc:string;
   tasks:ITask[];
-  notes:NOTE.INote[];
+  notes:MESSAGE.IMessage[];
   admin:PROFILE.IProfile|null;
   priority:1|2|3|4,
   progress:number;
@@ -35,27 +40,25 @@ export type ITaskType = DocEntity<ITaskStatuses,PROFILE.IProfile> & {
   startOn:Date;
   dueOn:Date;
   info:{
-    lob:"tech"|"corp";
-    platform:"client"|"server"|"worker"|"dev-ops"|"live-opts";
-    platformType:"app-front"|"app-back"|"third-party";
-    platformName?:string;
-    feature:string;
+    lob:"tech"|"corp"|"design"|"marketing"|"dev"|"security"|'research';
+    feature?:string;
     recurring?:boolean;
     recurringInterval?:string;
     amt?:number;
     cost?:number;
   }
   meta:{
-    assigned:Date;
-    completed:Date;
-    cancelled:Date;
-    rejected:Date;
+    assigned?:Date;
+    completed?:Date;
+    cancelled?:Date;
+    rejected?:Date;
+    tags:ITaskTag[];
   }
 };
 
 export type ITaskITO = Partial<ITaskType>;
-export type ITaskPTO = Pick<ITaskType,"id">;
-export type ITaskOTO = Partial<ITaskType>;
+export type ITaskPTO = Pick<ITaskType,"id"|"app"|"type"|"desc"|"title">;
+export type ITaskOTO = Partial<ITaskType & {notes:MESSAGE.IMessageJson[]}>;
 
 export interface ITaskMethods {
   saveMe():Promise<void>;

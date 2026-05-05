@@ -1,0 +1,76 @@
+<!-- Auth Page -->
+<div class="login-page">
+  <%- include('../../components/theme-toggle.html',{page,pageData}) %>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="login-logo">G</div>
+        <% switch (page) {
+          case 'signup': %>
+            <h1 class="login-title">Create Account</h1>
+            <% break; %>
+          <% case 'verify': %>
+            <h1 class="login-title">Verify Email</h1>
+            <% break; %>
+          <% case 'register': %>
+            <h1 class="login-title">Complete Registration</h1>
+            <% break; %>
+          <% case 'login': %>
+            <h1 class="login-title">Welcome Back</h1>
+            <% break; %>
+        <% } %>
+        <% switch (page) {
+          case 'signup': %>
+            <p class="login-subtitle">Start your journey with GlassDash</p>
+            <% break; %>
+          <% case 'verify': %>
+            <p class="login-subtitle">Enter the code sent to the email provided</p>
+            <% break; %>
+          <% case 'register': %>
+            <p class="login-subtitle">Tell us more about you</p>
+            <% break; %>
+          <% case 'login': %>
+            <p class="login-subtitle">Sign in to continue to GlassDash</p>
+            <% break; %>
+        <% } %>
+      </div>
+      <% switch (page) {
+        case 'signup': %>
+          <%- include('./signup-form.html',{page,pageData}) %>
+          <% break; %>
+        <% case 'verify': %>
+          <%- include('./verify-form.html',{page,pageData}) %>
+          <% break; %>
+        <% case 'register': %>
+          <%- include('./register-form.html',{page,pageData}) %>
+          <% break; %>
+        <% case 'login': %>
+          <%- include('./login-form.html',{page,pageData}) %>
+          <% break; %>
+      <% } %>
+      <div class="divider">
+        <% if(page == 'login'){%>
+          <span>or continue with</span>
+        <% } else {%>
+          <span>or sign up with</span>
+        <% } %>
+      </div>
+      <%- include('./social-login.html',{page}) %>
+      <p class="login-footer">
+        <% switch (page) {
+          case 'signup': %>
+            Already have an account? <a href="/glass/login">Sign In</a>
+            <% break; %>
+          <% case 'verify': %>
+            <% break; %>
+          <% case 'register': %>
+            <% break; %>
+          <% case 'login': %>
+            Don't have an account? <a href="/glass/signup">Create Account</a>
+            <% break; %>
+        <% } %>
+      </p>
+    </div>
+  </div>
+  <%- include('../../components/footer.html') %>
+</div>

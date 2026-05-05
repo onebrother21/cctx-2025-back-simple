@@ -1,11 +1,11 @@
 import mongoose,{Schema,Model} from 'mongoose';
-import uniqueValidator from "mongoose-unique-validator";
 import Utils from '@utils';
 import Types from "@types";
 import DegenTypes from "../types";
 
 const ObjectId = Schema.Types.ObjectId;
 const {NEW} = DegenTypes.IDegenVenueStatuses;
+const uniqueValidator = require("mongoose-unique-validator").default;
 
 const venueSchema = new Schema<DegenTypes.IDegenVenue,DegenVenue,DegenTypes.IDegenVenueMethods>({
   creator:{type:ObjectId,ref:"cctx_profiles",required:true},

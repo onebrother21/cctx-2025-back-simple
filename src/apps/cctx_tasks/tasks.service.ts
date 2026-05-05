@@ -2,10 +2,11 @@ import Models from "@models";
 import Types from "@types";
 import Utils from '@utils';
 import Services from '@services';
+import { QueryOptions } from "mongoose";
 
 const notify = Services.Notifications.createNotification;
 
-const queryOpts = { new:true,runValidators: true,context:'query' };
+const queryOpts:QueryOptions = { returnDocument:"after",runValidators: true,context:'query' };
 const saltRounds = Number(process.env.SALT_ROUNDS || 10);
 
 const approvalStats = Types.IApprovalStatuses;
@@ -19,15 +20,19 @@ const {AppError} = Utils;
 export class TasksService {
   static createTasks = async (creator:string,newCCTXTasks:Partial<Types.ITask>[]) => {
     const tasks:Types.ITask[] = [];
+    const oneWk = 7 * 24 * 60 * 60 * 1000;
     for(let i = 0,l = newCCTXTasks.length;i<l;i++){
       const nt = {
         creator,
         info:{},
-        meta:{},
+        startOn:new Date(),
+        priority:4,
+        meta:{tags:[]},
         notes:[],
         tasks:[],
         ...newCCTXTasks[i]
       };
+      nt.dueOn = nt.dueOn || new Date(new Date(nt.startOn).getTime() + oneWk);
       const task = new Task(nt);
       await task.saveMe();
       tasks.push(task);

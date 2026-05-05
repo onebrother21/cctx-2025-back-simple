@@ -1,6 +1,6 @@
 import * as DEVICE from "./app-device.types";
 
-export type AppUsageUpdate = DocEntity<"new",never> & {
+export type AppUsageUpdate = DocEntity<"new"> & {
   who:"sys-admn"|`${"usr"|"prf"}/${string}`;//user
   what:string|number;//desc of action
   which?:`${"usr"|"prf"|"tsk"|"ntf"|"ssn"|"ven"|"case"|"att"}/${string}`;//object affected

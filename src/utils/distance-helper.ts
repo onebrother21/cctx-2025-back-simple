@@ -21,7 +21,7 @@ export function calculateDistance([lon1,lat1]:number[],[lon2,lat2]:number[],{toF
 
   return typeof toFixed === "number"?Number((raw).toFixed(toFixed)):raw;
 }
-export function calculateMileage([lon1,lat1],[lon2,lat2]){
+export function calculateMileage([lon1,lat1]:number[],[lon2,lat2]:number[]){
   const r = 3963.0; // mi
   const p = Math.PI / 180;
   const a = 0.5 - Math.cos((lat2 - lat1) * p) / 2 + Math.cos(lat1 * p) * Math.cos(lat2 * p) * (1 - Math.cos((lon2 - lon1) * p)) / 2;
@@ -55,7 +55,7 @@ Promise<Pick<AddressObj,"info"|"loc">[]>{
         ...res.data.map((o:any) => ({info:o.display_name,loc:[o.lon,o.lat]}))
       );
     }
-    catch(err){console.error(err.message);}
+    catch(err:any){console.error(err.message);}
   }
   return results;
 };

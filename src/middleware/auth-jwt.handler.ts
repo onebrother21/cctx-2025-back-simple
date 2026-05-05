@@ -6,7 +6,7 @@ import Types from '@types';
 const {User,DeadToken} = Models;
 const jwtSecret = process.env.JWT_KEY || "";
 
-const auth:() => IHandler = () => async (req,res,next) => {
+export const AuthJWT:() => IHandler = () => async (req,res,next) => {
   try {
     const header = req.headers.authorization;
     const isTokenStr = header && header.includes("Bearer ");
@@ -34,4 +34,4 @@ const auth:() => IHandler = () => async (req,res,next) => {
   }
   catch(e){next(e);}
 };
-export default auth;
+export default AuthJWT;

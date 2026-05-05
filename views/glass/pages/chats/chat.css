@@ -1,0 +1,74 @@
+/* Layout Wrapper */
+.app-layout {
+  display: flex;
+  max-width: 1000px;
+  margin: 20px auto;
+  background: white;
+  border: 1px solid #ddd;
+  min-height: 600px;
+}
+
+/* Responsive Stacking */
+@media (max-width: 800px) {
+  .app-layout {
+      flex-direction: column;
+  }
+}
+
+/* Component 1: Original Styles (Abbreviated for brevity) */
+.messages-list {
+  flex: 1;
+  border-right: 1px solid #eee;
+}
+.message-card { display: flex; padding: 15px; border-bottom: 1px solid #eee; }
+.avatar { width: 50px; height: 50px; border-radius: 50%; margin-right: 15px; }
+.badge.request { background: #ff7700; color: white; padding: 4px 12px; border-radius: 15px; font-size: 12px; }
+
+/* Component 2: Detail View Styles */
+.message-detail {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.avatar.small { width: 40px; height: 40px; }
+
+.chat-area {
+  flex-grow: 1;
+  padding: 20px;
+  background-color: #fcfcfc;
+  overflow-y: auto;
+}
+
+.bubble {
+  max-width: 70%;
+  padding: 10px 15px;
+  border-radius: 18px;
+  margin-bottom: 10px;
+  font-size: 14px;
+  position: relative;
+}
+
+.bubble.received { background: #eee; align-self: flex-start; }
+.bubble.sent { background: #0088cc; color: white; align-self: flex-end; margin-left: auto; }
+
+.input-area {
+  padding: 15px;
+  display: flex;
+  gap: 10px;
+  border-top: 1px solid #eee;
+}
+
+.input-area input {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+}

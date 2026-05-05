@@ -1,7 +1,8 @@
 import mongoose,{Schema,Model} from 'mongoose';
-import uniqueValidator from "mongoose-unique-validator";
 import Types from "@types";
 import Utils from '@utils';
+
+const uniqueValidator = require("mongoose-unique-validator").default;
 
 const appUsageSchema = new Schema<Types.IAppUsage,AppUsage,Types.IAppUsageMethods>({
   status:{type:String,enum:["new"],default:"new"},

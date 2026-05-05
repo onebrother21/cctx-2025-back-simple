@@ -6,10 +6,11 @@ import Services from '@services';
 import PiMiaModels from "../../models";
 import PiMiaTypes from "../../types";
 import { uploadFields } from "@middleware";
+import { QueryOptions } from 'mongoose';
 
 const notify = Services.Notifications.createNotification;
 
-const queryOpts = { new:true,runValidators: true,context:'query' };
+const queryOpts:QueryOptions = { returnDocument:"after",runValidators: true,context:'query' };
 const saltRounds = Number(process.env.SALT_ROUNDS || 10);
 
 const approvalStats = Types.IApprovalStatuses;
@@ -68,15 +69,15 @@ export class InvoicesService {
   };
   static sendInvoice = async (invoiceId:string,{recipient,sentAt}:{recipient:"client"|"vendor",sentAt?:Date}) => {
     const invoice = await PiMiaModels.Invoice.findById(invoiceId);
-    const addressee = invoice.addressee;
     if(!invoice) throw new Utils.AppError(422,'Requested invoice not found');
+    const addressee = invoice.addressee;
     await invoice.populateMe();
     console.log("sending invoice to:",addressee.name);
      //send registration notification
     await notify({
       type:"SEND_INVOICE",
       method:Types.IContactMethods.EMAIL,
-      audience:[addressee.id],
+      audience:[addressee.id as any],
       data:{
         name:addressee.name.split(" ")[0],
         invoice:invoice.toString()

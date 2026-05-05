@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-dotenv.config();
+dotenv.config({ quiet: true });
 
 import cluster from 'cluster';
 import os from 'os';
@@ -30,7 +30,8 @@ process.on('uncaughtException',err => {
 const getNetworkAddress = () => {
   const interfaces = os.networkInterfaces();
   for (const name of Object.keys(interfaces)) {
-    for (const int of interfaces[name]) {
+    const namedInterface = interfaces[name];
+    if(namedInterface) for (const int of namedInterface) {
       if (int.family === 'IPv4' && !int.internal) {
         return int.address;
       }
@@ -48,21 +49,22 @@ export class myApp {
   init = async () => {
     try {
       const db = await Db.connect();
-      const cache = await RedisCache.connect();
+      const cache = await RedisCache.connect({reload:true});
       const app = express();
       const host = getNetworkAddress();
       const domain = `${host}:${port}`;//dev env -> include port
+      const env = process.env.NODE_ENV || "";
       await cache.save({domain});
 
       App.init(app,cache);
-      const {server} =  initializeSockets(app);
+      const {server} =  initializeSockets(app,cache);
 
       this.app = app;
       this.server = server;
       this.server.listen(port,() => {
-        Utils.print("ok","ok",`Env: ${process.env.NODE_ENV.toLocaleUpperCase()}`);
-        Utils.print("ok","ok",`Server: ${hostname}`);
-        Utils.print("ok","ok",`Network: ${host}:${port} is listening...`);
+        Utils.print("ok","cctx-dev-back",`Env: ${env.toLocaleUpperCase()}`);
+        Utils.print("ok","cctx-dev-back",`Server: ${hostname}`);
+        Utils.print("ok","cctx-dev-back",`Network: ${host}:${port} is listening...`);
       });
     }
     catch(e){throw e;}

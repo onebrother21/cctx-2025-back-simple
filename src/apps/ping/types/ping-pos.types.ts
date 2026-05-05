@@ -13,7 +13,7 @@ export enum IPingPosStatuses {
   OK = "connected",
   ERR = "error",
 }
-export type IPingPosType = DocEntity<IPingPosStatuses,never> & {
+export type IPingPosType = DocEntity<IPingPosStatuses> & {
   posId:number;
   addr:AddressObj;
   owner:PROFILES.IPingVendor;

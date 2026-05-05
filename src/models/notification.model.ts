@@ -1,9 +1,9 @@
 import mongoose,{Schema,Model} from 'mongoose';
-import uniqueValidator from "mongoose-unique-validator";
 import Types from "@types";
 
 const ObjectId = Schema.Types.ObjectId;
 const {NEW} = Types.INotificationStatuses;
+const uniqueValidator = require("mongoose-unique-validator").default;
 
 const recipientSchema = new Schema<Types.INotification["audience"][0]>({
   user:{type:ObjectId,ref:"cctx_users"},

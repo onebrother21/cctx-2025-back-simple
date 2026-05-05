@@ -1,7 +1,7 @@
 import Types from "@types";
 
 export const CheckAdminScopes:(scopes?:string[]) => IHandler = (scopes) => (req,res,next) => {
-  const userScopes = [];
+  const userScopes:string[] = [];
   if(!(scopes && scopes.length)) next();
   else if(userScopes.includes("all")) next();
   else if(userScopes.includes("anything")) next();

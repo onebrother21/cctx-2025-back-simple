@@ -1,7 +1,7 @@
 import Utils from "@utils";
 import { doubleCsrfUtils } from "./set-csrf-token.handler";
 
-const SendErrorHandler:() => IErrorHandler = () => async (err,req,res,next) => {
+export const SendErrorHandler:() => IErrorHandler = () => async (err,req,res,next) => {
   let response:any = {success:false,status:500,tokens:res.locals.tokens};
   if(res.headersSent) return next(err);
   switch(true){

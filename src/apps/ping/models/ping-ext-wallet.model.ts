@@ -1,11 +1,11 @@
 import mongoose,{Schema,Model} from 'mongoose';
-import uniqueValidator from "mongoose-unique-validator";
 import Utils from '@utils';
 import Types from "@types";
 import PingTypes from "../types";
 
 const ObjectId = Schema.Types.ObjectId;
 const {NEW} = PingTypes.IPingExtWalletStatuses;
+const uniqueValidator = require("mongoose-unique-validator").default;
 
 const walletSchema = new Schema<PingTypes.IPingExtWallet,PingExtWallet,PingTypes.IPingExtWalletMethods>({
   status:{type:String,enum:Object.values(PingTypes.IPingExtWalletStatuses),default:NEW},

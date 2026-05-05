@@ -9,7 +9,7 @@ import DegenTypes from "../../types";
 const {MongooseAggHelpers} = Services;
 
 export class DegenVenuesQueriesService {
-  static queryVenues = async (q:DegenTypes.IDegenVenueQuery,s:string[],o?:any,t?:number) => {
+  static queryVenues = async (q:DegenTypes.IDegenVenueQuery,s:string[],o?:any,t:number = 0) => {
     const {results} = await new MongooseAggHelpers<DegenTypes.IDegenVenueQuery>({
       model:DegenModels.DegenVenue,
       query:q,

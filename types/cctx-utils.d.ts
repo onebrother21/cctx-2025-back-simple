@@ -1,18 +1,3 @@
-type MiscModelRef = {id:string;ref:string;};
-type Status<K extends string> = {name:K;time:string|Date;info?:MiscInfo;};
-type LocaleDateOpts = Record<"weekday"|"month"|"day"|"year"|"hour"|"minute"|"second",string> & {hour12?:boolean;};
-type HrsOfOperation = `${number}${"am"|"pm"} - ${number}${"am"|"pm"}`;
-type PhoneNumber = `+${number}-${number}-${number}-${number}`;
-type ZipCode = `${number}`;
-type LocationObj = {loc:[number,number]};
-type AddressObj = Partial<Record<"streetAddr"|"city"|"state"|"postal"|"country"|"info",string> & {loc:[number,number]}>;
-type AddressResult = Pick<AddressObj,"info"|"loc">;
-type MinutesToTheNearestFive = "00"|"05"|"10"|"15"|"20"|"25"|"30"|"35"|"40"|"45"|"50"|"55";
-type Hours = 
-|"01"|"02"|"03"|"04"|"05"|"06"|"07"|"08"|"09"|"10"|"11"|"12"
-|"13"|"14"|"15"|"16"|"17"|"18"|"19"|"20"|"21"|"22"|"23"|"24";
-type TimeToTheNearestFive = `${Hours}:${MinutesToTheNearestFive}`;
-
 type Attachment = {
   originDate:string|Date;
   originLoc:string|Date;

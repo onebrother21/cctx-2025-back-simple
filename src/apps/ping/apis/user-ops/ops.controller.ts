@@ -22,7 +22,7 @@ export class UserOpsController {
   };
   static getUserById:IHandler = async (req,res,next) => {
     try {
-      const {profileId} = req.params;
+      const profileId = req.params.profileId as string;
       const {profile} = await UserOpsService.getUserById(profileId);
       res.locals.success = true;
       res.locals.data = profile.json();
@@ -32,7 +32,7 @@ export class UserOpsController {
   static updateUser:IHandler = async (req,res,next) => {
     try {
       const data = req.body.data;
-      const {profileId} = req.params;
+      const profileId = req.params.profileId as string;
       const {profile} = await UserOpsService.updateUser(profileId,data);
       res.locals.success = true;
       res.locals.data = profile.json();
@@ -41,7 +41,7 @@ export class UserOpsController {
   };
   static updateUserStatus:IHandler = async (req,res,next) => {
     try {
-      const {profileId} = req.params;
+      const profileId = req.params.profileId as string;
       const data = req.body.data;
       const {profile} = await UserOpsService.updateUserStatus(profileId,data);
       res.locals.success = true;
@@ -51,7 +51,7 @@ export class UserOpsController {
   };
   static deleteUser:IHandler = async (req,res,next) => {
     try {
-      const {profileId} = req.params;
+      const profileId = req.params.profileId as string;
       const {ok} = await UserOpsService.deleteUser(profileId);
       res.locals.success = ok;
       res.locals.data = {removed:profileId,ok};

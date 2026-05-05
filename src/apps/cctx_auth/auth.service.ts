@@ -8,6 +8,7 @@ import Services from '@services';
 import { uploadFields } from "@middleware";
 
 import AuthUtils from "./auth.utils";
+import { QueryOptions } from 'mongoose';
 
 const saltRounds = Number(process.env.SALT_ROUNDS || 10);
 
@@ -18,7 +19,7 @@ const jwtSecret = process.env.JWT_KEY || "supersecretkey";
 const refreshSecret = process.env.REFRESH_SECRET || 'refreshsecret';
 const resetSecret = process.env.REFRESH_SECRET || 'resetsecret';
 
-const queryOpts = {new:true,runValidators:true};
+const queryOpts:QueryOptions = { returnDocument:"after",runValidators: true,context:'query' };
 
 const notify = Services.Notifications.createNotification;
 
@@ -31,27 +32,24 @@ const AppUsage = Models.AppUsage;
 export class AuthService {
   /** PRE AUTH/USER INIT */
   static signupUser = async (req:IRequest) =>  {
-    type SignUp = Pick<Types.IUser,"email"|"dob">;
-    const {data:{email,dob},loc} = req.body as {data:SignUp} & LocationObj;
+    type SignUp = {data:Pick<Types.IUser,"email">} & LocationObj;
+    const {data:{email},loc} = req.body as SignUp;
     const device = req.device as Types.IAppDevice;
 
     await AuthUtils.throwIfUserExists(email);
-    USE_VERIFY_AGE && await AuthUtils.validateAge(dob);
 
     const user = new User({
       status:NEW,
       email,
-      dob:new Date(dob),
       devices:[device],
       profiles:[],
       info:{
         isTwoFactorReq:true,
         isAgeVerifyReq:!!USE_VERIFY_AGE,
       },
-      meta:{
-        ...USE_VERIFY_AGE?{ageVerified:new Date()}:{},
-      },
+      meta:{},
     });
+    await user.saveMe();
     user.device = device;
     await AuthUtils.sendVerificationReq(user,EMAIL);
     await AppUsage.make(`usr/${user.id}`,"signedUp",{loc,device});
@@ -71,6 +69,11 @@ export class AuthService {
       await AppUsage.make(`usr/${user.id}`,"requested2faVerification",{loc});
       await AppUsage.make("sys-admn","sent2faVerification");
     }
+    
+    req.session.user = user.json();
+    req.session.pageViews = (req.session.pageViews || 0) + 1;
+    req.session.lastAction = req.method.toLocaleUpperCase() + " " + req.url;
+
     return {user};
   };
   static resendVerification = async (req:IRequest) =>  {
@@ -80,18 +83,25 @@ export class AuthService {
 
     const user = await AuthUtils.throwIfUserIdDoesntExist(id);
     user.device = req.device;
-    await AuthUtils.sendVerificationReq(user,user.meta.verificationType);
+    const method = user.meta.verificationType;
+    if(method) await AuthUtils.sendVerificationReq(user,method);
     await AppUsage.make("sys-admn","resentVerification");
+    
+    req.session.user = user.json();
+    req.session.pageViews = (req.session.pageViews || 0) + 1;
+    req.session.lastAction = req.method.toLocaleUpperCase() + " " + req.url;
+
     return {user};
   };
   static verifyUser = async (req:IRequest) => {
-    type Verify =  Pick<Types.IUser,"id"|"verification"|"role">;
-    const {data:{id,verification:code,role},loc} = req.body as {data:Verify} & LocationObj;
+    type Verify = {data:Pick<Types.IUser,"id"|"verification"|"role">} & LocationObj;
+    const {data:{id,verification:code,role},loc} = req.body as Verify;
     const device = req.device as Types.IAppDevice;
 
+    if(!code) throw new Utils.AppError(400,"no code provided");
     const user = await AuthUtils.throwIfUserIdDoesntExist(id);
     await AuthUtils.validateVerify(user,code);
-    
+
     const type = user.meta.verificationType;
     user.set({
       verification:null,
@@ -104,23 +114,33 @@ export class AuthService {
     user.device = req.device,
     user.role = role;
     await AppUsage.make(`usr/${user.id}`,`verified - ${type}`,{loc});
+    
+    req.session.user = user.json();
+    req.session.pageViews = (req.session.pageViews || 0) + 1;
+    req.session.lastAction = req.method.toLocaleUpperCase() + " " + req.url;
+
     return {user};
   };
   static registerUser = async (req:IRequest) => {
-    type Register = Pick<Types.IUser,"email"|"name"|"pin"|"mobile"|"username"|"info">;
-    const {data:{email,...data},loc} = req.body as {data:Register;} & LocationObj;
+    type Register = {data:Pick<Types.IUser,"id"|"name"|"dob"|"pin"|"mobile"|"username"|"info">}
+    & LocationObj;
+    const {data:{id,dob,...data},loc} = req.body as Register;
     const device = req.device as Types.IAppDevice;
 
-    const user = await AuthUtils.throwIfUserIdDoesntExist(req.body.data.id);
+    USE_VERIFY_AGE && await AuthUtils.validateAge(dob);
+    const user = await AuthUtils.throwIfUserIdDoesntExist(id);
+
     user.set({
       name:data.name,
       mobile: data.mobile,
       username:data.username,
       pin:await bcrypt.hash(data.pin,saltRounds),
+      dob:new Date(dob),
       status:ENABLED,
       meta:{
         ...user.meta,
         ...data.info,
+        ...USE_VERIFY_AGE?{ageVerified:new Date()}:{},
         registrationComplete:new Date(),
       }
     });
@@ -128,11 +148,17 @@ export class AuthService {
     await notify({
       type:"REGISTER",
       method:EMAIL,
-      audience:[{user:user.id,info:user.email}],
+      audience:[{user:user.id as any,info:user.email}],
       data:{name:Utils.cap(user.name.first as string)}
     });
     user.device = req.device;
     await AppUsage.make(`usr/${user.id}`,"registered",{loc});
+    
+    req.session.user = user.json(true);
+    req.session.pageViews = (req.session.pageViews || 0) + 1;
+    req.session.lastAction = req.method.toLocaleUpperCase() + " " + req.url;
+    req.session.localSessionExp = Date.now() + 30 * 60000;
+
     return {user};
   };
   /** AUTH */
@@ -140,7 +166,7 @@ export class AuthService {
     type Login = Pick<Types.IUser,"pin"|"role"> & {emailOrUsername:string};
     const {data:{emailOrUsername,pin,role},loc} = req.body as {data:Login;} & LocationObj;
     const device = req.device as Types.IAppDevice;
-    Utils.trace({emailOrUsername,role});
+    //Utils.trace({emailOrUsername,role});
 
     const user = await AuthUtils.throwIfUserDoesntExist(emailOrUsername);
     await AuthUtils.validatePswd(user,pin);
@@ -171,6 +197,12 @@ export class AuthService {
     await AppUsage.make(`usr/${user.id}`,"userLoggedIn (RefreshTkn)",{loc});
     user.device = req.device;
     user.role = storedToken.role;
+    
+    req.session.user = user.json(true);
+    req.session.pageViews = (req.session.pageViews || 0) + 1;
+    req.session.lastAction = req.method.toLocaleUpperCase() + " " + req.url;
+    req.session.localSessionExp = Date.now() + 30 * 60000;
+
     return {user};
   };
   /** POST AUTH */
@@ -190,6 +222,12 @@ export class AuthService {
     await user.saveMe();
     user.device = req.device;
     await AppUsage.make(`usr/${user.id}`,`updatedAcct - ${updateKeys}`,{loc});
+    
+    req.session.user = user.json(true);
+    req.session.pageViews = (req.session.pageViews || 0) + 1;
+    req.session.lastAction = req.method.toLocaleUpperCase() + " " + req.url;
+    req.session.localSessionExp = Date.now() + 30 * 60000;
+
     return {user};
   };
   static updateImg = async (req:IRequest) => {
@@ -203,7 +241,7 @@ export class AuthService {
     })
     const {upload} = req.body.data;
     const o = upload as UploadResponse;
-    const meta = uploadFields.reduce((n,k) => ({...n,[k]:o[k]}),{}) as any;
+    const meta = uploadFields.reduce((n,k) => ({...n,[k]:o[k as keyof UploadResponse]}),{}) as any;
     const img = {
       id:o.public_id,
       type:o.type,
@@ -217,6 +255,13 @@ export class AuthService {
     await user.saveMe();
     user.device = req.device;
     await AppUsage.make(`usr/${user.id}`,`updatedProfileImg`);
+
+    
+    req.session.user = user.json(true);
+    req.session.pageViews = (req.session.pageViews || 0) + 1;
+    req.session.lastAction = req.method.toLocaleUpperCase() + " " + req.url;
+    req.session.localSessionExp = Date.now() + 30 * 60000;
+
     return {user};
   };
   static logoutUser = async (req:IRequest) => {
@@ -227,10 +272,17 @@ export class AuthService {
     user.status = INACTIVE;
     user.meta.lastLogout = new Date();
     await user.saveMe();
-    await Models.DeadToken.findOneAndUpdate({userId:user.id},token,{upsert:true});
+    await Models.DeadToken.findOneAndUpdate({userId:user.id},token,{
+      upsert:true,
+      returnDocument: 'after',
+    });
     await Models.AuthToken.findOneAndDelete({userId:user.id});
     user.device = req.device;
     await AppUsage.make(`usr/${user.id}`,`loggedOut`);
+    
+    req.session.user = null;
+    req.session.localSessionExp = null;
+
     return {ok:true};
   };
   static initiatePinReset = async (req:IRequest) => {
@@ -248,7 +300,7 @@ export class AuthService {
     await notify({
       type:"RESET_PASSWORD",
       method:EMAIL,
-      audience:[{user:user.id,info:user.email}],
+      audience:[{user:user.id as any,info:user.email}],
       data:{}
     });
     await AppUsage.make(`usr/${user.id}`,`initiatedPswdReset`,{loc});
@@ -260,10 +312,11 @@ export class AuthService {
       const {data:{token,pin},loc} = req.body as {data:{token:string,pin:string}} & LocationObj;
       const {id:userId} = jwt.verify(token,resetSecret) as  IAppCreds;
       const user = await User.findByIdAndUpdate(userId,{pin:await bcrypt.hash(pin,saltRounds)});
+      if(!user) throw new Utils.AppError(400,"no user provided");
       await notify({
         type:"RESET_PASSWORD_SUCCESS",
         method:EMAIL,
-        audience:[{user:user.id,info:user.email}],
+        audience:[{user:user.id as any,info:user.email}],
       });
       user.device = req.device;
       await AppUsage.make(`usr/${user.id}`,`userResetPswd`,{loc});

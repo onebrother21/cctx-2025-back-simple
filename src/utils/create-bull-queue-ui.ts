@@ -19,12 +19,12 @@ export class BullQueueUi {
         uiConfig: {
           pollingInterval:{showSetting:true,forceInterval:refreshInterval},
           miscLinks: [
-            //{text: 'My Dash', url: '/av3/pi-mia/system-ui/dash'},
+            {text: 'My Dash', url: '/av3/cctx/admn/sys/ui/dash'},
+            ...postJobs?[{text: 'Post Job', url: '/av3/cctx/admn/sys/ui/jobs/new'}]:[],
+            ...logout?[{text: 'Logout', url: '/av3/cctx/admn/sys/ui/logout'}]:[]
             /*
             ...profile?[{text: 'My Profile', url: '/av3/pi-mia/system-ui/profile'}]:[],
             ...settings?[{text: 'Settings', url: '/av3/pi-mia/system-ui/settings'}]:[],
-            ...postJobs?[{text: 'Post Job', url: '/av3/pi-mia/system-ui/jobs/new'}]:[],
-            ...logout?[{text: 'Logout', url: '/av3/pi-mia/system-ui/logout'}]:[]
             */
           ]
         },
@@ -33,10 +33,10 @@ export class BullQueueUi {
     return serverAdapter.getRouter();
   }
 }
-export const getBullUIRouter = (MyQueueNames:any) => {
+export const getBullUIRouter = (MyQueueNames:any,basePath:string) => {
   return BullQueueUi.createRouter({
     queueNames:Object.values(MyQueueNames),
-    basePath:"/sys/ui",
+    basePath,
     refreshInterval:10 * 60 * 1000,
     logout:true,
     settings:true,

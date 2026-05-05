@@ -1,11 +1,11 @@
 import mongoose,{Schema,Model} from 'mongoose';
-import uniqueValidator from "mongoose-unique-validator";
 import Utils from '@utils';
 import Types from "@types";
 import PingTypes from "../types";
 
 const ObjectId = Schema.Types.ObjectId;
 const {NEW} = PingTypes.IPingPosStatuses;
+const uniqueValidator = require("mongoose-unique-validator").default;
 
 const posSchema = new Schema<PingTypes.IPingPos,PingPos,PingTypes.IPingPosMethods>({
   status:{type:String,enum:Object.values(PingTypes.IPingPosStatuses),default:NEW},

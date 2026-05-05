@@ -11,8 +11,8 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
-    "module": "commonjs",
+    "moduleResolution": "node16",
+    "module": "node16",
     "pretty": true,
     "sourceMap": true,
     "declaration": true,
@@ -22,15 +22,14 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "importHelpers": true,
-    "baseUrl": "./src",
     "paths": {
-      "@apps/*":["apps/*"],
-      "@middleware":["middleware"],
-      "@models":["models"],
-      "@services":["services"],
-      "@types":["types"],
-      "@utils":["utils"],
-      "@workers":["workers"],
+      "@apps/*":["./src/apps/*"],
+      "@middleware":["./src/middleware"],
+      "@models":["./src/models"],
+      "@services":["./src/services"],
+      "@types":["./src/types"],
+      "@utils":["./src/utils"],
+      "@workers":["./src/workers"],
     }
   },
   "exclude": [
@@ -38,15 +37,15 @@
     "dist",
   ],
   "ts-node": {
-      "files": true
-    },
-    "files": [
-      "index.ts",
-      "types/global.d.ts",
-      "types/cctx-common.d.ts",
-      "types/cctx-entity.d.ts",
-      "types/cctx-errors.d.ts",
-      "types/cctx-utils.d.ts",
-      "types/express-types.d.ts",
-    ],
+    "files": true
+  },
+  "files": [
+    "index.ts",
+    "types/global.d.ts",
+    "types/cctx-common.d.ts",
+    "types/cctx-entity.d.ts",
+    "types/cctx-errors.d.ts",
+    "types/cctx-utils.d.ts",
+    "types/express-types.d.ts",
+  ],
 }

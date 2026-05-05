@@ -12,7 +12,7 @@ export enum IPingExtWalletStatuses {
   OK = "connected",
   ERR = "error",
 }
-export type IPingExtWalletType = DocEntity<IPingExtWalletStatuses,never> & {
+export type IPingExtWalletType = DocEntity<IPingExtWalletStatuses> & {
   walletId:number;
   name:string;
   platform:string;

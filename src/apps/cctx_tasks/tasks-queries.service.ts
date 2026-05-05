@@ -6,7 +6,7 @@ import Services from '@services';
 const {MongooseAggHelpers} = Services;
 
 export class TasksQueriesService {
-  static queryTasks = async (q:Types.ITaskQuery,s:string[],o?:any,t?:number) => {
+  static queryTasks = async (q:Types.ITaskQuery,s:string[],o?:any,t:number = 0) => {
     const {results} = await new MongooseAggHelpers<Types.ITaskQuery>({
       model:Models.Task,
       query:q,

@@ -1,56 +1,55 @@
-
 import nodemailer from 'nodemailer';
-import { MailtrapTransport } from "mailtrap";
 import twilio from 'twilio';
 import axios from 'axios';
 
 import Utils from '@utils';
-import { getUserSocket } from '../init-sockets';
+import Services from '@services';
 
-//dummy func
-const sendDummy = async ({from = 'support@colorcoded.com',to,subject,text}:Record<string,string>) => {
-  await Utils.sleep(5);
-  const id = Utils.longId();
-  const sentAt = new Date();
-  Utils.ok({id,from,to,subject,text,sentAt});
-  return id;
-};
-// Function for sending email
-
-// Looking to send emails in production? Check out our Email API/SMTP product!
-
-type InotificationReq = {
+export type INotificationReq = {
   from:{address:string,name:string},
   to:string[],
   subject:string,
   category:string,
-  html:string,
+  text?:string,
+  html?:string,
   sandbox:boolean
 };
-const sendMailTrapEmailSMTP = async (o:InotificationReq) => {
+
+//dummy func
+const sendDummy = async (o:INotificationReq) => {
+  await Utils.sleep(5);
+  const id = Utils.longId();
+  const sentAt = new Date();
+  Utils.ok({id,...o,sentAt});
+  return {messageId:id};
+};
+const sendMailTrapEmailSMTP = async (o:INotificationReq) => {
   const transport = nodemailer.createTransport({
-    host: "sandbox.smtp.mailtrap.io",
-    port: 2525,
+    host: process.env["MAILTRAP_SANDBOX_HOST"],
+    port: Number(process.env["MAILTRAP_SANDBOX_PORT"]),
     auth: {
-      user: "5ff7693d5260e6",
-      pass: "b81277f7cfa005"
+      user: process.env["MAILTRAP_SANDBOX_USER"],
+      pass: process.env["MAILTRAP_SANDBOX_PSWD"],
     }
   });
   try {
     const resp = await transport.sendMail(o);
-    return resp.messageId;
+    const emailMessageId = resp.messageId;
+    return { emailMessageId };
   }
   catch(e){
     Utils.error(e);
-    return null;
+    throw new Error("Oops!");
   }
 };
-const sendMailTrapEmail = async (o:Record<string,string> & {to:string[]}) => {
+const sendMailTrapEmail = async (o:INotificationReq) => {
   const isProd = `MAILTRAP_${Utils.isProd()?"PROD":"DEV"}`;
   const token = process.env[`${isProd}_KEY`] || "";
   const inboxStr = process.env[`${isProd}_INBOX`] || ""
   const testInboxId = Number(inboxStr);
-  const transport = nodemailer.createTransport(MailtrapTransport({token,testInboxId}));
+  const transport = nodemailer.createTransport(
+    //MailtrapTransport({token,testInboxId})
+  );
 
   const mailReq = {
     ...o,
@@ -61,16 +60,15 @@ const sendMailTrapEmail = async (o:Record<string,string> & {to:string[]}) => {
   Utils.ok(mailReq);
   try {
     const resp = await transport.sendMail(mailReq);
-    Utils.log(resp);
-    return resp.success;
+    //Utils.log(resp);
+    return resp.messageId;
   }
   catch(e){
     Utils.error(e);
     return null;
   }
 };
-// Function for sending email
-const sendEmail = async ({from = 'support@colorcoded.com',to,subject,text}:Record<string,string>) => {
+const sendEmail = async (o:INotificationReq) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -78,38 +76,37 @@ const sendEmail = async ({from = 'support@colorcoded.com',to,subject,text}:Recor
       pass: 'your-email-password',
     },
   });
-  const info = await transporter.sendMail({from,to,subject,text});
+  const info = await transporter.sendMail(o);
   return info.messageId;
 };
-// Function for sending SMS
-const sendSMS = async (to: string, body: string) => {
+const sendSMS = async (o:INotificationReq) => {
   const client = twilio('TWILIO_ACCOUNT_SID', 'TWILIO_AUTH_TOKEN');
   const message = await client.messages.create({
-    body,
+    body:o.text,
     from: '+1234567890', // Your Twilio number
-    to,
+    to:o.to[0],
   });
-  return message.sid;
+  const smsId = message.sid;
+  return { smsId };
 };
-// Function for sending push notifications
-const sendPushNotification = async (to: string, title: string, body: string) => {
+const sendPushNotification = async (o:INotificationReq) => {
   const response = await axios.post('https://fcm.googleapis.com/fcm/send', {
-    to,
-    notification: { title, body },
+    to:o.to,
+    notification: { title:o.subject, body:o.text },
   }, {
     headers: {
       Authorization: `Bearer YOUR_FCM_SERVER_KEY`,
     },
   });
-
-  return response.data;
+  const pushResponse = response.data;
+  return { pushResponse };
 };
-// Function for sending in-app notifications (using Socket.io for this example)
-const sendInAppNotification = async (to:string, message: string) => {
-  const socket = getUserSocket(to);
+const sendInAppNotification = async (o:INotificationReq) => {
+  const socket = Services.Sockets.getSocketByUserId(o.to[0]);
   if(!socket) throw "no socket found";
-  socket.emit('notification',{ message });
-  return {socketId:socket.id};
+  socket.emit('notification',{ message:o.text });
+  const socketInfo = {socketId:socket.id};
+  return socketInfo;
 };
 
 export {

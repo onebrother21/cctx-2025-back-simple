@@ -6,7 +6,7 @@ import Services from '@services';
 const {MongooseAggHelpers} = Services;
 
 export class AuthQueriesService {
-  static queryUsers = async (q:Types.IUserQuery,s:string[],o?:any,t?:number) => {
+  static queryUsers = async (q:Types.IUserQuery,s:string[],o?:any,t:number = 0) => {
     const {results} = await new MongooseAggHelpers<Types.IUserQuery>({
       model:Models.User,
       query:q,

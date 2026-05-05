@@ -1,8 +1,6 @@
-import express, { Express } from 'express';
-import cors from 'cors';
+import express, { ErrorRequestHandler, Express, RequestHandler } from 'express';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-import session from 'express-session';
 import compression from 'compression';
 import path from 'path';
 
@@ -12,32 +10,35 @@ import {
   AuthJWT,
   PageNotFound,
   SendErrorHandler,
-  SetResponseCorsHeaders,
+  ConfigureCors,
+  ConfigureSession,
   SetBusinessVars,
   SetUserDevice,
   SetCsrfToken,
   doubleCsrfUtils,
+  PruneBody,
   DecryptData,
   headerCheck,
   cookieCheck,
-  PruneBody,
-  sessionOpts,
-  corsOptionsDelegate,
+  sessionCheck,
   upload,
 } from "@middleware";
 
 import getAppPublicRouter from './init-app-public.router';
 
+import getGlassRouter from './apps/glass';
+import getVaultRouter from './apps/vault';
 import getCCTXAuthRouter from './apps/cctx_auth';
 import getCCTXTasksRouter from "./apps/cctx_tasks";
+import getCCTXMsgChainsRouter from "./apps/cctx_msgs";
 import getCCTXAdminRouter from './apps/cctx_admn';
+import getCCTXDevAdminRouter from './apps/cctx_dev/admn';
 import getDegenPokerRouter from "./apps/jpmoney/degen_poker";
 import getPiMiaRouter from './apps/pi_mia';
 import getPingRouter from './apps/ping';
 //import getUpcentricRouter from './apps/upcentric';
 //import getCrashDepotRouter from '../apps/app_crashdepot';
 
-import Utils from '@utils';
 
 const cookieSecret = process.env.COOKIE_SECRET || 'myCookieSecret';
 
@@ -55,22 +56,21 @@ export class App {
     app.use(express.static(path.join(__dirname,'../public')));
 
     // BUSINESS VARS
-    app.use(SetBusinessVars(cache));
+    app.use(SetBusinessVars(cache) as RequestHandler);
     // CORS
-    app.use(cors(corsOptionsDelegate));
+    app.use(ConfigureCors() as RequestHandler);
+    // trust first proxy in prod
+    if(app.get('env') === 'production') {app.set('trust proxy',1);} 
     // COOKIES
     app.use(cookieParser(cookieSecret));
-    if(app.get('env') === 'production') {
-      app.set('trust proxy',1) // trust first proxy
-      sessionOpts.cookie.secure = true // serve secure cookies
-    }
-    // app.use(cookieCheck());
+    // app.use(cookieCheck() as RequestHandler);
+    // SESSION
+    app.use(ConfigureSession() as RequestHandler);
+    //app.use(sessionCheck() as RequestHandler);
     // CSRF
     app.use(doubleCsrfUtils.doubleCsrfProtection);
-    app.use(SetCsrfToken());
-    // SESSION
-    app.use(session(sessionOpts));
-    // app.use(headerCheck);
+    app.use(SetCsrfToken() as RequestHandler);
+    // app.use(headerCheck() as RequestHandler);
 
     //LOCALIZE REQ
     //localize(app);
@@ -78,21 +78,26 @@ export class App {
     //PARSE BODY & DECRYPT
     app.use(express.urlencoded({extended:true}));
     app.use(express.json());
-    app.use(DecryptData());
-    app.use(PruneBody());
-    app.use(SetUserDevice());
+    
+    app.use(DecryptData() as RequestHandler);
+    app.use(PruneBody() as RequestHandler);
+    app.use(SetUserDevice() as RequestHandler);
     
     // APIS
     app.use("/",getAppPublicRouter());
+    app.use("/glass",getGlassRouter());
+    app.use("/vault",getVaultRouter());
     app.use("/av3/cctx/auth",getCCTXAuthRouter());
     app.use("/av3/cctx/admn",getCCTXAdminRouter());
-    app.use("/av3/cctx/tasks",[AuthJWT(),getCCTXTasksRouter()]);
+    app.use("/av3/cctx_dev/admn",getCCTXDevAdminRouter());
+    app.use("/av3/cctx/msgs",[AuthJWT(),getCCTXMsgChainsRouter()] as RequestHandler[]);
+    app.use("/av3/cctx/tasks",[AuthJWT(),getCCTXTasksRouter()] as RequestHandler[]);
     app.use("/av3/jpmoney/degen_poker",getDegenPokerRouter());
     app.use("/av3/pi_mia",getPiMiaRouter());
     app.use("/av3/ping",getPingRouter());
 
-    app.use("**",PageNotFound());
-    app.use(SendErrorHandler());
+    app.use('/*splat',PageNotFound() as RequestHandler);
+    app.use(SendErrorHandler() as ErrorRequestHandler);
   };
 }
 export default App;

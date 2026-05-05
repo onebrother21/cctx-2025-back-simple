@@ -2,13 +2,14 @@ import Models from "@models";
 import Types from "@types";
 import Utils from '@utils';
 import Services from '@services';
+import { QueryOptions } from 'mongoose';
 
 import DegenModels from "../../models";
 import DegenTypes from "../../types";
 
 const notify = Services.Notifications.createNotification;
 
-const queryOpts = { new:true,runValidators: true,context:'query' };
+const queryOpts:QueryOptions = { returnDocument:"after",runValidators: true,context:'query' };
 const saltRounds = Number(process.env.SALT_ROUNDS || 10);
 
 const approvalStats = Types.IApprovalStatuses;
@@ -46,7 +47,7 @@ export class DegenVenuesService {
   };
   static createVenue = async (creator:string,{addr,...newDegenVenue}:Partial<DegenTypes.IDegenVenue>) => {
     const venue = new DegenVenue({creator,info:{},meta:{timesPlayed:0,tags:[]},...newDegenVenue});
-    venue.addr = {...addr,loc:{type:"Point",coordinates:addr.loc}} as any;
+    venue.addr = {...addr,loc:{type:"Point",coordinates:(addr || {}).loc}} as any;
     await venue.saveMe();
     return {venue};
   };

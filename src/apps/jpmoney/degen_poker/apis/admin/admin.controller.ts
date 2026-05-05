@@ -17,7 +17,7 @@ export class AdminController {
   };
   static getAdminById:IHandler = async (req,res,next) => {
     try {
-      const {adminId} = req.params;
+      const adminId = req.params.adminId as string;
       const {admin} = await AdminService.getAdminById(adminId);
       res.locals.success = true;
       res.locals.data = admin.json();
@@ -27,7 +27,7 @@ export class AdminController {
   static updateAdmin:IHandler = async (req,res,next) => {
     try {
       const data = req.body.data;
-      const {adminId} = req.params;
+      const adminId = req.params.adminId as string;
       const {admin} = await AdminService.updateAdmin(adminId,data);
       res.locals.success = true;
       res.locals.data = admin.json();
@@ -36,7 +36,7 @@ export class AdminController {
   };
   static updateAdminStatus:IHandler = async (req,res,next) => {
     try {
-      const {adminId} = req.params;
+      const adminId = req.params.adminId as string;
       const data = req.body.data;
       const {admin} = await AdminService.updateAdminStatus(adminId,data);
       res.locals.success = true;
@@ -46,7 +46,7 @@ export class AdminController {
   };
   static deleteAdmin:IHandler = async (req,res,next) => {
     try {
-      const {adminId} = req.params;
+      const adminId = req.params.adminId as string;
       const {ok} = await AdminService.deleteAdmin(adminId);
       res.locals.success = ok;
       res.locals.data = {removed:adminId,ok};

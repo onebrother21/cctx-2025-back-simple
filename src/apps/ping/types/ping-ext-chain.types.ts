@@ -12,7 +12,7 @@ export enum IPingExtChainStatuses {
   OK = "connected",
   ERR = "error",
 }
-export type IPingExtChainType = DocEntity<IPingExtChainStatuses,never> & {
+export type IPingExtChainType = DocEntity<IPingExtChainStatuses> & {
   chainId:number;
   items:TRANSACTION.IPingTransaction[];
 }

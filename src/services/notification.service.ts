@@ -9,8 +9,8 @@ export class NotificationService {
     if (!o.audience.length) return; // Prevent errors if user ID is missing
     return await Models.Notification.create(o);
   };
-  static getNotifications = async (userId:string) => {
-    return await Models.Notification.find({"audience.user":userId});
+  static getNotificationsByUserId = async (userId:string) => {
+    return await Models.Notification.find({"audience.user":userId as any});
   };
   static getNotificationsToProcess = async () => {
     const pipeline:any[]= [];
@@ -22,7 +22,7 @@ export class NotificationService {
       { $project: { _id: 0,id:"$_id",audience:1,method:1,data:1,type:1}}
     );
     const results = await Models.Notification.aggregate(pipeline);
-    return results;
+    return results as Types.INotification[];
   }
   static replaceNotificationData = (template: string, data: Record<string, any>) => {
     return template.replace(/{{(.*?)}}/g, (_, key) => data[key.trim()] || '');

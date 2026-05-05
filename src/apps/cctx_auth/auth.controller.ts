@@ -8,13 +8,10 @@ export class AuthController {
   static SignUp:IHandler = async (req,res,next) => {
     try {
       const {user} = await AuthService.signupUser(req);
-      res.locals = {
-        ...res.locals,
-        status:201,
-        success:true,
-        message:'User signup successfully',
-        data:user.json(),
-      };
+      res.locals.status = 201;
+      res.locals.success = true;
+      res.locals.message = 'User signup successfully';
+      res.locals.data = user.json();
       req.user = user;
       next();
     } catch(e){ next(e); }
@@ -22,11 +19,8 @@ export class AuthController {
   static Send2FA:IHandler = async (req,res,next) => {
     try {
       const {user} = await AuthService.send2FAVerification(req);
-      res.locals = {
-        ...res.locals,
-        success:true,
-        data:user.json(),
-      };
+      res.locals.success = true;
+      res.locals.data = user.json();
       req.user = user;
       next();
     } catch(e){ next(e); }
@@ -34,11 +28,8 @@ export class AuthController {
   static ResendVerification:IHandler = async (req,res,next) => {
     try{
       const {user} = await AuthService.resendVerification(req);
-      res.locals = {
-        ...res.locals,
-        success:true,
-        data:user.json(),
-      };
+      res.locals.success = true;
+      res.locals.data = user.json();
       req.user = user;
       next();
     } catch(e){ next(e); }
@@ -46,11 +37,8 @@ export class AuthController {
   static Verify:IHandler = async (req,res,next) => {
     try {
       const {user} = await AuthService.verifyUser(req);
-      res.locals = {
-        ...res.locals,
-        success:true,
-        data:user.json(),
-      };
+      res.locals.success = true;
+      res.locals.data = user.json();
       req.user = user;
       next();
     } catch(e){ next(e); }
@@ -60,13 +48,10 @@ export class AuthController {
       const {user} = await AuthService.registerUser(req);
       const loc = req.body.loc;
 
-      res.locals = {
-        ...res.locals,
-        status:201,
-        success:true,
-        message:"You registered successfully",
-        data:user.json(true),
-      };
+      res.locals.status = 201,
+      res.locals.success = true,
+      res.locals.message = "You registered successfully",
+      res.locals.data = user.json(true);
       res.locals.tokens.access = await AuthUtils.generateToken("access",user);
       req.user = user;
       next();
@@ -75,14 +60,11 @@ export class AuthController {
   static Login:IHandler = async (req,res,next) => {
     try {
       const {user} = await AuthService.loginUser(req);
-      res.locals = {
-        ...res.locals,
-        success:true,
-        data:user.json(true),
-      };
+      res.locals.success = true,
+      res.locals.data = user.json(true);
       res.locals.tokens.access = await AuthUtils.generateToken("access",user);
       res.locals.tokens.refresh = await AuthUtils.generateToken("refresh",user);
-      if(res.locals.tokens.access) res.cookie("cctx_auth_23j012",{ready:true},{
+      res.cookie("cctx_auth_23j012",{ready:true},{
         sameSite:"lax",
         path: '/',
         secure:process.env.NODE_ENV === 'production',
@@ -146,45 +128,32 @@ export class AuthController {
     try {
       await AuthService.logoutUser(req);
       const {csrf} = res.locals.tokens;
-      res.locals = {
-        ...res.locals,
-        success:true,
-        tokens:{csrf},
-        message:'Logout successful',
-      };
+      res.locals.success = true,
+      res.locals.message = 'Logout successful';
       next();
     } catch(e){ next(e); }
   };
   static RequestPasswordReset:IHandler = async (req,res,next) => {
     try {
       await AuthService.initiatePinReset(req);
-      res.locals = {
-        ...res.locals,
-        success:true,
-        message:'Password reset email sent',
-      };
+      res.locals.success = true,
+      res.locals.message = 'Password reset email sent';
       next();
     } catch(e){ next(e); }
   };
   static ResetPassword:IHandler = async (req,res,next) => {
     try {
       await AuthService.resetPin(req);
-      res.locals = {
-        ...res.locals,
-        success:true,
-        message:'Password successfully reset',
-      };
+      res.locals.success = true,
+      res.locals.message = 'Password successfully reset';
       next();
     } catch(e){ next(e); }
   };
   static Autologin:IHandler = async (req,res,next) => {
     try {
       const user = req.user as Types.IUser;
-      res.locals = {
-        ...res.locals,
-        success:true,
-        data:user.json(true),
-      };
+      res.locals.success = true,
+      res.locals.data = user.json(true);
       next();
     } catch(e){ next(e); }
   };
@@ -194,11 +163,17 @@ export class AuthController {
       const user = req.user as Types.IUser;
       user.device = req.device;
       user.role = role;
-      res.locals = {
-        ...res.locals,
-        success:true,
-        data:user.json(true),
-      };
+      res.locals.success = true;
+      res.locals.data = user.json(true);
+      res.locals.tokens.access = await AuthUtils.generateToken("access",user);
+      res.locals.tokens.refresh = await AuthUtils.generateToken("refresh",user);
+      if(res.locals.tokens.access) res.cookie("cctx_auth_23j012",{ready:true},{
+        sameSite:"lax",
+        path: '/',
+        secure:process.env.NODE_ENV === 'production',
+        httpOnly:true,
+        maxAge:1000 * 60 * 30,
+      });
       next();
     } catch(e){ next(e); }
   };
