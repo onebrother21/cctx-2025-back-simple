@@ -19,9 +19,10 @@ const host = process.env.HOST;
 const numCPUs = os.cpus().length;
 
 process.on('unhandledRejection', (reason, p) => {
-  Utils.error(reason, 'Unhandled Rejection at Promise', p);
+  console.error(reason, 'Unhandled Rejection at Promise', p);
 });
 process.on('uncaughtException',err => {
+  console.error((new Date).toUTCString() + ' uncaughtException:', err.message);
   Utils.error((new Date).toUTCString() + ' uncaughtException:', err.message);
   Utils.error(err.stack);
   process.exit(1);
@@ -68,7 +69,10 @@ export class myApp {
         Utils.print("ok","cctx-dev-back",`Network: ${host}:${port} is listening...`);
       });
     }
-    catch(e){throw e;}
+    catch(e){
+      console.error(e);
+      throw e;
+    }
   }
 }
 export default myApp;
