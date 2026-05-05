@@ -12,7 +12,7 @@ const overwriteMerge = (destinationArray:any[], sourceArray:any[], options:any) 
 
 export const pkg = ():string => process.env["npm_package_name"] || "";
 export const getVar = (str:string):any => parse(process.env[`CCTX_${str}`] || "");
-export const env = ():string => process.env["NODE_ENV"] || "";
+export const env = ():string => (process.env["NODE_ENV"] || "").toLocaleLowerCase();
 export const mode = ():string => process.env["NODE_MODE"] || "";
 export const version = ():string => process.env["npm_package_version"] || "";
 export const isProd = (o = false):o is boolean => process.env.NODE_ENV === "production";

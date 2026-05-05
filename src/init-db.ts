@@ -4,7 +4,7 @@ import Utils from '@utils';
 mongoose.Promise = import("bluebird");
 
 const env = process.env.NODE_ENV || "";
-process.env.DB = process.env[`DB_URI_${/live/.test(env)?"LIVE":"LOCAL"}`] || "";
+process.env.DB = process.env[`DB_URI_${/live/i.test(env)?"LIVE":"LOCAL"}`] || "";
 
 const dbString = process.env.DB;
 const dbName = process.env.DB_NAME;

@@ -9,7 +9,7 @@ const cookieSecret = process.env.COOKIE_SECRET || 'myCookieSecret';
 const mongoStore = MongoStore.create({
   collectionName:"ultimate-sessions",
   dbName:process.env.DB_NAME,
-  mongoUrl:process.env[`DB_URI_${/live/.test(Utils.env())?"LIVE":"LOCAL"}`],
+  mongoUrl:process.env[`DB_URI_${/live/i.test(Utils.env())?"LIVE":"LOCAL"}`],
   autoRemove: 'interval',
   autoRemoveInterval: 30 // In minutes
 });
