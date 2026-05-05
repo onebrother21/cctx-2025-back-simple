@@ -36,6 +36,7 @@ export class GlassSocketsService {
   };
   static connectAndCheck = (socket:Socket,verbose?:boolean):void => {
     Utils.log(`New connection: ${socket.id}`);
+    Utils.log(`LongID 1: ${Utils.longId()}`);
     if(verbose){
       Utils.log(socket.handshake.auth);// - implement token check
       Utils.log(socket.handshake.query);

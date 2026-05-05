@@ -4,7 +4,7 @@
   "description": "backend services for ColorCoded dev apps",
   "main": "index.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
     "start": "node dist/index.js",
     "dev": "npx nodemon -e ts,js,json --exec ts-node -r tsconfig-paths/register index.ts",
     "dev-workers": "npx nodemon -e ts,js,json --exec ts-node -r tsconfig-paths/register index-workers.ts",

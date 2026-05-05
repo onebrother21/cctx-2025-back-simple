@@ -11,9 +11,7 @@ const supersecret = process.env.ENCRYPTION_PUBLIC || "";
 const overwriteMerge = (destinationArray:any[], sourceArray:any[], options:any) => sourceArray;
 
 export const pkg = ():string => process.env["npm_package_name"] || "";
-export const app = ():string => /@/.test(pkg())?pkg().split("/")[1]:pkg();
-export const constPrefix = ():string => (app().toLocaleUpperCase()).replace(/-/g,"_");
-export const getconst = (str:string):any => parse(process.env[constPrefix() + str] || "");
+export const getVar = (str:string):any => parse(process.env[`CCTX_${str}`] || "");
 export const env = ():string => process.env["NODE_ENV"] || "";
 export const mode = ():string => process.env["NODE_MODE"] || "";
 export const version = ():string => process.env["npm_package_version"] || "";
