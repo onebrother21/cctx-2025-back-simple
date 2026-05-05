@@ -9,9 +9,9 @@ process.env.DB = process.env[`DB_URI_${/live/i.test(env)?"LIVE":"LOCAL"}`] || ""
 const dbString = process.env.DB;
 const dbName = process.env.DB_NAME;
 let options = {
-  //user:process.env.DB_USER,
+  //user: process.env.DB_USER,
   //pass: process.env.DB_PASS,
-  dbName
+  dbName,
 };
 
 class Db {

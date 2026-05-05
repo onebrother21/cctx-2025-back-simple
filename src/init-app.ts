@@ -57,13 +57,16 @@ export class App {
 
     // BUSINESS VARS
     app.use(SetBusinessVars(cache) as RequestHandler);
+
     // CORS
     app.use(ConfigureCors() as RequestHandler);
+
     // trust first proxy in prod
     if(app.get('env') === 'production') {app.set('trust proxy',1);} 
     // COOKIES
     app.use(cookieParser(cookieSecret));
     // app.use(cookieCheck() as RequestHandler);
+
     // SESSION
     app.use(ConfigureSession() as RequestHandler);
     //app.use(sessionCheck() as RequestHandler);
@@ -78,7 +81,6 @@ export class App {
     //PARSE BODY & DECRYPT
     app.use(express.urlencoded({extended:true}));
     app.use(express.json());
-    
     app.use(DecryptData() as RequestHandler);
     app.use(PruneBody() as RequestHandler);
     app.use(SetUserDevice() as RequestHandler);
@@ -87,11 +89,13 @@ export class App {
     app.use("/",getAppPublicRouter());
     app.use("/glass",getGlassRouter());
     app.use("/vault",getVaultRouter());
+    
     app.use("/av3/cctx/auth",getCCTXAuthRouter());
     app.use("/av3/cctx/admn",getCCTXAdminRouter());
     app.use("/av3/cctx_dev/admn",getCCTXDevAdminRouter());
     app.use("/av3/cctx/msgs",[AuthJWT(),getCCTXMsgChainsRouter()] as RequestHandler[]);
     app.use("/av3/cctx/tasks",[AuthJWT(),getCCTXTasksRouter()] as RequestHandler[]);
+
     app.use("/av3/jpmoney/degen_poker",getDegenPokerRouter());
     app.use("/av3/pi_mia",getPiMiaRouter());
     app.use("/av3/ping",getPingRouter());

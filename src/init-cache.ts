@@ -9,8 +9,9 @@ export class RedisCache {
     ...await this.get(),
     ...updates,
   }));
-  public save = this.set;
   public clear = async () => await this.redis.set("app_data","null");
+
+  public save = this.set;
 
   private load = async () => {
     const bvars = await Models.BusinessVars.findOne({name:"ccdev-2025-back-new",status:"active"});
