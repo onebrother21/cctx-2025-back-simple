@@ -48,6 +48,7 @@ export interface myApp {
 export class myApp {
   init = async () => {
     try {
+      Utils.ok({env:process.env.NODE_ENV})
       const db = await Db.connect();
       const cache = await RedisCache.connect({reload:true});
       const app = express();
