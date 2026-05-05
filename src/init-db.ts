@@ -3,7 +3,7 @@ import Utils from '@utils';
 
 mongoose.Promise = import("bluebird");
 
-const env = process.env["NODE_ENV"] || "";
+const env = process.env.NODE_ENV || "";
 process.env.DB = process.env[`DB_URI_${/live/.test(env)?"LIVE":"LOCAL"}`] || "";
 
 const dbString = process.env.DB;
