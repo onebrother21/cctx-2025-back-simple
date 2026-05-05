@@ -1,6 +1,6 @@
 {
   "name": "ccdev-2025-back-simple",
-  "version": "1.3.6",
+  "version": "1.3.7",
   "description": "backend services for ColorCoded dev apps",
   "main": "index.ts",
   "scripts": {
