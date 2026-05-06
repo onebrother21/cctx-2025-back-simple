@@ -36,6 +36,7 @@ import getCCTXDevAdminRouter from './apps/cctx_dev/admn';
 import getDegenPokerRouter from "./apps/jpmoney/degen_poker";
 import getPiMiaRouter from './apps/pi_mia';
 import getPingRouter from './apps/ping';
+import Utils from '@utils';
 //import getUpcentricRouter from './apps/upcentric';
 //import getCrashDepotRouter from '../apps/app_crashdepot';
 
@@ -51,9 +52,11 @@ export class App {
         return req.method === 'OPTIONS' && res.statusCode == 200;
       }
     }));
+    const publicPath = `${Utils.isEnv(["production","staging","live-render"])?'../..':'..'}views`;
+    const viewPath = `${Utils.isEnv(["production","staging","live-render"])?'../..':'..'}views`;
     app.set('view engine','ejs');
-    app.set('views',path.join(__dirname,'../views'));
-    app.use(express.static(path.join(__dirname,'../public')));
+    app.set('views',path.join(__dirname,viewPath));
+    app.use(express.static(path.join(__dirname,publicPath)));
 
     // BUSINESS VARS
     app.use(SetBusinessVars(cache) as RequestHandler);
