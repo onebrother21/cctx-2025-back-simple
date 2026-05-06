@@ -52,8 +52,8 @@ export class App {
         return req.method === 'OPTIONS' && res.statusCode == 200;
       }
     }));
-    const publicPath = `${Utils.isEnv(["production","staging","live-render"])?'../..':'..'}views`;
-    const viewPath = `${Utils.isEnv(["production","staging","live-render"])?'../..':'..'}views`;
+    const publicPath = `${Utils.isEnv(["production","staging","live-render"])?'../..':'..'}/views`;
+    const viewPath = `${Utils.isEnv(["production","staging","live-render"])?'../..':'..'}/views`;
     app.set('view engine','ejs');
     app.set('views',path.join(__dirname,viewPath));
     app.use(express.static(path.join(__dirname,publicPath)));
