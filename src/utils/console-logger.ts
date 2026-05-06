@@ -26,7 +26,7 @@ const here_ = ():{functionName:string,fileInfo:string} => {
   const here = stackArr[numOfLinesToDisgardInHere];
   const parts = here.split(" ");
   const functionName = parts[0];
-  const fileInfo = parts[1]?.replace("(","")?.replace(")","") || "";
+  const fileInfo = parts[1]?.replace("(","").replace(")","") || "";
   return {functionName,fileInfo};
 };
 const write = (k:LogTypes,...args:any[]):boolean => {
