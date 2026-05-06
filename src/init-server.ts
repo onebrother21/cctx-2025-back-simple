@@ -19,10 +19,9 @@ const host = process.env.HOST;
 const numCPUs = os.cpus().length;
 
 process.on('unhandledRejection', (reason, p) => {
-  console.error(reason, 'Unhandled Rejection at Promise', p);
+  Utils.error(reason, 'Unhandled Rejection at Promise', p);
 });
 process.on('uncaughtException',err => {
-  console.error((new Date).toUTCString() + ' uncaughtException:', err.message);
   Utils.error((new Date).toUTCString() + ' uncaughtException:', err.message);
   Utils.error(err.stack);
   process.exit(1);
@@ -70,7 +69,7 @@ export class myApp {
       });
     }
     catch(e){
-      console.error(e);
+      Utils.error(e);
       throw e;
     }
   }

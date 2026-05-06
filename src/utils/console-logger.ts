@@ -25,7 +25,10 @@ const here_ = ():{functionName:string,fileInfo:string} => {
   const stackArr = realStack.split("at ").map(s => s.trim()).slice(1);
   const here = stackArr[numOfLinesToDisgardInHere];
   const parts = here.split(" ");
-  return {functionName:parts[0],fileInfo:parts[1].replace("(","").replace(")","")};
+  return {
+    functionName:parts[0],
+    fileInfo:parts[1]?.replace("(","")?.replace(")","")
+  };
 };
 const write = (k:LogTypes,...args:any[]):boolean => {
   try{
