@@ -14,7 +14,7 @@ const {
 
 export const getRedisConnectionOpts = () => {
   let connection:QueueOptions["connection"];
-  if(REDIS_LIVE_URL && /production|staging|live/.test(NODE_ENV || "")){
+  if(REDIS_LIVE_URL && /production|staging|live-render/.test(NODE_ENV || "")){
     // Parse Redis URL for production environments
     const redisUrl = new URL(REDIS_LIVE_URL);
     connection = {
