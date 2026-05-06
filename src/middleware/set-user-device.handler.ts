@@ -41,7 +41,7 @@ export const SetUserDevice:() => IHandler = () => async (req, res, next) => {
       res.cookie(deviceCookie,Utils.encrypt(device.id),{ 
         sameSite:"lax",
         path: '/',
-        secure:process.env.NODE_ENV === 'production',
+        secure:Utils.isEnv(["production","staging","live-render"]),
         httpOnly:true,
         signed:true,
       });

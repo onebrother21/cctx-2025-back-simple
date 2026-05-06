@@ -9,6 +9,8 @@ import Types from "@types";
 type sortArg<T> = keyof T | `-${string & keyof T}`;
 const supersecret = process.env.ENCRYPTION_PUBLIC || "";
 const overwriteMerge = (destinationArray:any[], sourceArray:any[], options:any) => sourceArray;
+export const stringify = (o:object) => JSON.stringify(o);
+export const parse = (k:string) => {try {return JSON.parse(k);} catch(e){return k;}};
 
 export const pkg = ():string => process.env["npm_package_name"] || "";
 export const getVar = (str:string):any => parse(process.env[`CCTX_${str}`] || "");
@@ -16,10 +18,19 @@ export const env = ():string => (process.env["NODE_ENV"] || "").toLocaleLowerCas
 export const mode = ():string => process.env["NODE_MODE"] || "";
 export const version = ():string => process.env["npm_package_version"] || "";
 export const isProd = (o = false):o is boolean => process.env.NODE_ENV === "production";
+export const isEnv = (envs:string|string[]) => {
+  const envStr = process.env.NODE_ENV || "";
+  const env = envStr.toLocaleLowerCase();
+  if(isArr(envs)){
+    for(let i = 0,l = envs.length;i<l;i++){
+      const r = new RegExp(envs[i]);
+      if(r.test(env)) return true;
+    }
+    return false;
+  }
+  else return new RegExp(envs).test(env);
+};
 
-
-export const stringify = (o:object) => JSON.stringify(o);
-export const parse = (k:string) => {try {return JSON.parse(k);} catch(e){return k;}};
 export const is = <T>(o:T):o is T => !(o === undefined || o === null);
 export const isMatch = (test:RegExp|string[],...a:string[]):boolean => {
   for(let i = 0;i<a.length;i++){
@@ -58,18 +69,7 @@ export const isEmpty = (o:any|any[]) => {
 };
 export const isCtr = <T>(o:any|Constructor<T>):o is Constructor<T> => isFunc((new o));//incorrect implementation
 export const isInstance = <T,U extends Constructor<T> = Constructor<T>>(o:any|T,ctr:U):o is T => o instanceof ctr;
-export const isEnv = (envs:string|string[]) => {
-  const envStr = process.env.NODE_ENV || "";
-  const env = envStr.toLocaleLowerCase();
-  if(isArr(envs)){
-    for(let i = 0,l = envs.length;i<l;i++){
-      const r = new RegExp(envs[i]);
-      if(r.test(env)) return true;
-    }
-    return false;
-  }
-  else return new RegExp(envs).test(env);
-};
+
 export const notEmpty = (o:any|any[]) => !isEmpty(o);
 
 

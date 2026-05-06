@@ -2,6 +2,7 @@ import { AuthService } from './auth.service';
 import { AuthUtilsService as AuthUtils } from './auth.utils';
 
 import Types from "@types";
+import Utils from '@utils';
 import {uploadToCloudinary} from "@middleware";
 
 export class AuthController {
@@ -67,7 +68,7 @@ export class AuthController {
       res.cookie("cctx_auth_23j012",{ready:true},{
         sameSite:"lax",
         path: '/',
-        secure:process.env.NODE_ENV === 'production',
+        secure:Utils.isEnv(["production","staging","live-render"]),
         httpOnly:true,
         maxAge:1000 * 60 * 30,
       });
@@ -90,7 +91,7 @@ export class AuthController {
       if(res.locals.tokens.access) res.cookie("cctx_auth_23j012",{ready:true},{
         sameSite:"lax",
         path: '/',
-        secure:process.env.NODE_ENV === 'production',
+        secure:Utils.isEnv(["production","staging","live-render"]),
         httpOnly:true,
         maxAge:1000 * 60 * 30,
       });

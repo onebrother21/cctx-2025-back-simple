@@ -22,7 +22,7 @@ export const ConfigureSession:() => IHandler = () => {
     cookie:{
       sameSite:"strict",
       path: '/',
-      secure:process.env.NODE_ENV === 'production',
+      secure:Utils.isEnv(["production","staging","live-render"]),
       httpOnly:true,
       maxAge:30 * 60 * 1000,
     },

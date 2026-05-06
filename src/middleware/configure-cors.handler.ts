@@ -28,18 +28,16 @@ const corsValidator = (origin:string|undefined, next:Function) => {
   const e = new Utils.AppError(403,"Request not allowed");
   return whitelist.includes(origin || "")?next(null,true):next(e,false);
 };
-/** Assumes that no-origin requests are web requests for server pages only */
 export const corsOptionsDelegate = function (req:IRequest, callback:Function) {
-  console.log("starting cors",req.header("Origin"),req.header("Referrer"))
   const isStaticSite = /vault|sys\/ui|socket.io/.test(req.url);
   const ip_ = req.ip;
   const ip = (ip_ || "").replace(/:/gi,"").replace(/f/gi,"");
   const wl = req.bvars && req.bvars["origins"]?req.bvars["origins"]:whitelist;
   const bl = req.bvars && req.bvars["blacklist"]?req.bvars["blacklist"]:[];
   const origin = req.header("Origin");
-  const isBypass = !origin && isStaticSite;
-  const inTheClear = ip && wl.includes(origin) && !bl.includes(ip);
-  console.log({origin,wl,isBypass,inTheClear})
+  const isBypass = !origin || wl.includes(origin) || isStaticSite;
+  const inTheClear = ip && !bl.includes(ip);
+  console.log({origin,ip,isBypass,inTheClear})
   switch(true){
     case isBypass:
     case inTheClear:{

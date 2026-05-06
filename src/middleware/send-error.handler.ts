@@ -6,7 +6,7 @@ export const SendErrorHandler:() => IErrorHandler = () => async (err,req,res,nex
   if(res.headersSent) return next(err);
   switch(true){
     case err instanceof Utils.AppError:{
-      Utils.log(`AppError`,err.message);
+      // Utils.log(`AppError`,err.message);
       response = {
         ...response,
         status:err.status,
@@ -25,7 +25,7 @@ export const SendErrorHandler:() => IErrorHandler = () => async (err,req,res,nex
       break;
     }    
     case err.name == "TokenExpiredError":{
-      Utils.log(`TokenExpiredError`,err.message);
+      // Utils.log(`TokenExpiredError`,err.message);
       response = {
         ...response,
         status:401,
@@ -34,7 +34,7 @@ export const SendErrorHandler:() => IErrorHandler = () => async (err,req,res,nex
       break;
     }
     case err.name == "JsonWebTokenError" && /malformed/i.test(err.message):{
-      Utils.log(`malformed`,err.message);
+      // Utils.log(`malformed`,err.message);
       response = {
         ...response,
         status:403,
@@ -60,9 +60,9 @@ export const SendErrorHandler:() => IErrorHandler = () => async (err,req,res,nex
         creator:req.profile?req.profile.id:null,
         creatorRef:req.user?req.user.role:"server",
         category:"backend",
-        type:"api-error",
-        name:"unknown",
-        description:err.message,
+        type:"error",
+        name:err.name,
+        description:err.stack,
         info:{err},
         dueOn:new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
       });

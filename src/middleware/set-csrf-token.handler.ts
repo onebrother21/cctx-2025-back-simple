@@ -8,7 +8,7 @@ const doubleCsrfOptions:DoubleCsrfConfigOptions = {
   cookieOptions: {
     sameSite:"lax",
     path: '/',
-    secure:process.env.NODE_ENV === 'production',
+    secure:Utils.isEnv(["production","staging","live-render"]),
     httpOnly:true
   },
   // size: 64, // The size of the generated tokens in bits
@@ -30,7 +30,7 @@ const SetCsrfToken:() => IHandler = () => async (req, res, next) => {
     res.cookie('XSRF-TOKEN',csrfToken,{
       sameSite:"lax",
       path: '/',
-      secure:process.env.NODE_ENV === 'production',
+      secure:Utils.isEnv(["production","staging","live-render"]),
       httpOnly:true
     });
     next();

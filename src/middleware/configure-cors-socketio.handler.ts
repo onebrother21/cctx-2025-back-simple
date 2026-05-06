@@ -23,9 +23,8 @@ export const ConfigureCorsSocketIo = (cache:RedisCache):Partial<ServerOptions> =
     const ip = (ip_ || "").replace(/:/gi,"").replace(/f/gi,"");
     const wl = bvars && bvars["origins"]?bvars["origins"]:whitelist;
     const bl = bvars && bvars["blacklist"]?bvars["blacklist"]:[];
-    const isBypass = !origin;
-    const inTheClear = ip && wl.includes(origin) && !bl.includes(ip);
-    //Utils.print("debug","cctx-dev-back-sockets",{origin,isBypass,inTheClear})
+    const isBypass = !origin || wl.includes(origin);
+    const inTheClear = ip && !bl.includes(ip);
     switch(true){
       case isBypass:
       case inTheClear:return callback(null,true);
