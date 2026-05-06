@@ -30,7 +30,7 @@ const corsValidator = (origin:string|undefined, next:Function) => {
 };
 /** Assumes that no-origin requests are web requests for server pages only */
 export const corsOptionsDelegate = function (req:IRequest, callback:Function) {
-  //console.log("starting cors",req.header("Origin"))
+  console.log("starting cors",req.header("Origin"),req.header("Referrer"))
   const isStaticSite = /vault|sys\/ui|socket.io/.test(req.url);
   const ip_ = req.ip;
   const ip = (ip_ || "").replace(/:/gi,"").replace(/f/gi,"");
@@ -39,7 +39,7 @@ export const corsOptionsDelegate = function (req:IRequest, callback:Function) {
   const origin = req.header("Origin");
   const isBypass = !origin && isStaticSite;
   const inTheClear = ip && wl.includes(origin) && !bl.includes(ip);
-  //console.log({origin,wl,isBypass,inTheClear})
+  console.log({origin,wl,isBypass,inTheClear})
   switch(true){
     case isBypass:
     case inTheClear:{
