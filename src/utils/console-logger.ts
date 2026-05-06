@@ -25,10 +25,9 @@ const here_ = ():{functionName:string,fileInfo:string} => {
   const stackArr = realStack.split("at ").map(s => s.trim()).slice(1);
   const here = stackArr[numOfLinesToDisgardInHere];
   const parts = here.split(" ");
-  return {
-    functionName:parts[0],
-    fileInfo:parts[1]?.replace("(","")?.replace(")","")
-  };
+  const functionName = parts[0];
+  const fileInfo = parts[1]?.replace("(","")?.replace(")","") || "";
+  return {functionName,fileInfo};
 };
 const write = (k:LogTypes,...args:any[]):boolean => {
   try{
@@ -66,11 +65,11 @@ export const print = (k:string,title:string,...args:any[]):boolean => {
   return true;
 };
 export const here = (silenceMsg?:boolean) => !silenceMsg?write("here"):null;
-export const log = (...args:any[]) => write("log",...args);
-export const info = (...args:any[]) => write("info",...args);
-export const error = (...args:any[]) => write("error",...args);
-export const warn = (...args:any[]) => write("warn",...args);
-export const trace = (...args:any[]) => write("trace",...args);
-export const ok = (...args:any[]) => write("ok",...args);
-export const debug = (...args:any[]) => write("debug",...args);
+export const log = (...args:any[]) => print("log",args[0],...args);
+export const info = (...args:any[]) => print("info",args[0],...args);
+export const error = (...args:any[]) => print("error",args[0],...args);
+export const warn = (...args:any[]) => print("warn",args[0],...args);
+export const trace = (...args:any[]) => print("trace",args[0],...args);
+export const ok = (...args:any[]) => print("ok",args[0],...args);
+export const debug = (...args:any[]) => print("debug",args[0],...args);
 export const clear = () => process.stdout.write("\x1Bc");
