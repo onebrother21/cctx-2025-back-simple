@@ -26,8 +26,7 @@ export const ConfigureCorsSocketIo = (cache:RedisCache):Partial<ServerOptions> =
     const isBypass = !origin || wl.includes(origin);
     const inTheClear = ip && !bl.includes(ip);
     switch(true){
-      case isBypass:
-      case inTheClear:return callback(null,true);
+      case isBypass && inTheClear:return callback(null,true);
       default:{
         const e = new Utils.AppError(403,"Request not allowed");
         return callback(e.message,false);
