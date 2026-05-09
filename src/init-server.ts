@@ -19,6 +19,7 @@ export const myApp = async () => {
   });
   try {
     Utils.ok("env",Utils.env());
+    Utils.ok("envs",`${Utils.prefix()+"PROD_ENVS"}`)
     Utils.ok("prod-envs",Utils.prodEnvs());
     Utils.ok("isProd",Utils.isProd());
 
