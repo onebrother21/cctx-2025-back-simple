@@ -37,4 +37,4 @@ const SetCsrfToken:() => IHandler = () => async (req, res, next) => {
   }
   catch(e){next(e)}
 };
-export {SetCsrfToken,ValidateCsrfToken};
+export {SetCsrfToken,ValidateCsrfToken,doubleCsrfUtils};
