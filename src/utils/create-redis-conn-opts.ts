@@ -19,7 +19,7 @@ export const getRedisConnectionOpts = () => {
     lazyConnect: true,
     keepAlive: 1000,
     connectTimeout:10000,
-    maxRetriesPerRequest:5,
+    maxRetriesPerRequest:6,
   }
   logger.info("redis-conn-opts",{REDIS_LIVE_URL,isProd:Utils.isProd()});
   if(Utils.isProd() && REDIS_LIVE_URL){
