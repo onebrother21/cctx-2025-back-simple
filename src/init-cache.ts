@@ -30,7 +30,7 @@ export class RedisCache {
  export const initCache = async (o:{
   clear?:boolean,
   reload?:boolean,
-} = {}):Promise<RedisCache> => new Promise((done,reject) => {
+} = {}):Promise<RedisCache> => await new Promise((done,reject) => {
   const cache = new RedisCache();
   cache.redis = new Redis(Utils.getRedisConnectionOpts());
   cache.redis.on("error",e => {
