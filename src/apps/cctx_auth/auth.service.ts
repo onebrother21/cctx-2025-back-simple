@@ -234,7 +234,7 @@ export class AuthService {
     const device = req.device as Types.IAppDevice;
     const user = req.user as Types.IUser;
     const profile = req.profile;
-    Utils.info({
+    Utils.info("auth-service",{
       user,
       profile,
       role:req.user.role,

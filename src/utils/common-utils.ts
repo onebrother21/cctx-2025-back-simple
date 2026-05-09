@@ -4,31 +4,38 @@ import { deepmerge } from "deepmerge-ts";
 import * as logger from "./console-logger";
 import path from "path";
 import fs from "fs";
+import cluster from 'cluster';
+import os from 'os';
 import Types from "@types";
 
 type sortArg<T> = keyof T | `-${string & keyof T}`;
+
+const host = process.env.HOST;
+const numCPUs = os.cpus().length;
 const supersecret = process.env.ENCRYPTION_PUBLIC || "";
 const overwriteMerge = (destinationArray:any[], sourceArray:any[], options:any) => sourceArray;
+
 export const stringify = (o:object) => JSON.stringify(o);
 export const parse = (k:string) => {try {return JSON.parse(k);} catch(e){return k;}};
 
 export const pkg = ():string => process.env["npm_package_name"] || "";
-export const getVar = (str:string):any => parse(process.env[`CCTX_${str}`] || "");
+export const version = ():string => process.env["npm_package_version"] || "";
 export const env = ():string => (process.env["NODE_ENV"] || "").toLocaleLowerCase();
 export const mode = ():string => process.env["NODE_MODE"] || "";
-export const version = ():string => process.env["npm_package_version"] || "";
-export const isProd = (o = false):o is boolean => process.env.NODE_ENV === "production";
+export const options = ():string => process.env["NODE_OPTIONS"] || "";
+export const prefix = ():string => process.env["USE_PREFIX"] || "";
+export const getVar = (str:string):any => parse(process.env[`${prefix()}${str}`] || "");
+export const prodEnvs = ():string[] => getVar("PROD_ENVS");
+export const isProd = () => prodEnvs().includes(env());
 export const isEnv = (envs:string|string[]) => {
-  const envStr = process.env.NODE_ENV || "";
-  const env = envStr.toLocaleLowerCase();
   if(isArr(envs)){
     for(let i = 0,l = envs.length;i<l;i++){
       const r = new RegExp(envs[i]);
-      if(r.test(env)) return true;
+      if(r.test(env())) return true;
     }
     return false;
   }
-  else return new RegExp(envs).test(env);
+  else return new RegExp(envs).test(env());
 };
 
 export const is = <T>(o:T):o is T => !(o === undefined || o === null);
@@ -466,4 +473,16 @@ export const listRoutes = (app:Express.Application) => {
 export const findReverseIndex = (arr:any[],pred:(o:any) => boolean) => {
   for (let i = arr.length - 1; i >= 0; i--) if(pred(arr[i])) return i;
   return -1;
+};
+export const getNetworkAddress = () => {
+  const interfaces = os.networkInterfaces();
+  for (const name of Object.keys(interfaces)) {
+    const namedInterface = interfaces[name];
+    if(namedInterface) for (const int of namedInterface) {
+      if (int.family === 'IPv4' && !int.internal) {
+        return int.address;
+      }
+    }
+  }
+  return /local/i.test(env())?'localhost':'0.0.0.0';
 };

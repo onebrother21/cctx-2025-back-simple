@@ -44,7 +44,8 @@ export class DegenPlayersService {
       status:profileStats.NEW,
       info:{...data.info}
     });
-    try{await player.saveMe();}catch(e){Utils.error(e);throw e;}
+    try{await player.saveMe();}
+    catch(e){Utils.error("degen-players-service",e);throw e;}
     user.profiles.push({name:role,obj:player});
     await user.saveMe();
     await notify({

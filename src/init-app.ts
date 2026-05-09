@@ -49,7 +49,7 @@ export class App {
     app.use(compression());
     app.use(morgan('dev', {
       skip: function (req, res) {
-        return req.method === 'OPTIONS' && res.statusCode == 200;
+        return req.method === 'HEAD'||req.method === 'OPTIONS' && res.statusCode == 200;
       }
     }));
     const publicPath = `${Utils.isEnv(["production","staging","live-render"])?'../..':'..'}/public`;

@@ -46,7 +46,7 @@ export class UserOpsService {
       meta:{user:user.id,memberSince:new Date()},
       loc:{type:"Point",coordinates:loc},
     });
-    try{await profile.saveMe();}catch(e){Utils.error(e);throw e;}
+    try{await profile.saveMe();}catch(e){Utils.error("ping-ops.service",e);throw e;}
     user.profiles.push({name:role,obj:profile});
     await user.saveMe();
     await notify({

@@ -31,7 +31,7 @@ export class DegenVenuesService {
   static lookupVenueAddress2 = async (o:AddressObj) => {
     if(!(o.city && o.state && o.country) || !(o.info || o.streetAddr)) throw new Utils.AppError(422,'invalid address params');
     const results = await Utils.lookupAddresses([o]);
-    Utils.info({results})
+    Utils.info("lookup-venues",{results});
     return {results};
   };
   // 📌 DegenVenue CRUD Ops

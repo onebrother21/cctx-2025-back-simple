@@ -55,7 +55,7 @@ export const SendErrorHandler:() => IErrorHandler = () => async (err,req,res,nex
     };break;
     default:{
       const clockBugsQ = Utils.createQueue("clock-bugs");
-      Utils.error(err);
+      Utils.error("worker-clock-bugs",err);
       if(!await clockBugsQ.isPaused()) await clockBugsQ.add("clock-bug-job",{
         creator:req.profile?req.profile.id:null,
         creatorRef:req.user?req.user.role:"server",

@@ -45,7 +45,7 @@ export class AdminService {
       status:profileStats.NEW,
       info:{...data.info}
     });
-    try{await admin.saveMe();}catch(e){Utils.error(e);throw e;}
+    try{await admin.saveMe();}catch(e){Utils.error("admin-service",e);throw e;}
     user.profiles.push({name:role,obj:admin});
     await user.saveMe();
     await notify({

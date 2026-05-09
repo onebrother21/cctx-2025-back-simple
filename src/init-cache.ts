@@ -4,12 +4,12 @@ import Utils from "@utils";
 
 export interface RedisCache {redis:Redis}
 export class RedisCache {
-  public get = async () => JSON.parse(await this.redis.get("app_data") || "null");
-  public set = async (updates:any) => await this.redis.set("app_data",JSON.stringify({
+  public get = async () => JSON.parse(await this.redis.get("ccdev-2025-back-new") || "null");
+  public set = async (updates:any) => await this.redis.set("ccdev-2025-back-new",JSON.stringify({
     ...await this.get(),
     ...updates,
   }));
-  public clear = async () => await this.redis.set("app_data","null");
+  public clear = async () => await this.redis.set("ccdev-2025-back-new","null");
 
   public save = this.set;
 
@@ -22,10 +22,10 @@ export class RedisCache {
   public print = async () => {
     try {
       const cache = await this.get();
-      Utils.print("debug","cctx-dev-back","redisCache","AppVars ->",cache);
+      Utils.debug("<redisCache>","AppVars ->",cache);
     }
     catch (e) {
-      console.error(e);
+      Utils.error("<redisCache>",e);
     }
   };
   public static connect = async (o:{
@@ -35,7 +35,7 @@ export class RedisCache {
     const cache = new this();
     cache.redis = new Redis(Utils.getRedisConnectionOpts());
     cache.redis.on("error",e => {
-      Utils.print("error","cctx-dev-back","redis",e);
+      Utils.error("<redisCache>",e);
       reject(e);
     });
     cache.redis.on("connect",async () => {
@@ -43,7 +43,7 @@ export class RedisCache {
       const bvars_ = o.clear || o.reload?await cache.load():{};
       const data = {...bvars,...bvars_};
       await cache.set(data);
-      Utils.print("ok","cctx-dev-back","Redis (connected)");
+      Utils.ok("redis-cache","Connected");
       done(cache);
     });
   });

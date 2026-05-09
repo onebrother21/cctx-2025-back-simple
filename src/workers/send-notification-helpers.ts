@@ -20,7 +20,7 @@ const sendDummy = async (o:INotificationReq) => {
   await Utils.sleep(5);
   const id = Utils.longId();
   const sentAt = new Date();
-  Utils.ok({id,...o,sentAt});
+  Utils.ok("send-email",{id,...o,sentAt});
   return {messageId:id};
 };
 const sendMailTrapEmailSMTP = async (o:INotificationReq) => {
@@ -38,7 +38,7 @@ const sendMailTrapEmailSMTP = async (o:INotificationReq) => {
     return { emailMessageId };
   }
   catch(e){
-    Utils.error(e);
+    Utils.error("send-email",e);
     throw new Error("Oops!");
   }
 };
@@ -57,14 +57,14 @@ const sendMailTrapEmail = async (o:INotificationReq) => {
     to:Utils.isProd()?o.to:["service.onebrother@gmail.com"],
     sandbox:!Utils.isProd(),
   }
-  Utils.ok(mailReq);
+  Utils.ok("send-email",mailReq);
   try {
     const resp = await transport.sendMail(mailReq);
     //Utils.log(resp);
     return resp.messageId;
   }
   catch(e){
-    Utils.error(e);
+    Utils.error("send-email-mailtrap",e);
     return null;
   }
 };

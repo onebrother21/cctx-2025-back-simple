@@ -8,13 +8,12 @@ import RedisCache from "./init-cache";
 import { ConfigureCorsSocketIo } from "@middleware";
 import { GlassSocketsService } from './apps/glass';
 
-const whitelist = JSON.parse(process.env.ORIGINS||"[]");
-
 const initializeSockets = (app:Express.Application,cache:RedisCache) => {
   const server = http.createServer(app);
   const io = new Server(server,ConfigureCorsSocketIo(cache));
   Services.Sockets.initialize(io);
   GlassSocketsService.initialize(io);
+  Utils.ok("sockets","Initialized");
   return {server,io};
 };
 export {initializeSockets};

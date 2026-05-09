@@ -35,11 +35,11 @@ export class GlassSocketsService {
     return socket && socket.connected? socket : null;
   };
   static connectAndCheck = (socket:Socket,verbose?:boolean):void => {
-    Utils.log(`New connection: ${socket.id}`);
-    Utils.log(`LongID 1: ${Utils.longId()}`);
+    Utils.log("<sockets>",`New connection: ${socket.id}`);
+    Utils.log("<misc>",`LongID 1: ${Utils.longId()}`);
     if(verbose){
-      Utils.log(socket.handshake.auth);// - implement token check
-      Utils.log(socket.handshake.query);
+      Utils.log("<sockets>",socket.handshake.auth);// - implement token check
+      Utils.log("<sockets>",socket.handshake.query);
     }
   };
   static initialize(io:Server) {
