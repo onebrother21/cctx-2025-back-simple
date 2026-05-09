@@ -68,7 +68,7 @@ export class AuthController {
       res.cookie("cctx_auth_23j012",{ready:true},{
         sameSite:"lax",
         path: '/',
-        secure:Utils.isEnv(["production","staging","live-render"]),
+        secure:Utils.isProd(),
         httpOnly:true,
         maxAge:1000 * 60 * 30,
       });

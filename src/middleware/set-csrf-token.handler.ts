@@ -16,7 +16,7 @@ const doubleCsrfOptions:DoubleCsrfConfigOptions = {
   getCsrfTokenFromRequest:req => {
     const fromHeader = req.headers["x-csrf-token"];
     const fromCookie = req.cookies["XSRF-TOKEN"];
-    Utils.trace("check-csrf",{fromHeader,fromCookie});
+    //Utils.trace("check-csrf",{fromHeader,fromCookie});
     if(fromHeader) return fromHeader;
     return fromCookie;
   }, // A function that returns the token from the request

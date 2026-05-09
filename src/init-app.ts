@@ -72,11 +72,11 @@ export class App {
 
     // SESSION
     app.use(ConfigureSession() as RequestHandler);
-    app.use(sessionCheck() as RequestHandler);
+    // app.use(sessionCheck() as RequestHandler);
     // CSRF
     app.use(ValidateCsrfToken() as RequestHandler);
     app.use(SetCsrfToken() as RequestHandler);
-    app.use(headerCheck() as RequestHandler);
+    // app.use(headerCheck() as RequestHandler);
 
     //LOCALIZE REQ
     //localize(app);
