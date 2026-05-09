@@ -34,6 +34,7 @@ export const myFetch = async (o) => {
   if(!(method && url)) throw {status:400,message:"Request malformed"};
 
   const isPostOrPut = ["POST","PUT"].includes(method);
+  const csrfTkn = glassState.get("csrfTkn");
   const authTkn = glassState.get("authTkn");
   const appConfig = glassState.get("appConfig");
 
@@ -46,6 +47,7 @@ export const myFetch = async (o) => {
     credentials:"include",
     headers: {
       "x-cctx-e2e":useEnc?"1":"0",
+      ...authTkn?{"x-csrf-token":`${csrfTkn}`}:{},
       ...authTkn?{"Authorization":`Bearer ${authTkn}`}:{},
       "Content-type": "application/json; charset=UTF-8",
     },

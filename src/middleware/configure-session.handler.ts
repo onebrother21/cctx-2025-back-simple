@@ -2,15 +2,14 @@ import session,{ SessionOptions } from 'express-session';
 import MongoStore from 'connect-mongo';
 import Utils from "@utils";
 
-
-// COOKIES & SESSIONS
-const cookieSecret = process.env.COOKIE_SECRET || 'myCookieSecret';
-
 export const ConfigureSession:() => IHandler = () => {
+  const cookieSecret = process.env.COOKIE_SECRET || 'myCookieSecret';
+  const dbUrl = process.env[`DB_URI_${Utils.isEnv("live")?"LIVE":"LOCAL"}`];
+  if(!dbUrl) throw {status:500,message:"No mongodb connection strin provided"};
   const mongoStore = MongoStore.create({
     collectionName:"ultimate-sessions",
     dbName:process.env.DB_NAME,
-    mongoUrl:process.env[`DB_URI_${/live/i.test(Utils.env())?"LIVE":"LOCAL"}`],
+    mongoUrl:dbUrl,
     autoRemove: 'interval',
     autoRemoveInterval: 30 // In minutes
   });
@@ -20,11 +19,11 @@ export const ConfigureSession:() => IHandler = () => {
     saveUninitialized:true,
     resave:false,
     cookie:{
-      sameSite:"strict",
+      sameSite:"lax",
       path: '/',
-      secure:Utils.isEnv(["production","staging","live-render"]),
+      secure:Utils.isProd(),
       httpOnly:true,
-      maxAge:30 * 60 * 1000,
+      //maxAge:30 * 60 * 1000,
     },
     store:mongoStore,
   };

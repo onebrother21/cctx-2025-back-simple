@@ -8,7 +8,7 @@ const doubleCsrfOptions:DoubleCsrfConfigOptions = {
   cookieOptions: {
     sameSite:"lax",
     path: '/',
-    secure:Utils.isEnv(["production","staging","live-render"]),
+    secure:Utils.isProd(),
     httpOnly:true
   },
   // size: 64, // The size of the generated tokens in bits
@@ -16,13 +16,13 @@ const doubleCsrfOptions:DoubleCsrfConfigOptions = {
   getCsrfTokenFromRequest:req => {
     const fromHeader = req.headers["x-csrf-token"];
     const fromCookie = req.cookies["XSRF-TOKEN"];
-    // Utils.trace({fromHeader,fromCookie});
+    Utils.trace("check-csrf",{fromHeader,fromCookie});
     if(fromHeader) return fromHeader;
     return fromCookie;
   }, // A function that returns the token from the request
 };
 const doubleCsrfUtils = doubleCsrf(doubleCsrfOptions);
-
+const ValidateCsrfToken:() => IHandler = () => doubleCsrfUtils.doubleCsrfProtection;
 const SetCsrfToken:() => IHandler = () => async (req, res, next) => {
   try{
     const csrfToken = doubleCsrfUtils.generateCsrfToken(req,res);
@@ -37,4 +37,4 @@ const SetCsrfToken:() => IHandler = () => async (req, res, next) => {
   }
   catch(e){next(e)}
 };
-export {SetCsrfToken,doubleCsrfUtils};
+export {SetCsrfToken,ValidateCsrfToken};
