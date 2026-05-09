@@ -24,7 +24,7 @@ export const mode = ():string => process.env["NODE_MODE"] || "";
 export const options = ():string => process.env["NODE_OPTIONS"] || "";
 export const prefix = ():string => process.env["USE_PREFIX"] || "";
 export const getVar = (str:string):any => {
-  console.log(process.env[`${prefix()}${str}`]);
+  console.log(`${prefix()}${str}`,process.env[`${prefix()}${str}`]);
   return parse(process.env[`${prefix()}${str}`] || "");
 };
 export const prodEnvs = ():string[] => getVar("PROD_ENVS") || [];

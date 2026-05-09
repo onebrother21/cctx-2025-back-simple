@@ -21,6 +21,7 @@ export const myApp = async () => {
     Utils.ok("env",`${Utils.env()}`);
     Utils.ok("prod-envs",Utils.prodEnvs());
     Utils.ok("isProd",Utils.isProd());
+    
     const port = process.env.PORT || 3000;
     const hostname = process.env.HOSTNAME;
     const host = Utils.getNetworkAddress();
