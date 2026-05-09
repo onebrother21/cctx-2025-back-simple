@@ -27,7 +27,7 @@ export const myApp = async () => {
     const domain = host + (!Utils.isEnv(["production"])?`:${port}`:"");
 
     await initDb();
-    const cache = await initCache(true);
+    const cache = await initCache({reload:true});
     await cache.save({domain});
 
     const app = express();
