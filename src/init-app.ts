@@ -52,8 +52,8 @@ export class App {
         return ["HEAD","OPTIONS"].includes(req.method) && res.statusCode == 200;
       }
     }));
-    const publicPath = `${Utils.isProd()?'../..':'..'}/public`;
-    const viewPath = `${Utils.isProd()?'../..':'..'}/views`;
+    const publicPath = `${Utils.isProd()?'../../':'../'}public`;
+    const viewPath = `${Utils.isProd()?'../../':'../'}views`;
     app.set('view engine','ejs');
     app.set('views',path.join(__dirname,viewPath));
     app.use(express.static(path.join(__dirname,publicPath)));

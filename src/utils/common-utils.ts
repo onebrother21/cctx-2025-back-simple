@@ -25,8 +25,11 @@ export const mode = ():string => process.env["NODE_MODE"] || "";
 export const options = ():string => process.env["NODE_OPTIONS"] || "";
 export const prefix = ():string => process.env["USE_PREFIX"] || "";
 export const getVar = (str:string):any => parse(process.env[`${prefix()}${str}`] || "");
-export const prodEnvs = ():string[] => getVar("PROD_ENVS");
-export const isProd = () => prodEnvs().includes(env());
+export const prodEnvs = ():string[] => getVar("PROD_ENVS") || [];
+export const isProd = () => {
+  logger.trace("prod-envs",prodEnvs())
+  return prodEnvs().includes(env());
+}
 export const isEnv = (envs:string|string[]) => {
   if(isArr(envs)){
     for(let i = 0,l = envs.length;i<l;i++){
