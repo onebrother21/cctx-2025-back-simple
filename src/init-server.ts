@@ -18,10 +18,10 @@ export const myApp = async () => {
     process.exit(1);
   });
   try {
-    Utils.ok("env",`${Utils.env()}`);
+    Utils.ok("env",Utils.env());
     Utils.ok("prod-envs",Utils.prodEnvs());
     Utils.ok("isProd",Utils.isProd());
-    
+
     const port = process.env.PORT || 3000;
     const hostname = process.env.HOSTNAME;
     const host = Utils.getNetworkAddress();
