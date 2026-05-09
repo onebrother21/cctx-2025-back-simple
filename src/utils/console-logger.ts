@@ -54,21 +54,23 @@ const write = (k:LogTypes,...args:any[]):boolean => {
   catch(e){console.error(e);}
   return true;
 };
-export const print = (k:string,title:string,...args:any[]):boolean => {
+export const print = (k:string,...args:any[]):boolean => {
+  const title = args[0];
+  const restOfArgs = args.slice(1);
   const K = k as keyof DefaultLogColors;
   const flag = `[cctx:${title}]`;
   const color = colors[K];
   const reset = colors.reset;
   const log = console.log.bind(console,color,flag,reset);
-  if(!Utils.isProd()) log(...args);
+  if(!Utils.isProd()) log(...restOfArgs);
   return true;
 };
 export const here = (silenceMsg?:boolean) => !silenceMsg?write("here"):null;
-export const log = print.bind(null,"log");
-export const info = print.bind(null,"info");
-export const error = print.bind(null,"error");
-export const warn = print.bind(null,"warn");
-export const trace = print.bind(null,"trace");
-export const ok = print.bind(null,"ok");
-export const debug = print.bind(null,"debug");
+export const log = (...args:any[]) => print("log",...args);
+export const info = (...args:any[]) => print("info",...args);
+export const error = (...args:any[]) => print("error",...args);
+export const warn = (...args:any[]) => print("warn",...args);
+export const trace = (...args:any[]) => print("trace",...args);
+export const ok = (...args:any[]) => print("ok",...args);
+export const debug = (...args:any[]) => print("debug",...args);
 export const clear = () => process.stdout.write("\x1Bc");
