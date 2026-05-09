@@ -4,13 +4,14 @@ import Utils from "@utils";
 
 export const ConfigureSession:() => IHandler = () => {
   const cookieSecret = process.env.COOKIE_SECRET || 'myCookieSecret';
-  const dbUri = `DB_URI_${Utils.isProd() || Utils.isEnv("live")?"LIVE":"LOCAL"}` || '';
+  const dbLabel = `DB_URI_${(Utils.isProd() || Utils.isEnv("live"))?"LIVE":"LOCAL"}`;
+  const dbUri = process.env[dbLabel] || '';
+  const dbName = process.env.DB_NAME;
+  if(!dbUri) throw {status:500,message:"No mongodb connection string provided"};
 
-  if(!dbUri) throw {status:500,message:"No mongodb connection strin provided"};
   const mongoStore = MongoStore.create({
     collectionName:"ultimate-sessions",
-    dbName:process.env.DB_NAME,
-    mongoUrl:dbUri,
+    dbName,mongoUrl:dbUri,
     autoRemove: 'interval',
     autoRemoveInterval: 30 // In minutes
   });
