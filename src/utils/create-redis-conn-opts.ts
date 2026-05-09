@@ -1,4 +1,5 @@
 import * as Utils from './common-utils';
+import * as logger from './console-logger';
 import { QueueOptions } from 'bullmq';
 import { URL } from "url";
 
@@ -15,10 +16,14 @@ const {
 
 export const getRedisConnectionOpts = () => {
   let connection:QueueOptions["connection"];
+  logger.info("redis-conn-opts",{REDIS_LIVE_URL,isProd:Utils.isProd()});
   if(REDIS_LIVE_URL && Utils.isProd()){
     // Parse Redis URL for production environments
     const redisUrl = new URL(REDIS_LIVE_URL);
     connection = {
+      lazyConnect: true,
+      keepAlive: 1000,
+      connectTimeout:10000,
       host: redisUrl.hostname,
       port: Number(redisUrl.port),
       password: redisUrl.password,

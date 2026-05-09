@@ -20,10 +20,10 @@ export class RedisCache {
   print = async () => {
     try {
       const cache = await this.get();
-      Utils.debug("<redisCache>","AppVars ->",cache);
+      Utils.debug("redis-cache","AppVars ->",cache);
     }
     catch (e) {
-      Utils.error("<redisCache>",e);
+      Utils.error("redis-cache",e);
     }
   };
 }
@@ -34,7 +34,7 @@ export class RedisCache {
   const cache = new RedisCache();
   cache.redis = new Redis(Utils.getRedisConnectionOpts());
   cache.redis.on("error",e => {
-    Utils.error("<redisCache>",e);
+    Utils.error("redis-cache",e);
     reject(e);
   });
   cache.redis.on("connect",async () => {
