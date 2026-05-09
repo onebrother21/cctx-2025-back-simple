@@ -1,7 +1,6 @@
 import CryptoJS from "crypto-js";
 import expressListRoutes from 'express-list-routes';
 import { deepmerge } from "deepmerge-ts";
-import * as logger from "./console-logger";
 import path from "path";
 import fs from "fs";
 import cluster from 'cluster';
@@ -26,10 +25,7 @@ export const options = ():string => process.env["NODE_OPTIONS"] || "";
 export const prefix = ():string => process.env["USE_PREFIX"] || "";
 export const getVar = (str:string):any => parse(process.env[`${prefix()}${str}`] || "");
 export const prodEnvs = ():string[] => getVar("PROD_ENVS") || [];
-export const isProd = () => {
-  logger.trace("prod-envs",prodEnvs())
-  return prodEnvs().includes(env());
-}
+export const isProd = () => prodEnvs().includes(env());
 export const isEnv = (envs:string|string[]) => {
   if(isArr(envs)){
     for(let i = 0,l = envs.length;i<l;i++){
@@ -471,7 +467,7 @@ export const listRoutes = (app:Express.Application) => {
     logger:false, // A custom logger function or a boolean (true for default logger, false for no logging)
     color: true // If the console log should color the method name
   });
-  logger.info("App Routes: ",routes);
+  return routes;
 };
 export const findReverseIndex = (arr:any[],pred:(o:any) => boolean) => {
   for (let i = arr.length - 1; i >= 0; i--) if(pred(arr[i])) return i;

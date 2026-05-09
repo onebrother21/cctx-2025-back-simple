@@ -19,16 +19,16 @@ process.on('uncaughtException',err => {
   process.exit(1);
 });
 
-const port = process.env.PORT || 3300;
-const hostname = process.env.HOSTNAME;
-const host = Utils.getNetworkAddress();
-const domain = host + (!Utils.isEnv(["production"])?`:${port}`:"");
-
 export class MyWorkers {
   logItems = ['error','closed','init','failed','completed'];
   init = async () => {
     try{
       Utils.ok("env",`${Utils.env()}`);
+      const port = process.env.PORT || 3000;
+      const hostname = process.env.HOSTNAME;
+      const host = Utils.getNetworkAddress();
+      const domain = host + (!Utils.isEnv(["production"])?`:${port}`:"");
+      
       await Db.connect();
       const cache = await RedisCache.connect({reload:true});
       await cache.save({domain});
