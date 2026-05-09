@@ -15,7 +15,6 @@ const {
 } = process.env;
 
 export const getRedisConnectionOpts = () => {
-  logger.info("redis-conn-opts",{REDIS_LIVE_URL,isProd:Utils.isProd()});
   const connection:QueueOptions["connection"] = {
     lazyConnect: true,
     keepAlive: 1000,

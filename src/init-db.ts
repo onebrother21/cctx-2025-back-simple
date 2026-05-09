@@ -2,19 +2,12 @@ import mongoose from 'mongoose';
 import Utils from '@utils';
 mongoose.Promise = import("bluebird");
 
-const db = `DB_URI_${Utils.isEnv("live")?"LIVE":"LOCAL"}`
-process.env.DB = process.env[db] || "";
-
-const dbString = process.env.DB;
+const dbUri = `DB_URI_${Utils.isProd() || Utils.isEnv("live")?"LIVE":"LOCAL"}` || '';
 const dbName = process.env.DB_NAME;
-let options = {
-  //user: process.env.DB_USER,
-  //pass: process.env.DB_PASS,
-  dbName,
-};
+
 export const initDb = async () => {
   try {
-    const conn = await mongoose.connect(dbString,{
+    const conn = await mongoose.connect(dbUri,{
       "dbName":dbName,
       "connectTimeoutMS":10000,
       "socketTimeoutMS":10000

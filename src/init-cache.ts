@@ -27,25 +27,24 @@ export class RedisCache {
     }
   };
 }
- export const initCache = async (o:{
-  clear?:boolean,
-  reload?:boolean,
-} = {}):Promise<RedisCache> => await new Promise((done,reject) => {
-  const cache = new RedisCache();
-  cache.redis = new Redis(Utils.getRedisConnectionOpts());
-  cache.redis.on("error",e => {
-    Utils.error("redis-cache",e);
-    reject(e);
-  });
-  cache.redis.on("connect",async () => {
-    const bvars = o.clear?{}:await cache.get();
-    const bvars_ = o.clear || o.reload?await cache.load():{};
+ export const initCache = async (reload = false,clear = false):Promise<RedisCache> => {
+  try {
+    const cache = new RedisCache();
+    cache.redis = new Redis(Utils.getRedisConnectionOpts());
+    await cache.redis.connect();
+    
+    const bvars = clear?{}:await cache.get();
+    const bvars_ = reload?await cache.load():{};
     const data = {...bvars,...bvars_};
     await cache.set(data);
     Utils.ok("redis-cache","Connected");
-    done(cache);
-  });
-});
+    return cache;
+  }
+  catch(e:any){
+    Utils.error("redis-cache",e);
+    throw e;
+  }
+};
 export default initCache;
 
 
