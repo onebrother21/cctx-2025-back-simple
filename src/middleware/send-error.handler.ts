@@ -5,43 +5,27 @@ export const SendErrorHandler:() => IErrorHandler = () => async (err,req,res,nex
   let response:any = {success:false,status:500,tokens:res.locals.tokens};
   if(res.headersSent) return next(err);
   switch(true){
-    case err instanceof Utils.AppError:{
-      // Utils.log(`AppError`,err.message);
-      response = {
-        ...response,
-        status:err.status,
-        message:err.message,
-        errors:err.errors,
-      };
-      break;
-    }
-    case err == doubleCsrfUtils.invalidCsrfTokenError:{
-      Utils.log(`invalidCsrfTokenError`,err.message);
-      response = {
-        ...response,
-        status:403,
-        message:"csrf validation error",
-      };
-      break;
-    }    
-    case err.name == "TokenExpiredError":{
-      // Utils.log(`TokenExpiredError`,err.message);
-      response = {
-        ...response,
-        status:401,
-        message:"Your session is expired. Please login.",
-      };
-      break;
-    }
-    case err.name == "JsonWebTokenError" && /malformed/i.test(err.message):{
-      // Utils.log(`malformed`,err.message);
-      response = {
-        ...response,
-        status:403,
-        message:"This action is not allowed.",
-      };
-      break;
-    }
+    case err instanceof Utils.AppError:response = {
+      ...response,
+      status:err.status,
+      message:err.message,
+      errors:err.errors,
+    };break;
+    case err == doubleCsrfUtils.invalidCsrfTokenError:response = {
+      ...response,
+      status:403,
+      message:`csrf validation error "${err.message}"`,
+    };break;
+    case err.name == "TokenExpiredError":response = {
+      ...response,
+      status:401,
+      message:"Your session is expired. Please login.",
+    };break;
+    case err.name == "JsonWebTokenError" && /malformed/i.test(err.message):response = {
+      ...response,
+      status:403,
+      message:"This action is not allowed.",
+    };break;
     case /validation/i.test(err.name) || /validation/i.test(err.message):response = {
       ...response,
       status:422,
@@ -54,8 +38,8 @@ export const SendErrorHandler:() => IErrorHandler = () => async (err,req,res,nex
       message:err.message,
     };break;
     default:{
+      Utils.error("send-error",err);
       const clockBugsQ = Utils.createQueue("clock-bugs");
-      Utils.error("worker-clock-bugs",err);
       if(!await clockBugsQ.isPaused()) await clockBugsQ.add("clock-bug-job",{
         creator:req.profile?req.profile.id:null,
         creatorRef:req.user?req.user.role:"server",

@@ -1,3 +1,4 @@
+import * as Utils from './common-utils';
 import { QueueOptions } from 'bullmq';
 import { URL } from "url";
 
@@ -14,7 +15,7 @@ const {
 
 export const getRedisConnectionOpts = () => {
   let connection:QueueOptions["connection"];
-  if(REDIS_LIVE_URL && /production|staging|live-render/.test(NODE_ENV || "")){
+  if(REDIS_LIVE_URL && Utils.isProd()){
     // Parse Redis URL for production environments
     const redisUrl = new URL(REDIS_LIVE_URL);
     connection = {

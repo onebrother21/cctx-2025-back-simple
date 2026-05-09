@@ -1,4 +1,4 @@
-import RedisCache from "../init-cache";
+import { RedisCache } from "../init-cache";
 
 export const SetBusinessVars:(cache:RedisCache) => IHandler = cache => async (req, res, next) => {
   try{

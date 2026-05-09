@@ -1,6 +1,3 @@
+import myApp from "./src/init-server";
 import myWorkers from "./src/init-workers";
-
-module.exports = (async () => {
-  const workers = new myWorkers();
-  await workers.init();
-})();
+module.exports = (async () => await myWorkers())();

@@ -4,11 +4,11 @@ import { Server } from 'socket.io';
 
 import Services from '@services';
 import Utils from "@utils";
-import RedisCache from "./init-cache";
+import { RedisCache } from "./init-cache";
 import { ConfigureCorsSocketIo } from "@middleware";
 import { GlassSocketsService } from './apps/glass';
 
-const initializeSockets = (app:Express.Application,cache:RedisCache) => {
+export const initSockets = (app:Express.Application,cache:RedisCache) => {
   const server = http.createServer(app);
   const io = new Server(server,ConfigureCorsSocketIo(cache));
   Services.Sockets.initialize(io);
@@ -16,4 +16,4 @@ const initializeSockets = (app:Express.Application,cache:RedisCache) => {
   Utils.ok("sockets","Initialized");
   return {server,io};
 };
-export {initializeSockets};
+export default initSockets;
