@@ -41,6 +41,7 @@
   },
   "files": [
     "index.ts",
+    "index-workers.ts",
     "types/global.d.ts",
     "types/cctx-common.d.ts",
     "types/cctx-entity.d.ts",
