@@ -10,7 +10,7 @@ export const ConfigureSession:() => IHandler = () => {
   if(!dbUri) throw {status:500,message:"No mongodb connection string provided"};
 
   const mongoStore = MongoStore.create({
-    collectionName:"cctx-sessions",
+    collectionName:"cctx_sessions",
     dbName,mongoUrl:dbUri,
     autoRemove: 'interval',
     autoRemoveInterval: 30 // In minutes
