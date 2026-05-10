@@ -36,7 +36,7 @@ export const myApp = async () => {
 
     server.listen(port,() => {
       Utils.ok("server",hostname);
-      Utils.ok("network",`${domain} is listening...`);
+      Utils.ok("network",`${domain} is listening now...`);
     });
   }
   catch(e){
