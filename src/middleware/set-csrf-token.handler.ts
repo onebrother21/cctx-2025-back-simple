@@ -6,7 +6,7 @@ const doubleCsrfOptions:DoubleCsrfConfigOptions = {
   getSessionIdentifier:req => req.session["id"] || "", // A function that should return the session identifier for a given request
   cookieName:"x-csrf-token-pre", // The name of the cookie to be used, recommend using Host prefix. "__Host-psifi."
   cookieOptions: {
-    sameSite:"lax",
+    sameSite:Utils.isProd()?"none":"lax",
     path: '/',
     secure:Utils.isProd(),
     httpOnly:true
@@ -28,9 +28,9 @@ const SetCsrfToken:() => IHandler = () => async (req, res, next) => {
     const csrfToken = doubleCsrfUtils.generateCsrfToken(req,res);
     res.locals.tokens = {csrf:csrfToken};
     res.cookie('XSRF-TOKEN',csrfToken,{
-      sameSite:"lax",
+      sameSite:Utils.isProd()?"none":"lax",
       path: '/',
-      secure:Utils.isEnv(["production","staging","live-render"]),
+      secure:Utils.isProd(),
       httpOnly:true
     });
     next();
