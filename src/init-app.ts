@@ -64,9 +64,9 @@ export const initApp = (app:Express,cache:RedisCache) => {
   // CORS
   app.use(ConfigureCors() as RequestHandler);
 
-  // trust first proxy in prod
-  //if(Utils.isProd()) {app.set('trust proxy',1);} 
   // COOKIES
+  // trust first proxy in prod
+  if(Utils.isProd()) {app.set('trust proxy',1);} 
   app.use(cookieParser(cookieSecret));
   app.use(cookieCheck() as RequestHandler);
 

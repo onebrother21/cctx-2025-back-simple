@@ -42,6 +42,7 @@ export const corsOptionsDelegate = function (req:IRequest, callback:Function) {
   switch(true){
     case isBypass && inTheClear:{
       corsOptions.origin = true;
+      corsOptions.credentials = true;
       return callback(null,corsOptions);
     }
     default:{
