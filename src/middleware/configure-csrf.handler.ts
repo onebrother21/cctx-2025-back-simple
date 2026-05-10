@@ -3,7 +3,7 @@ import Utils from "@utils";
 
 const doubleCsrfOptions:DoubleCsrfConfigOptions = {
   getSecret: () => process.env.CSRF_SECRET || "supersecret",
-  getSessionIdentifier:req => req.session["id"] || "", // A function that should return the session identifier for a given request
+  getSessionIdentifier:req => req.session["id"] || Utils.longId(), // A function that should return the session identifier for a given request
   cookieName:"x-csrf-token-pre", // The name of the cookie to be used, recommend using Host prefix. "__Host-psifi."
   cookieOptions: {
     sameSite:Utils.isProd()?"none":"lax",

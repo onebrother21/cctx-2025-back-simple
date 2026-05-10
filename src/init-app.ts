@@ -54,8 +54,6 @@ export const initApp = (app:Express,cache:RedisCache) => {
   }));
   const publicPath = `${isProd?'../../':'../'}public`;
   const viewPath = `${isProd?'../../':'../'}views`;
-  Utils.log("static paths",{isProd,publicPath,viewPath});
-
   app.set('view engine','ejs');
   app.set('views',path.join(__dirname,viewPath));
   app.use(express.static(path.join(__dirname,publicPath)));
