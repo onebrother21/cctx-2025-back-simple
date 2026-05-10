@@ -35,17 +35,17 @@ export class GlassSocketsService {
     return socket && socket.connected? socket : null;
   };
   static connectAndCheck = (socket:Socket,verbose?:boolean):void => {
-    Utils.log("<sockets>",`New connection: ${socket.id}`);
-    Utils.log("<misc>",`LongID 1: ${Utils.longId()}`);
+    Utils.log("sockets",`New connection: ${socket.id}`);
+    Utils.log("misc",`LongID 1: ${Utils.longId()}`);
     if(verbose){
-      Utils.log("<sockets>",socket.handshake.auth);// - implement token check
-      Utils.log("<sockets>",socket.handshake.query);
+      Utils.log("sockets",socket.handshake.auth);// - implement token check
+      Utils.log("sockets",socket.handshake.query);
     }
   };
   static initialize(io:Server) {
     this.io = io;
     this.io.of("/glass-users").adapter.on("create-room",(room:string) => {
-      if(/room:/.test(room)) Utils.log(`Room "${room.split("room:")[1]}" was created`);
+      if(/room:/.test(room)) Utils.ok("sockets",`Room "${room.split("room:")[1]}" was created`);
     });
     this.io.of("/glass-users").on("connection", (socket:Socket) => {
       this.connectAndCheck(socket);

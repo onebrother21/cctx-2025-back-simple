@@ -37,7 +37,7 @@ export const corsOptionsDelegate = function (req:IRequest, callback:Function) {
   const origin = req.header("Origin");
   const isBypass = !origin || wl.includes(origin) || isStaticSite;
   const inTheClear = ip && !bl.includes(ip);
-  Utils.ok({origin,ip,isBypass,inTheClear});
+  // Utils.ok("cors-info",{origin,ip,isBypass,inTheClear});
 
   switch(true){
     case isBypass && inTheClear:{
