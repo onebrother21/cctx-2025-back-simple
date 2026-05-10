@@ -21,7 +21,7 @@ export const ConfigureSession:() => IHandler = () => {
     saveUninitialized:true,
     resave:false,
     cookie:{
-      //sameSite:Utils.isProd()?"none":"lax",
+      sameSite:Utils.isProd()?"none":"lax",
       secure:Utils.isProd(),
       path: '/',
       httpOnly:true,
