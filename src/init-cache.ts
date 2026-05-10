@@ -27,13 +27,12 @@ export class RedisCache {
     }
   };
 }
-type RedisCacheOps = Partial<Record<"reload"|"clear",boolean>>;
-export const initCache = async (o:RedisCacheOps):Promise<RedisCache> => {
+type RedisCacheOpts = Partial<Record<"reload"|"clear",boolean>>;
+export const initCache = async (o:RedisCacheOpts):Promise<RedisCache> => {
+  const cache = new RedisCache();
+  cache.redis = new Redis(Utils.getRedisConnectionOpts());
   try {
-    const cache = new RedisCache();
-    cache.redis = new Redis(Utils.getRedisConnectionOpts());
     await cache.redis.connect();
-    
     const bvars = o.clear?{}:await cache.get();
     const bvars_ = o.reload?await cache.load():{};
     const data = {...bvars,...bvars_};

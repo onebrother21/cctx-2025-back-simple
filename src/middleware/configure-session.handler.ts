@@ -10,22 +10,22 @@ export const ConfigureSession:() => IHandler = () => {
   if(!dbUri) throw {status:500,message:"No mongodb connection string provided"};
 
   const mongoStore = MongoStore.create({
-    collectionName:"ultimate-sessions",
+    collectionName:"cctx-sessions",
     dbName,mongoUrl:dbUri,
     autoRemove: 'interval',
     autoRemoveInterval: 30 // In minutes
   });
   const sessionOpts:SessionOptions = {
-    name:"my-ultimate-session",
+    name:"cctx-session",
     secret:cookieSecret,
     saveUninitialized:true,
     resave:false,
     cookie:{
       sameSite:Utils.isProd()?"none":"lax",
-      path: '/',
       secure:Utils.isProd(),
+      path: '/',
       httpOnly:true,
-      //maxAge:30 * 60 * 1000,
+      maxAge:30 * 60 * 1000,
     },
     store:mongoStore,
   };
