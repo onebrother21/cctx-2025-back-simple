@@ -46,7 +46,7 @@ export class WebSocketService {
     this.io = io;
     this.namespace = namespace;
     this.io.of(this.namespace).adapter.on("create-room",(room:string) => {
-      Utils.log(`Room "${room}" was created`);
+      Utils.ok(`Room "${room}" was created`);
     });
     this.io.of(this.namespace).on("connection", (socket:Socket) => {
       this.connectAndCheck(socket);
@@ -76,7 +76,7 @@ export class WebSocketService {
               }
               const msg = {type:"registered",data:{user,rooms}};
               this.emitToSocket(socket,msg);
-              Utils.log(`Profile ${userId} registered with socketId: ${socket.id}`);
+              Utils.ok(`Profile ${userId} registered with socketId: ${socket.id}`);
             }
             catch (error:any) {this.emitErrorToSocket(socket,error);}
             break;
@@ -99,7 +99,7 @@ export class WebSocketService {
                 channelName,
                 viewerCount
               }});
-              Utils.log(`Profile ${creator} added channel ${channelName} (${channelId})`);
+              Utils.ok(`Profile ${creator} added channel ${channelName} (${channelId})`);
             }
             catch (error:any) {
               socket.emit("error", { message: error.message });
@@ -124,7 +124,7 @@ export class WebSocketService {
                 channelName,
                 viewerCount,
               }});
-              Utils.log(`Profile ${userId} joined channel ${channelName} (${channelId})`);
+              Utils.ok(`Profile ${userId} joined channel ${channelName} (${channelId})`);
             }
             catch (error:any) {
               Utils.error(error.message);
