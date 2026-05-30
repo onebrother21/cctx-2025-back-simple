@@ -11,8 +11,8 @@ import { GlassSocketsService } from './apps/glass';
 export const initSockets = (app:Express.Application,cache:RedisCache) => {
   const server = http.createServer(app);
   const io = new Server(server,ConfigureCorsSocketIo(cache));
-  Services.Sockets.initialize(io);
-  GlassSocketsService.initialize(io);
+  Services.Sockets.initialize(io,"/admn-ctrl");
+  GlassSocketsService.initialize(io,"/glass-users");
   Utils.ok("sockets","Initialized");
   return {server,io};
 };

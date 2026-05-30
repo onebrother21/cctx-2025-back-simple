@@ -24,6 +24,7 @@ const {ACTIVE,INACTIVE} = Types.IProfileStatuses;
 
 export class WebSocketService {
   private static io: Server;
+  private static namespace = "";
   static getUserBySocketId = (socket:Socket):string|null => { 
     for (let [key, value] of userSockets) {
       if(value.id === socket.id) return key;
@@ -41,12 +42,13 @@ export class WebSocketService {
       Utils.log("socket",socket.handshake.query);
     }
   };
-  static initialize(io:Server) {
+  static initialize(io:Server,namespace:string) {
     this.io = io;
-    this.io.of("/admn-ctrl").adapter.on("create-room",(room:string) => {
+    this.namespace = namespace;
+    this.io.of(this.namespace).adapter.on("create-room",(room:string) => {
       Utils.log(`Room "${room}" was created`);
     });
-    this.io.of("/admn-ctrl").on("connection", (socket:Socket) => {
+    this.io.of(this.namespace).on("connection", (socket:Socket) => {
       this.connectAndCheck(socket);
       socket.on('client_to_server',async (m:string) => {
         const {type,user,data,id:socketId} = JSON.parse(m) as SocketMsg;
@@ -213,14 +215,14 @@ export class WebSocketService {
     socket.emit("server_to_client",JSON.stringify({...msg,ts:new Date()}));
   }
   static emitToChannel(channelId: string,msg:Partial<SocketMsg>) {
-    const channel = this.io.of("/admn-ctrl").to(`room:${channelId}`);
+    const channel = this.io.of(this.namespace).to(`room:${channelId}`);
     channel.emit("server_to_client",JSON.stringify({...msg,ts:new Date()}));
   }
   static async getViewerCount(channelId: string): Promise<number> {
-    const room = this.io.of("/admn-ctrl").adapter.rooms.get(`room:${channelId}`);
+    const room = this.io.of(this.namespace).adapter.rooms.get(`room:${channelId}`);
     return room ? room.size : 0;
   }
   static async notifyChannel(channelId: string, message: string) {
-    this.io.of("/admn-ctrl").to(`room:${channelId}`).emit("systemMessage", { message });
+    this.io.of(this.namespace).to(`room:${channelId}`).emit("systemMessage", { message });
   }
 }
