@@ -17,7 +17,6 @@ const getGlassRouter = () => {
   const GlassTasksRouter = getCCTXTasksRouter();
 
   GlassRouter.get("/",loadV5(ctrlEjs.HandleRoute("home")));
-  GlassRouter.use("/assets",express.static(path.join(__dirname,`assets`)));
   GlassRouter.get("/config",loadV5(ctrl.AppConfig,...PostMiddleware));
   GlassRouter.get("/connect",loadV5(ctrl.AppConnect,...PostMiddleware));
   GlassRouter.get("/about",loadV5(ctrlEjs.HandleRoute("about")));

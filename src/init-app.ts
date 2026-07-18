@@ -65,6 +65,7 @@ export const initApp = (cache:RedisCache) => {
     path.join(__dirname,`${isProd?'../':''}apps/glass/views`),
   ]);
   app.use(express.static(path.join(__dirname,`${isProd?'../../':'../'}public`)));
+  app.use("/glass/assets",express.static(path.join(__dirname,`${isProd?'../':''}apps/glass/assets`)));
 
   // BUSINESS VARS
   app.use(SetBusinessVars(cache) as RequestHandler);
