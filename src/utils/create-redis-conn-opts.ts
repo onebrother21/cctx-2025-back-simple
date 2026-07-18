@@ -21,7 +21,7 @@ export const getRedisConnectionOpts = () => {
     connectTimeout:10000,
     //maxRetriesPerRequest:6,
   }
-  if(Utils.isProd() && REDIS_LIVE_URL){
+  if((Utils.isProd() || Utils.isEnv("render")) && REDIS_LIVE_URL){
     const redisUrl = new URL(REDIS_LIVE_URL);
     connection.host = redisUrl.hostname;
     connection.port = Number(redisUrl.port);
