@@ -62,7 +62,7 @@ export const initApp = (cache:RedisCache) => {
   app.set('view engine','ejs');
   app.set('views',[
     path.join(__dirname,`${isProd?'../../':'../'}views`),
-    path.join(__dirname,`apps/glass/views`)
+    path.join(__dirname,`${isProd?'../':''}apps/glass/views`)
   ]);
   app.use(express.static(path.join(__dirname,`${isProd?'../../':'../'}public`)));
 
