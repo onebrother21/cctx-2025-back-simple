@@ -1,9 +1,12 @@
 import { Router } from 'express';
 import Utils from '@utils';
 import { loadV5, upload } from '@middleware';
+import { dirname } from 'node:path';
 
 class AppPublicController {
-  static getHome:IHandler = async (req,res) => {res.json({success:true,message:"ready"});};
+  static getHome:IHandler = async (req,res) => {
+    res.json({success:true,message:"ready",data:__dirname});
+  };
   static testDec:IHandler = async (req,res) => {
     try {
       const {encryptedData} = req.body;
