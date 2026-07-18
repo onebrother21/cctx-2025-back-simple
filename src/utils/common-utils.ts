@@ -11,7 +11,7 @@ type sortArg<T> = keyof T | `-${string & keyof T}`;
 
 const host = process.env.HOST;
 const numCPUs = os.cpus().length;
-const supersecret = process.env.ENCRYPTION_PUBLIC || "";
+
 const overwriteMerge = (destinationArray:any[], sourceArray:any[], options:any) => sourceArray;
 
 export const stringify = (o:object) => JSON.stringify(o);
@@ -447,18 +447,18 @@ export const jsonFormatter = {
     return cipherParams;
   }
 };
-export const encrypt_ = (value:any) => {
+export const encrypt_ = (value:any,supersecret:string) => {
   const options = {format:jsonFormatter,mode:CryptoJS.mode.CBC};
   const encrypted = CryptoJS.AES.encrypt(value,supersecret,options).toString();
   return encrypted;
 };
-export const decrypt_ = (value:any) => {
+export const decrypt_ = (value:any,supersecret:string) => {
   const options = {format:jsonFormatter};
   const decrypted = CryptoJS.AES.decrypt(value,supersecret,options).toString(CryptoJS.enc.Utf8);
   return decrypted;
 }
-export const encrypt = (o:any) => encrypt_(JSON.stringify(o));
-export const decrypt = (o:any) => JSON.parse(decrypt_(o));
+export const encrypt = (o:any,s:string) => encrypt_(JSON.stringify(o),s);
+export const decrypt = (o:any,s:string) => JSON.parse(decrypt_(o,s));
 
 export const listRoutes = (app:Express.Application) => {
   const routes = expressListRoutes(app,{

@@ -14,8 +14,11 @@ const {SENDING,SENT,FAILED} = Types.INotificationStatuses;
 export const sendNotifications = async (job:Job) => {
   const notificationsToProcess = await Services.Notifications.getNotificationsToProcess();
   const stats = { updated:0,count:notificationsToProcess.length };
+  let i = 0;
+  Utils.log("notificationsToProcess",notificationsToProcess)
   const processNotification = async (o:Types.INotification) => {
     try {
+      Utils.trace("worker.send-notifications",(i+1)+" of "+notificationsToProcess.length,o);
       const notification = await Notification.findById(o.id);
       if(!notification) throw "no notification";
 
@@ -61,13 +64,12 @@ export const sendNotifications = async (job:Job) => {
     }
     catch(e:any){
       //job.failedReason = e.message;
-      Utils.error('send-notifications.worker',e);
+      Utils.error('worker.send-notifications',e);
       o.status = FAILED;
       await o.saveMe();
     }
   }
-  let i = 0;
-  do {
+  if(notificationsToProcess.length) do {
     await processNotification(notificationsToProcess[i]);
     i++;
   }

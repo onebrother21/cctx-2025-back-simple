@@ -1,6 +1,6 @@
 import * as DEVICE from "./app-device.types";
 
-export type AppUsageUpdate = DocEntity<"new"> & {
+export type IAppUsageType = {
   who:"sys-admn"|`${"usr"|"prf"}/${string}`;//user
   what:string|number;//desc of action
   which?:`${"usr"|"prf"|"tsk"|"ntf"|"ssn"|"ven"|"case"|"att"}/${string}`;//object affected
@@ -10,12 +10,10 @@ export type AppUsageUpdate = DocEntity<"new"> & {
   to?:`${"usr"|"prf"|"prfg"}/${string}`;//g for group of profiles
   with?:string;//add'l info, params
   why?:string;//add'l info, reason
-}
-export interface IAppUsageMethods {
-  saveMe():Promise<void>;
-  json():Partial<AppUsageUpdate>;
 };
-export interface IAppUsage extends AppUsageUpdate,IAppUsageMethods {}
+export type IAppUsageObj = DocEntityObj<IAppUsageType,"new">;
+export type IAppUsage = DocEntity<IAppUsageObj>;
+
 export interface IAppUsageStatics {
   make(
     user:"sys-admn"|`${"usr"|"prf"}/${string}`,

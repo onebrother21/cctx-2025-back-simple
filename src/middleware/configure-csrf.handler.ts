@@ -1,10 +1,13 @@
 import { doubleCsrf, DoubleCsrfConfigOptions,DoubleCsrfConfig } from "csrf-csrf";
 import Utils from "@utils";
 
+const csrfCookie = process.env.CSRF_COOKIE || 'csrfCookie';
+const csrfSecret = process.env.CSRF_SECRET || 'csrfsecret';
+
 const doubleCsrfOptions:DoubleCsrfConfigOptions = {
-  getSecret: () => process.env.CSRF_SECRET || "supersecret",
-  getSessionIdentifier:req => req.session["id"] || Utils.longId(), // A function that should return the session identifier for a given request
-  cookieName:"x-csrf-token-pre", // The name of the cookie to be used, recommend using Host prefix. "__Host-psifi."
+  getSessionIdentifier:req => req.session["id"] || Utils.longId(),
+  getSecret: () => csrfSecret,
+  cookieName:csrfCookie,
   cookieOptions: {
     sameSite:Utils.isProd()?"none":"lax",
     path: '/',
@@ -12,14 +15,14 @@ const doubleCsrfOptions:DoubleCsrfConfigOptions = {
     httpOnly:true
   },
   // size: 64, // The size of the generated tokens in bits
-  ignoredMethods: ["GET", "HEAD", "OPTIONS"] as any[], // A list of request methods that will not be protected.
+  ignoredMethods: ["GET", "HEAD", "OPTIONS"] as any[],
   getCsrfTokenFromRequest:req => {
     const fromHeader = req.headers["x-csrf-token"];
     const fromCookie = req.cookies["XSRF-TOKEN"];
     Utils.trace("check-csrf",{fromHeader,fromCookie});
     if(fromHeader) return fromHeader;
     return fromCookie;
-  }, // A function that returns the token from the request
+  },
 };
 const doubleCsrfUtils = doubleCsrf(doubleCsrfOptions);
 const ValidateCsrfToken:() => IHandler = () => doubleCsrfUtils.doubleCsrfProtection;

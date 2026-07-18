@@ -58,7 +58,7 @@ export type ICaseDetails = Partial<{
   questions:string[];
   answers:string[];
 }>;
-export type ICaseType = DocEntity<ICaseStatuses,PROFILES.ICaseAdmin> & {
+export type ICaseType = {
   objective:"full"|"adoption"|"canvas"|"serivce";
   reqNo:string;
   rush:boolean;
@@ -76,18 +76,11 @@ export type ICaseType = DocEntity<ICaseStatuses,PROFILES.ICaseAdmin> & {
   invoice:INVOICE.IInvoice;
   resolution:string;
 };
-
-export type ICaseITO = Partial<ICaseType>;
-export type ICasePTO = Pick<ICaseType,"id">;
-export type ICaseOTO = Partial<ICaseType & {notes:Types.IMessageJson[]}>;
-
-export interface ICaseMethods {
-  saveMe():Promise<void>;
-  populateMe():Promise<void>;
-  json():ICaseOTO;
-  preview():ICasePTO;
-};
-export interface ICase extends ICaseType,ICaseMethods {}
+export type ICaseObj = DocEntityObj<ICaseType,ICaseStatuses,PROFILES.ICaseAdmin>;
+export type ICaseITO = Partial<ICaseObj>;
+export type ICasePTO = Pick<ICaseObj,"id">;
+export type ICaseOTO = Partial<ICaseObj & {notes:Types.IMessageJson[]}>;
+export type ICase = DocEntity<ICaseObj,ICaseOTO,ICasePTO>;
 
 export type ICaseQueryKeys = {
   strings:

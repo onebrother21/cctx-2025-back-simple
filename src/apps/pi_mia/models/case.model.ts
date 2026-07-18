@@ -41,7 +41,7 @@ const detailsSchema = new Schema<PiMiaTypes.ICaseDetails>({
   questions:[String],
   answers:[String],
 },{_id:false,timestamps:false});
-const caseSchema = new Schema<PiMiaTypes.ICase,Case,PiMiaTypes.ICaseMethods>({
+const caseSchema = new Schema<PiMiaTypes.ICase,Case,PiMiaTypes.ICase>({
   status:{type:String,enum:Object.values(PiMiaTypes.ICaseStatuses),default:NEW},
   creator:{type:ObjectId,ref:"cctx_profiles",required:true},
   rush:{type:Boolean},
@@ -112,6 +112,6 @@ caseSchema.methods.json = function () {
   };
 };
 
-type Case = Model<PiMiaTypes.ICase,{},PiMiaTypes.ICaseMethods>;
+type Case = Model<PiMiaTypes.ICase,{},PiMiaTypes.ICase>;
 const Case:Case = mongoose.model<PiMiaTypes.ICase>('pimia_cases',caseSchema);
 export default Case;

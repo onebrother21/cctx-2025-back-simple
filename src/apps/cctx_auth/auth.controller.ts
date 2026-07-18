@@ -5,6 +5,9 @@ import Types from "@types";
 import Utils from '@utils';
 import {uploadToCloudinary} from "@middleware";
 
+const authCookie = process.env.AUTH_COOKIE || 'authCookie';
+const authSecret = process.env.AUTH_SECRET || 'supersecret';
+
 export class AuthController {
   static SignUp:IHandler = async (req,res,next) => {
     try {
@@ -65,7 +68,7 @@ export class AuthController {
       res.locals.data = user.json(true);
       res.locals.tokens.access = await AuthUtils.generateToken("access",user);
       res.locals.tokens.refresh = await AuthUtils.generateToken("refresh",user);
-      res.cookie("cctx_auth_23j012",{ready:true},{
+      res.cookie(authCookie,Utils.encrypt({ready:true},authSecret),{
         sameSite:"lax",
         path: '/',
         secure:Utils.isProd(),
@@ -88,10 +91,10 @@ export class AuthController {
       };
       res.locals.tokens.access = await AuthUtils.generateToken("access",user);
       res.locals.tokens.refresh = await AuthUtils.generateToken("refresh",user);
-      if(res.locals.tokens.access) res.cookie("cctx_auth_23j012",{ready:true},{
+      res.cookie(authCookie,Utils.encrypt({ready:true},authSecret),{
         sameSite:"lax",
         path: '/',
-        secure:Utils.isEnv(["production","staging","live-render"]),
+        secure:Utils.isProd(),
         httpOnly:true,
         maxAge:1000 * 60 * 30,
       });
@@ -128,7 +131,6 @@ export class AuthController {
   static Logout:IHandler = async (req,res,next) => {
     try {
       await AuthService.logoutUser(req);
-      const {csrf} = res.locals.tokens;
       res.locals.success = true,
       res.locals.message = 'Logout successful';
       next();

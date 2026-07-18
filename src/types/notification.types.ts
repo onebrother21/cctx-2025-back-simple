@@ -25,14 +25,10 @@ export enum INotificationActions {
   NOTIFICATION_FAILED = 14
 };
 export type INotificationMeta = {job: string;retries:number;};
-export type INotificationType = DocEntity<INotificationStatuses> & INotificationPre & INotificationMeta;
+export type INotificationType = INotificationPre & INotificationMeta;
+export type INotificationObj = DocEntityObj<INotificationType,INotificationStatuses>;
+export type INotification = DocEntity<INotificationObj>;
 
-export interface INotificationMethods {
-  saveMe():Promise<void>;
-  populateMe():Promise<void>;
-  json():Partial<INotification>;
-};
-export interface INotification extends INotificationType,INotificationMethods {}
 export type INotificationQueryKeys = {
   strings:|"type"|"audience.user.username"|"meta.job";
   dates:|"created_on";

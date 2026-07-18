@@ -9,7 +9,7 @@ const recipientSchema = new Schema<Types.INotification["audience"][0]>({
   user:{type:ObjectId,ref:"cctx_users"},
   info:{type:String,required:true}
 },{_id:false,timestamps:false});
-const notificationSchema = new Schema<Types.INotification,Notification,Types.INotificationMethods>({
+const notificationSchema = new Schema<Types.INotification,Notification,Types.INotification>({
   status:{type: String,enum:Object.values(Types.INotificationStatuses),default:NEW},
   type: {type: String,enum:Object.keys(Types.INotificationTemplates),required: true},
   audience:{
@@ -49,6 +49,6 @@ notificationSchema.methods.json = function () {
   return json;
 };
 
-type Notification = Model<Types.INotification,{},Types.INotificationMethods>;
+type Notification = Model<Types.INotification,{},Types.INotification>;
 const Notification:Notification = mongoose.model<Types.INotification>('cctx_notifications',notificationSchema);
 export default Notification;

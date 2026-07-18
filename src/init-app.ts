@@ -29,22 +29,28 @@ import getAppPublicRouter from './init-app-public.router';
 
 import getGlassRouter from './apps/glass';
 import getVaultRouter from './apps/vault';
+
 import getCCTXAuthRouter from './apps/cctx_auth';
 import getCCTXTasksRouter from "./apps/cctx_tasks";
 import getCCTXMsgChainsRouter from "./apps/cctx_msgs";
-import getCCTXAdminRouter from './apps/cctx_admn';
-import getCCTXDevAdminRouter from './apps/cctx_dev/admn';
-import getDegenPokerRouter from "./apps/jpmoney/degen_poker";
+import getCCTXAdmnRouter from './apps/cctx_admn';
+
+import getDegenPokerRouter from "./apps/degen_poker";
 import getPiMiaRouter from './apps/pi_mia';
-import getPingRouter from './apps/ping';
+//import getPingRouter from './apps/ping';
 //import getUpcentricRouter from './apps/upcentric';
 //import getCrashDepotRouter from '../apps/app_crashdepot';
 
 
 const cookieSecret = process.env.COOKIE_SECRET || 'myCookieSecret';
+const authSecret = process.env.AUTH_SECRET || 'authSecret';
+const deviceSecret = process.env.DEVICE_SECRET || 'deviceSecret';
+const sessionSecret = process.env.SESSION_SECRET || 'sessionSecret';
+const csrfSecret = process.env.CSRF_SECRET || 'csrfSecret';
 
-export const initApp = (app:Express,cache:RedisCache) => {
+export const initApp = (cache:RedisCache) => {
   const isProd = Utils.isProd();
+  const app = express();
   // COMPRESSION, MORGAN, VIEWS & STATIC
   app.use(compression());
   app.use(morgan('dev', {
@@ -52,21 +58,28 @@ export const initApp = (app:Express,cache:RedisCache) => {
       return "HEAD" == req.method || "OPTIONS"  == req.method && res.statusCode == 200;
     }
   }));
-  const publicPath = `${isProd?'../../':'../'}public`;
-  const viewPath = `${isProd?'../../':'../'}views`;
+  
   app.set('view engine','ejs');
-  app.set('views',path.join(__dirname,viewPath));
-  app.use(express.static(path.join(__dirname,publicPath)));
+  app.set('views',[
+    path.join(__dirname,`${isProd?'../../':'../'}views`),
+    path.join(__dirname,`apps/glass/views`)
+  ]);
+  app.use(express.static(path.join(__dirname,`${isProd?'../../':'../'}public`)));
 
   // BUSINESS VARS
   app.use(SetBusinessVars(cache) as RequestHandler);
-
   // CORS
   app.use(ConfigureCors() as RequestHandler);
 
   // COOKIES
   if(Utils.isProd()) app.set('trust proxy',1);
-  app.use(cookieParser(cookieSecret));
+  app.use(cookieParser([
+    cookieSecret,
+    authSecret,
+    deviceSecret,
+    sessionSecret,
+    csrfSecret,
+  ]));
   // app.use(cookieCheck() as RequestHandler);
 
   // SESSION
@@ -91,18 +104,18 @@ export const initApp = (app:Express,cache:RedisCache) => {
   app.use("/",getAppPublicRouter());
   app.use("/glass",getGlassRouter());
   app.use("/vault",getVaultRouter());
+  app.use("/cctx/admn",getCCTXAdmnRouter());
   
-  app.use("/av3/cctx/auth",getCCTXAuthRouter());
-  app.use("/av3/cctx/admn",getCCTXAdminRouter());
-  app.use("/av3/cctx_dev/admn",getCCTXDevAdminRouter());
-  app.use("/av3/cctx/msgs",[AuthJWT(),getCCTXMsgChainsRouter()] as RequestHandler[]);
-  app.use("/av3/cctx/tasks",[AuthJWT(),getCCTXTasksRouter()] as RequestHandler[]);
+  app.use("/cctx/auth",getCCTXAuthRouter());
+  app.use("/cctx/msgs",[AuthJWT(),getCCTXMsgChainsRouter()] as RequestHandler[]);
+  app.use("/cctx/tasks",[AuthJWT(),getCCTXTasksRouter()] as RequestHandler[]);
 
-  app.use("/av3/jpmoney/degen_poker",getDegenPokerRouter());
-  app.use("/av3/pi_mia",getPiMiaRouter());
-  app.use("/av3/ping",getPingRouter());
+  //app.use("/degen_poker",getDegenPokerRouter());
+  //app.use("/pi_mia",getPiMiaRouter());
+  //app.use("/av3/ping",getPingRouter());
 
   app.use('/*splat',PageNotFound() as RequestHandler);
   app.use(SendErrorHandler() as ErrorRequestHandler);
+  return app;
 };
 export default initApp;

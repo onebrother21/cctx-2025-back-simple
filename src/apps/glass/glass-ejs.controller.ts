@@ -1,22 +1,16 @@
-import Models from '@models';
-import Services from "@services";
-import Types from "@types";
-import Utils from '@utils';
-
 export class GlassEjsController {
-  static featureUrl = `/glass`;
   static CheckLogin:IHandler = async (req,res,next) => {
     //Utils.info({...req.session});
     switch(true){
       case !req.session.user:
       case !req.session.auth:
       case !req.session.expires:{
-        res.redirect(`${this.featureUrl}/login`);
+        res.redirect(`/glass/login`);
         break;
       }
       case req.session.expires < Date.now():{
         req.session.expires = null;
-        res.redirect(`${this.featureUrl}/login?expired=true`);
+        res.redirect(`/glass/login?expired=true`);
         break;
       }
       default:{
@@ -25,56 +19,91 @@ export class GlassEjsController {
       }
     }
   };
-  static RenderSignup:IHandler = async (req,res,next) => res.render('glass/index', {
-    page:"signup",
-    invalid: req.query.invalid === 'true',
-    expired: req.query.expired === 'true',
-    pageData:{user:null},
-  });
-  static RenderVerify:IHandler = async (req,res,next) => res.render('glass/index', {
-    page:"verify",
-    invalid: req.query.invalid === 'true',
-    expired: req.query.expired === 'true',
-    pageData:{user:null},
-  });
-  static RenderRegister:IHandler = async (req,res,next) => res.render('glass/index', {
-    page:"register",
-    invalid: req.query.invalid === 'true',
-    expired: req.query.expired === 'true',
-    pageData:{user:null},
-  });
-  static RenderLogin:IHandler = async (req,res,next) => res.render('glass/index', {
-    page:"login",
-    invalid: req.query.invalid === 'true',
-    expired: req.query.expired === 'true',
-    pageData:{user:null},
-  });
-  static RenderDash:IHandler = async (req,res,next) => res.render('glass/index',{
-    page:"dash",
-    pageData:{user:req.session.user}
-  });
-  static RenderSettings:IHandler = async (req,res,next) => res.render('glass/index',{
-    page:"settings",
-    pageData:{user:req.session.user}
-  });
-  static RenderAnalytics:IHandler = async (req,res,next) => res.render('glass/index',{
-    page:"analytics",
-    pageData:{user:req.session.user}
-  });
-  static RenderUsers:IHandler = async (req,res,next) => res.render('glass/index',{
-    page:"users",
-    pageData:{user:req.session.user}
-  });
-  static RenderAbout:IHandler = async (req,res,next) => res.render('glass/index',{
-    page:"about",
-    pageData:{user:req.session.user}
-  });
-  static RenderChats:IHandler = async (req,res,next) => res.render('glass/index',{
-    page:"chats",
-    pageData:{user:req.session.user}
-  });
-  static RenderChat:IHandler = async (req,res,next) => res.render('glass/index',{
-    page:"chat",
-    pageData:{user:req.session.user}
-  });
+  static HandleRoute:(page:string) => IHandler = (page) => (req,res) => {
+    const data:any = {page,ui:{sidebarMenu}};
+    switch(page){
+      case "signup":{
+        data.invalid = req.query.invalid === 'true',
+        data.expired = req.query.expired === 'true',
+        data.user = null;
+        break;
+      }
+      case "verify":{
+        data.invalid = req.query.invalid === 'true',
+        data.expired = req.query.expired === 'true',
+        data.user = null;
+        break;
+      }
+      case "register":{
+        data.invalid = req.query.invalid === 'true',
+        data.expired = req.query.expired === 'true',
+        data.user = null;
+        break;
+      }
+      case "login":{
+        data.invalid = req.query.invalid === 'true',
+        data.expired = req.query.expired === 'true',
+        data.user = null;
+        break;
+      }
+      case "reset-pin":{
+        data.invalid = req.query.invalid === 'true',
+        data.expired = req.query.expired === 'true',
+        data.user = null;
+        break;
+      }
+      case "dash":{
+        data.ui.title = "Dashboard Overview";
+        data.ui.withSearch = true;
+        break;
+      }
+      case "analytics":{
+        data.ui.title = "Analytics";
+        data.ui.withSearch = true;
+        break;
+      }
+      case "users":{
+        data.ui.title = "Users";
+        data.ui.withSearch = true;
+        break;
+      }
+      case "about":data.ui.title = "About Us";break;
+      case "settings":data.ui.title = "Settings";break;
+      case "chats":data.ui.title = "Chats";break;
+      case "chat":data.ui.title = "ChatBox";break;
+      case "numbers":data.ui.title = "Numbers Tester";break;
+      default:break;
+    }
+    data.user = req.session.user || null;
+    if(page == "home") res.redirect(`/glass/hm`);
+    else res.render('glass-index',data);
+  };
 }
+const sidebarMenu = [
+  {
+    url:"/glass/hm",
+    icon:"four-boxes",
+    label:"Dashboard",
+  },{
+    url:"/glass/analytics",
+    icon:"paper-stack",
+    label:"Analytics",
+    text:"New",
+  },{
+    url:"/glass/users",
+    icon:"users",
+    label:"Users",
+  },{
+    url:"/glass/chats",
+    icon:"users",
+    label:"Chats",
+  },{
+    url:"/glass/settings",
+    icon:"gear",
+    label:"Settings",
+  },{
+    url:"/glass/numbers",
+    icon:"gear",
+    label:"Numbers Tester",
+  }
+];

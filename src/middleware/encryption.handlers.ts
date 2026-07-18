@@ -4,14 +4,16 @@ const DecryptData:() => IHandler = () => (req,res,next) => {
   try {
     const useEncStr = req.headers["x-cctx-e2e"];
     const useEnc = Number(useEncStr);
-    const isStaticSite = /vault|sys\/ui/.test(req.url);
+    
     const isAppConfigRoute = /config/.test(req.url);
-    const isUploadRoute = /uploads/.test(req.url);
-    const isPostOrPut = ["post","put"].includes(req.method.toLowerCase());
     if(useEnc && !isAppConfigRoute){
       res.setHeader("x-cctx-e2e","1");
       res.locals.useEnc = true;
     }
+    const isStaticSite = /vault|sys\/ui/.test(req.url);
+    const isUploadRoute = /uploads/.test(req.url);
+    const isPostOrPut = ["post","put"].includes(req.method.toLowerCase());
+
     // Utils.trace({useEnc,isStaticSite,isUploadRoute,isPostOrPut});
     switch(true){
       case !useEnc:
@@ -30,7 +32,8 @@ const DecryptData:() => IHandler = () => (req,res,next) => {
             break;
           }
           default:{
-            req.body.data = Utils.decrypt(data);
+            const supersecret = req.session.ekey;
+            req.body.data = Utils.decrypt(data,supersecret);
             next();
             break;
           }
@@ -42,7 +45,8 @@ const DecryptData:() => IHandler = () => (req,res,next) => {
 };
 const EncryptData:() => IHandler = () => (req, res,next) => {
   try {
-    if(res.locals.useEnc && res.locals.data) res.locals.data = Utils.encrypt(res.locals.data);
+    const supersecret = req.session.ekey;
+    if(res.locals.useEnc && res.locals.data) res.locals.data = Utils.encrypt(res.locals.data,supersecret);
     next();
   }
   catch (error) {next(error);}

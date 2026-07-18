@@ -194,7 +194,7 @@ export class AuthService {
 
     user.meta.lastLogin = new Date();
     await user.saveMe();
-    await AppUsage.make(`usr/${user.id}`,"userLoggedIn (RefreshTkn)",{loc});
+    await AppUsage.make(`usr/${user.id}`,"loggedIn (RefreshTkn)",{loc});
     user.device = req.device;
     user.role = storedToken.role;
     
@@ -294,7 +294,7 @@ export class AuthService {
     
     const apiDomain = req.headers["x-forwarded-host"] || req.headers.host;
     const resetToken = await AuthUtils.generateToken("reset",user);
-    const resetLink = `${req.bvars.apiDomain}/av3/cctx/auth/reset?token=` + resetToken;
+    const resetLink = `${req.svars.apiDomain}/av3/cctx/auth/reset?token=` + resetToken;
 
     user.device = req.device;
     await notify({

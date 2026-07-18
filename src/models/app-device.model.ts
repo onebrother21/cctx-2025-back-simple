@@ -4,7 +4,7 @@ import Types from "@types";
 const {NEW} = Types.IAppDeviceStatuses;
 const uniqueValidator = require("mongoose-unique-validator").default;
 
-const appDeviceSchema = new Schema<Types.IAppDevice,AppDevice,Types.IAppDeviceMethods>({
+const appDeviceSchema = new Schema<Types.IAppDevice,AppDevice,Types.IAppDevice>({
   status:{type:String,enum:Object.values(Types.IAppDeviceStatuses),default:NEW},
   ua:String,
   mobile:Boolean,
@@ -43,6 +43,6 @@ appDeviceSchema.methods.json = function () {
   return json;
 };
 
-type AppDevice = Model<Types.IAppDevice,{},Types.IAppDeviceMethods>;
+type AppDevice = Model<Types.IAppDevice,{},Types.IAppDevice>;
 const AppDevice:AppDevice = mongoose.model<Types.IAppDevice>('cctx_devices',appDeviceSchema);
 export default AppDevice;

@@ -2,20 +2,11 @@ import Models from "@models";
 import Utils from "@utils";
 
 export const appConfig:() => IHandler = () => async (req,res,next) => {
-  const runtime = {
-    apiDomain:req.bvars.domain,
-    apiVersion:Utils.version(),
-    secureMode:Utils.isEnv("prod"),
-    ekey:process.env["ENCRYPTION_PUBLIC"],
-  };
-  const bvars = await Models.BusinessVars.findOne({name:"vault",status:"active"});
-  const data = bvars.json();
-  const config = {...runtime,...data};
-
   res.locals.success = true;
-  res.locals.data = config;
+  res.locals.data = req.cvars;
   next();
 };
+/*
 export const appClient:() => IHandler = () => async (req,res,next) => {
   //to flush device cookies, change cookie name (slug)
   Utils.log(req.session.meta);
@@ -26,3 +17,4 @@ export const appClient:() => IHandler = () => async (req,res,next) => {
   Utils.trace(`connection from ${device} device:${id}, first use:${new Date(ts).toDateString()}`);
   return next();
 };
+*/

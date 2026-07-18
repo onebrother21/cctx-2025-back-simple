@@ -1,16 +1,18 @@
-import { GlassAppState } from "./glass-app-state.js";
-import { GlassAppSockets } from "./glass-app-sockets.js";
-import { GlassAppAuth } from './glass-app-auth.js' ;
+import {
+  GlassAppState,
+  GlassAppSockets,
+  GlassAppAuth,
+} from './core/index.js' ;
 
-import { getAppConfig } from "./glass-app-methods.js";
-import { mainAppContext } from './glass-app-main.js' ;
-import { initAppUI } from './glass-app-ui.js' ;
+import { GlassNumbers } from './glass-numbers.js' ;
+import { GlassApp } from './glass-app-main.js' ;
 
 document.addEventListener('DOMContentLoaded',async () => {
   window.glassState = new GlassAppState();
-  await getAppConfig();
+  await GlassApp.myConfig();
+
   window.glassSockets = new GlassAppSockets();
   window.glassAuth = new GlassAppAuth();
-  await mainAppContext();
-  initAppUI();
+  window.glassNumbers = new GlassNumbers();
+  await GlassApp.main();
 });

@@ -2,6 +2,7 @@ import Utils from "@utils";
 import Types from "@types";
 
 export const SetUserSession:() => IHandler = () => async (req,res,next) => {
+  if(req.cvars && req.cvars.key) req.session.ekey = req.cvars.key;
   if(req.device) req.session.device = req.device.id;
   if(req.user){
     const {id,username} = req.user as Types.IUser;

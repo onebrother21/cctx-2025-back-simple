@@ -4,7 +4,7 @@ import Utils from '@utils';
 
 const uniqueValidator = require("mongoose-unique-validator").default;
 
-const appUsageSchema = new Schema<Types.IAppUsage,AppUsage,Types.IAppUsageMethods>({
+const appUsageSchema = new Schema<Types.IAppUsage,AppUsage,Types.IAppUsage>({
   status:{type:String,enum:["new"],default:"new"},
   who:{type:String,required:true},
   what:{type:Schema.Types.Mixed,required:true},
@@ -59,6 +59,6 @@ appUsageSchema.methods.json = function () {
   return json;
 };
 
-export interface AppUsage extends Model<Types.IAppUsage,{},Types.IAppUsageMethods>,Types.IAppUsageStatics {}
+export interface AppUsage extends Model<Types.IAppUsage,{},Types.IAppUsage>,Types.IAppUsageStatics {}
 const AppUsage:AppUsage = mongoose.model<Types.IAppUsage,AppUsage>('cctx_app_usages',appUsageSchema);
 export default AppUsage;

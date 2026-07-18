@@ -3,8 +3,9 @@ import { QueryOptions } from "mongoose";
 import Models from '@models';
 import Utils from '@utils';
 
-const deviceCookie = process.env.DEVICE_COOKIE || 'deviceCookie';
 const queryOpts:QueryOptions = {returnDocument:"after",runValidators:true};
+const deviceCookie = process.env.DEVICE_COOKIE || 'deviceCookie';
+const deviceSecret = process.env.DEVICE_SECRET || 'supersecret';
 
 export const SetUserDevice:() => IHandler = () => async (req, res, next) => {
   if(["POST","PUT","PATCH"].includes(req.method)){
@@ -18,7 +19,7 @@ export const SetUserDevice:() => IHandler = () => async (req, res, next) => {
     const device_ = {...deviceData,...data};
 
     if(cookie){
-      const deviceId = Utils.decrypt(cookie);
+      const deviceId = Utils.decrypt(cookie,deviceSecret);
       const device = await Models.AppDevice.findByIdAndUpdate(deviceId,{
         $set:{
           ...device_,
@@ -38,7 +39,7 @@ export const SetUserDevice:() => IHandler = () => async (req, res, next) => {
           lastAddr:ip,
         },
       });
-      res.cookie(deviceCookie,Utils.encrypt(device.id),{ 
+      res.cookie(deviceCookie,Utils.encrypt(device.id,deviceSecret),{ 
         sameSite:"lax",
         path: '/',
         secure:Utils.isEnv(["production","staging","live-render"]),

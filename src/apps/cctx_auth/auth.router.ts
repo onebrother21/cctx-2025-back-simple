@@ -17,7 +17,7 @@ const AuthRouter = () => {
   
   router.put("/update",loadV5(AuthJWT(),...validators.Update,ctrl.Update,...PostMiddleware));
   router.post("/update/img",loadV5(AuthJWT(),upload.single('upload'),ctrl.UpdateImg,...PostMiddleware));
-  router.post("/logout",loadV5(AuthJWT(),ctrl.Logout,...PostMiddleware));
+  router.get("/logout",loadV5(AuthJWT(),ctrl.Logout,...PostMiddleware));
   router.get("/auto",loadV5(AuthJWT(),ctrl.Autologin,...PostMiddleware));
   router.post("/profile",loadV5(AuthJWT(),ctrl.ActivateProfile,...PostMiddleware));
 

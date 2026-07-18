@@ -11,7 +11,7 @@ const messageReactionSchema = new Schema<Types.IReaction>({
   type:{type: String,enum:Object.values(Types.IReactions)},
   user:{type:ObjectId,required:true,ref:"cctx_profiles"},
 },{timestamps:{createdAt:"time"},_id:false});
-const messageSchema = new Schema<Types.IMessage,Message,Types.IMessageMethods>({
+const messageSchema = new Schema<Types.IMessage,Message,Types.IMessage>({
   author:{type:ObjectId,required:true,ref:"cctx_profiles"},
   status:{type: String,enum:messageStatuses,default:NEW},
   app:String,
@@ -44,7 +44,7 @@ messageSchema.methods.preview = function (){
   };
 };
 messageSchema.methods.json = function () {
-  const json:Types.IMessageJson =  {...this.preview() as any};
+  const json = {...this.preview()} as Types.IMessageJson;
   json.status = this.status;
   json.body = this.body;
   json.time = this.time;
@@ -85,6 +85,6 @@ messageSchema.methods.json = function () {
   }
   return json;
 };
-type Message = Model<Types.IMessage,{},Types.IMessageMethods>;
+type Message = Model<Types.IMessage,{},Types.IMessage>;
 const Message:Message = mongoose.model<Types.IMessage>('cctx_messages',messageSchema);
 export default Message;

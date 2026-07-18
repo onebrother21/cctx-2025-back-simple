@@ -392,4 +392,32 @@ function init() {
     initAuthTabs();
     initFormSubmissions();
 }
-export {init as initApp};
+function getNumbers(){
+  const s = [1,5,7,11,12,14,16,18,19,20,21,24];
+  console.log("get-numbers",s.join(" "))
+  const getLeftHandShift = () => {
+    const a = [];
+    for(let i =0,l = s.length;i<l;i++){
+      let m = s[i],n = s[i+1];
+      if(m && n && (n - m) > 1) a.push(m + 1)
+      else a.push(m);
+    }
+    console.log("get-numbers (left-hand n+1 whole)",a.join(" "))
+  }
+  const getRightHandShift = () => {
+    const a = [];
+    for(let i =0,l = s.length;i<l;i++){
+      let m = s[i],n = s[i-1];
+      if(m && n && (m - n) > 1) a.push(m - 1)
+      else a.push(m);
+    }
+    console.log("get-numbers (right-hand n+1 whole)",a.join(" "))
+  }
+  getLeftHandShift();
+  getRightHandShift();
+}
+
+export {
+  init as initApp,
+  getNumbers,
+};

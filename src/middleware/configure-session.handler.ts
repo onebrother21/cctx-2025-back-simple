@@ -2,8 +2,10 @@ import session,{ SessionOptions } from 'express-session';
 import MongoStore from 'connect-mongo';
 import Utils from "@utils";
 
+const sessionCookie = process.env.SESSION_COOKIE || 'sessionCookie';
+const sessionSecret = process.env.SESSION_SECRET || 'supersecret';
+
 export const ConfigureSession:() => IHandler = () => {
-  const cookieSecret = process.env.COOKIE_SECRET || 'myCookieSecret';
   const dbLabel = `DB_URI_${(Utils.isProd() || Utils.isEnv("live"))?"LIVE":"LOCAL"}`;
   const dbUri = process.env[dbLabel] || '';
   const dbName = process.env.DB_NAME;
@@ -16,8 +18,8 @@ export const ConfigureSession:() => IHandler = () => {
     autoRemoveInterval: 30 // In minutes
   });
   const sessionOpts:SessionOptions = {
-    name:"cctx-session",
-    secret:cookieSecret,
+    name:sessionCookie,
+    secret:sessionSecret,
     saveUninitialized:true,
     resave:false,
     cookie:{

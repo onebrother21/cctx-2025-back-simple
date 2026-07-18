@@ -7,8 +7,7 @@ export enum IMsgChainStatuses {
   INACTIVE = "inactive",
 }
 export type IMsgChainTypes = "channel"|"private";
-export type IMsgChainType = 
-DocEntity<IMsgChainStatuses,PROFILE.IProfile> & {
+export type IMsgChainType = {
   users:PROFILE.IProfile[];
   msgs:MESSAGE.IMessage[];
   name:string;
@@ -17,18 +16,13 @@ DocEntity<IMsgChainStatuses,PROFILE.IProfile> & {
   img?:ImageObj;
   desc?:string;
 };
-export type IMsgChainJson = Partial<Omit<IMsgChain,"img"> & {
+export type IMsgChainObj = DocEntityObj<IMsgChainType,IMsgChainStatuses,PROFILE.IProfile>;
+export type IMsgChainJson = Partial<Omit<IMsgChainObj,"img"> & {
   msgs:MESSAGE.IMessageJson[];
   userCt:number;
   img:string;
 }>;
-export interface IMsgChainMethods {
-  saveMe():Promise<void>;
-  populateMe():Promise<void>;
-  preview():IMsgChainJson;
-  json():IMsgChainJson;
-}
-export interface IMsgChain extends IMsgChainType,IMsgChainMethods {}
+export type IMsgChain = DocEntity<IMsgChainObj,IMsgChainJson>;
 
 export type IMsgChainQueryKeys = {
   strings:

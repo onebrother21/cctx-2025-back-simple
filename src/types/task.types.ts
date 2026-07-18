@@ -25,7 +25,7 @@ export enum ITaskStatuses {
   STALLED = "stalled",
   UPLANNED = "unplanned",
 }
-export type ITaskType = DocEntity<ITaskStatuses,PROFILE.IProfile> & {
+export type ITaskType = {
   app:string;
   type:"bug"|"improvement"|"suggestion"|"other"|"test";
   title:string;
@@ -55,18 +55,11 @@ export type ITaskType = DocEntity<ITaskStatuses,PROFILE.IProfile> & {
     tags:ITaskTag[];
   }
 };
-
-export type ITaskITO = Partial<ITaskType>;
-export type ITaskPTO = Pick<ITaskType,"id"|"app"|"type"|"desc"|"title">;
-export type ITaskOTO = Partial<ITaskType & {notes:MESSAGE.IMessageJson[]}>;
-
-export interface ITaskMethods {
-  saveMe():Promise<void>;
-  populateMe():Promise<void>;
-  json():ITaskOTO;
-  preview():ITaskPTO;
-};
-export interface ITask extends ITaskType,ITaskMethods {}
+export type ITaskObj = DocEntityObj<ITaskType,ITaskStatuses,PROFILE.IProfile>;
+export type ITaskITO = Partial<ITaskObj>;
+export type ITaskPTO = Pick<ITaskObj,"id"|"app"|"type"|"desc"|"title">;
+export type ITaskOTO = Partial<ITaskObj & {notes:MESSAGE.IMessageJson[]}>;
+export type ITask = DocEntity<ITaskObj,ITaskOTO,ITaskPTO>;
 
 export type ITaskQueryKeys = {
   strings:

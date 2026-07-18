@@ -19,7 +19,7 @@ export const getRedisConnectionOpts = () => {
     lazyConnect: true,
     keepAlive: 1000,
     connectTimeout:10000,
-    maxRetriesPerRequest:6,
+    //maxRetriesPerRequest:6,
   }
   if(Utils.isProd() && REDIS_LIVE_URL){
     const redisUrl = new URL(REDIS_LIVE_URL);

@@ -13,7 +13,7 @@ const profileContactSchema = new Schema<Types.IProfile["info"]>({
   phns:[{type: String}],
   socials:[Schema.Types.Mixed],
 },{timestamps:false,_id:false});
-const profileSchema = new Schema<Types.IProfile,Profile,Types.IProfileMethods>({
+const profileSchema = new Schema<Types.IProfile,Profile,Types.IProfile>({
   creator:{type:ObjectId,required:true,ref:"cctx_users"},
   status:{type: String,enum:Object.values(Types.IProfileStatuses),default:NEW},
   approval:{type: String,enum:Object.values(Types.IApprovalStatuses),default:REQUESTED},
@@ -51,7 +51,7 @@ profileSchema.methods.preview = function (){
   };
 };
 profileSchema.methods.json = function (isMe) {
-  const json:Types.IProfileJsonAuth =  {...this.preview() as any};
+  const json = {...this.preview()} as Types.IProfileJsonAuth;
   json.creator = isMe?this.creator.id:this.creator.preview() as any;
   json.status = this.status;
   json.age = this.creator.toAge();
@@ -66,9 +66,9 @@ profileSchema.methods.json = function (isMe) {
     json.contact = this.contact;
   //}
   //json.updatedOn = this.updatedOn;
-  return json as Types.IProfileJsonAuth;
+  return json;
 };
-type Profile = Model<Types.IProfile,{},Types.IProfileMethods>;
+type Profile = Model<Types.IProfile,{},Types.IProfile>;
 const Profile:Profile = mongoose.model<Types.IProfile>('cctx_profiles',profileSchema);
 export default Profile;
 
@@ -95,7 +95,7 @@ adminSchema.methods.json = function () {
     meta:this.meta,
   };
 };
-type CaseAdmin = Model<Types.ICaseAdmin,{},Types.IProfileMethods>;
+type CaseAdmin = Model<Types.ICaseAdmin,{},Types.IProfile>;
 const CaseAdmin:CaseAdmin = mongoose.model<Types.ICaseAdmin>('caseAdmins',adminSchema);
 
 const subjectMetaSchema = new Schema<Types.ICaseSubject["meta"]>({
@@ -125,6 +125,6 @@ subjectSchema.methods.json = function () {
     meta:this.meta,
   };
 };
-type CaseSubject = Model<Types.ICaseSubject,{},Types.IProfileMethods>;
+type CaseSubject = Model<Types.ICaseSubject,{},Types.IProfile>;
 const CaseSubject:CaseSubject = mongoose.model<Types.ICaseSubject>('caseSubjects',subjectSchema);
 */

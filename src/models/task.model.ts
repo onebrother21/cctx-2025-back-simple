@@ -6,7 +6,7 @@ const ObjectId = Schema.Types.ObjectId;
 const {NEW} = Types.ITaskStatuses;
 const uniqueValidator = require("mongoose-unique-validator").default;
 
-const taskSchema = new Schema<Types.ITask,Task,Types.ITaskMethods>({
+const taskSchema = new Schema<Types.ITask,Task,Types.ITask>({
   creator:{type:ObjectId,ref:"cctx_profiles",required:true},
   status:{type:String,enum:Object.values(Types.ITaskStatuses),default:NEW},
   app:{type:String,required:true},
@@ -42,7 +42,7 @@ taskSchema.methods.preview = function () {
   };
 };
 taskSchema.methods.json = function () {
-  const json:Types.ITaskOTO = {...this.preview()};
+  const json = {...this.preview()} as Types.ITaskOTO;
   json.creator = this.creator.preview() as any;
   json.createdOn = this.createdOn;
   json.updatedOn = this.updatedOn;
@@ -64,6 +64,6 @@ taskSchema.methods.json = function () {
   return json;
 };
 
-type Task = Model<Types.ITask,{},Types.ITaskMethods>;
+type Task = Model<Types.ITask,{},Types.ITask>;
 const Task:Task = mongoose.model<Types.ITask>('cctx_tasks',taskSchema);
 export default Task;

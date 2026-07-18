@@ -3,7 +3,7 @@ export enum IAppDeviceStatuses {
   ACTIVE = "active",
   INACTIVE = "inactive",
 }
-export type IAppDeviceType = DocEntity<IAppDeviceStatuses> & {
+export type IAppDeviceType = {
   ua:string;
   mobile:boolean;
   browser:Record<"name"|"version"|"major"|"type",string>;
@@ -18,12 +18,8 @@ export type IAppDeviceType = DocEntity<IAppDeviceStatuses> & {
     lastAddr:string;
   };
 };
-export interface IAppDeviceMethods {
-  saveMe():Promise<void>;
-  populateMe():Promise<void>;
-  json(mine?:boolean):Partial<IAppDeviceType>;
-};
-export interface IAppDevice extends IAppDeviceType,IAppDeviceMethods {}
+export type IAppDeviceObj = DocEntityObj<IAppDeviceType,IAppDeviceStatuses>;
+export type IAppDevice = DocEntity<IAppDeviceObj>;
 
 export type IAppDeviceQueryKeys = {
   strings:

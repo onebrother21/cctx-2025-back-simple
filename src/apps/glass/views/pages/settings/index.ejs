@@ -1,0 +1,13 @@
+<main class="main-content">
+  <%- include('../../components/navbar.html',{page,ui,user}) %>
+  <div class="settings-grid">
+    <%- include('settings-nav-menu.html',{page,ui,user}) %>
+    <div class="glass-card">
+      <%- include('settings-profile-tab.html',{page,ui,user}) %>
+      <%- include('settings-security-tab.html',{page,ui,user}) %>
+      <%- include('settings-notifications-tab.html',{page,ui,user}) %>
+      <%- include('settings-appearance-tab.html',{page,ui,user}) %>
+      <%- include('settings-billing-tab.html',{page,ui,user}) %>
+    </div>
+  </div>
+</main>

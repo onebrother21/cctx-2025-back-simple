@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import Utils from '@utils';
+import { loadV5, upload } from '@middleware';
 
-const getAppPublicRouter = () => {
-  const router = Router();
-  router.get("/hm",(req,res) => {res.json({success:true,message:"ready"});});
-  router.get('/decrypt',(req,res) => {
+class AppPublicController {
+  static getHome:IHandler = async (req,res) => {res.json({success:true,message:"ready"});};
+  static testDec:IHandler = async (req,res) => {
     try {
       const {encryptedData} = req.body;
       if(!encryptedData) {
@@ -14,7 +14,8 @@ const getAppPublicRouter = () => {
         });
       }
       else {
-        const decryptedData = Utils.decrypt(encryptedData);
+        const supersecret = req.svars.key;
+        const decryptedData = Utils.decrypt(encryptedData,supersecret);
         res.json({success:true,...decryptedData});
       }
     }
@@ -25,11 +26,12 @@ const getAppPublicRouter = () => {
         message:'Decryption failed'
       });
     }
-  });
-  router.get('/encrypt',(req, res) => {
+  };
+  static testEnc:IHandler = async (req,res) => {
     try {
       const data = { message: 'This is sensitive data' };
-      const encryptedData = Utils.encrypt(data);
+      const supersecret = req.svars.key;
+      const encryptedData = Utils.encrypt(data,supersecret);
       res.json({success:true,data:encryptedData});
     }
     catch (error) {
@@ -39,22 +41,27 @@ const getAppPublicRouter = () => {
         error,
       });
     }
-  });
-  router.get("/connect",(req,res) => {
+  };
+  static testConnect:IHandler = async (req,res) => {
     res.json({
       success:true,
       message:"ready",
       tokens:res.locals.tokens,
     });
-  });
+  };
+  static testUpload:IHandler = async (req,res) => {
+    console.log(req.file);
+    res.json({success:true,msg:"ok"});
+  };
+}
+const getAppPublicRouter = () => {
+  const router = Router();
+  router.get("/hm",loadV5(AppPublicController.getHome));
+  router.get('/decrypt',loadV5(AppPublicController.testDec));
+  router.get('/encrypt',loadV5(AppPublicController.testEnc));
+  router.get("/connect",loadV5(AppPublicController.testConnect));
+  router.post("/upload",upload.single('file'),loadV5(AppPublicController.testUpload));
   return router;
 };
 
 export default getAppPublicRouter;
-
-/*
-  router.post("/upload-test",upload.single('file'),[(req:any,res:any) => {
-    console.log(req.file);
-    res.json({success:true,msg:"ok"});
-  }]);
-*/

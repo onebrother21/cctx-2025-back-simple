@@ -2,41 +2,48 @@ import Redis from "ioredis";
 import Models from "@models";
 import Utils from "@utils";
 
+const apps = JSON.parse(process.env.MY_APPS || "[]");
+
 export interface RedisCache {redis:Redis}
 export class RedisCache {
-  get = async () => JSON.parse(await this.redis.get("ccdev-2025-back-new") || "null");
-  set = async (updates:any) => await this.redis.set("ccdev-2025-back-new",JSON.stringify({
-    ...await this.get(),
+  loadOne = async (varsName:string) => {
+    const svars1 = await this.get(varsName);
+    const svars2 = await Models.BusinessVars.findOne({name:varsName,status:"active"});
+    if(svars2){
+      svars2.meta = {...svars2.meta,lastUse:new Date()};
+      await svars2.saveMe();
+      const svars = {...svars1,...svars2.json()};
+      await this.set(varsName,svars);
+    }
+    else Utils.warn(`AppVars (${varsName}) Unavailable")`);
+  };
+  load = async () => {
+    try {for(const k of apps) await this.loadOne(k);}
+    catch(e){Utils.error("redis-cache.load",e);throw e;}
+  };
+  get = async (s:string) => JSON.parse(await this.redis.get(s) || "null");
+  set = async (s:string,updates:any) => await this.redis.set(s,JSON.stringify({
+    ...await this.get(s),
     ...updates,
   }));
-  clear = async () => await this.redis.set("ccdev-2025-back-new","null");
+  clear = async (s:string) => await this.redis.set(s,"null");
   save = this.set;
-  load = async () => {
-    const bvars = await Models.BusinessVars.findOne({name:"ccdev-2025-back-new",status:"active"});
-    const data = bvars.json();
-    await this.set(data);
-    return data;
-  };
-  print = async () => {
+  print = async (s:string) => {
     try {
-      const cache = await this.get();
-      Utils.debug("redis-cache","AppVars ->",cache);
+      const data = await this.get(s);
+      Utils.debug("redis-cache",s,data);
     }
     catch (e) {
       Utils.error("redis-cache",e);
     }
   };
 }
-type RedisCacheOpts = Partial<Record<"reload"|"clear",boolean>>;
-export const initCache = async (o:RedisCacheOpts):Promise<RedisCache> => {
+
+export const initCache = async ():Promise<RedisCache> => {
   const cache = new RedisCache();
   cache.redis = new Redis(Utils.getRedisConnectionOpts());
   try {
     await cache.redis.connect();
-    const bvars = o.clear?{}:await cache.get();
-    const bvars_ = o.reload?await cache.load():{};
-    const data = {...bvars,...bvars_};
-    await cache.set(data);
     Utils.ok("redis-cache","Connected");
     return cache;
   }

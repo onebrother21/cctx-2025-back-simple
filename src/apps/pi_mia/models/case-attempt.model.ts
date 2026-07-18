@@ -7,7 +7,7 @@ const ObjectId = Schema.Types.ObjectId;
 const {NEW} = PiMiaTypes.ICaseAttemptStatuses;
 const uniqueValidator = require("mongoose-unique-validator").default;
 
-const caseAttemptSchema = new Schema<PiMiaTypes.ICaseAttempt,CaseAttempt,PiMiaTypes.ICaseAttemptMethods>({
+const caseAttemptSchema = new Schema<PiMiaTypes.ICaseAttempt,CaseAttempt,PiMiaTypes.ICaseAttempt>({
   status:{type:String,enum:Object.values(PiMiaTypes.ICaseAttemptStatuses),default:NEW},
   creator:{type:ObjectId,ref:"cctx_profiles",required:true},
   start:{type:Date,required:true},
@@ -51,6 +51,6 @@ caseAttemptSchema.methods.json = function () {
   };
 };
 
-type CaseAttempt = Model<PiMiaTypes.ICaseAttempt,{},PiMiaTypes.ICaseAttemptMethods>;
+type CaseAttempt = Model<PiMiaTypes.ICaseAttempt,{},PiMiaTypes.ICaseAttempt>;
 const CaseAttempt:CaseAttempt = mongoose.model<PiMiaTypes.ICaseAttempt>('pimia_case_attempts',caseAttemptSchema);
 export default CaseAttempt;

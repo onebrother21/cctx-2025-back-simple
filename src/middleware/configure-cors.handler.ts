@@ -2,13 +2,12 @@ import cors from 'cors';
 import { CorsOptions } from "cors";
 import Utils from "@utils";
 
-const jwtSecret = process.env.JWT_KEY || "";
-const whitelist = JSON.parse(process.env.ORIGINS||"[]");
+const whitelist = JSON.parse(process.env.WHITELIST||"[]");
 const corsOptions:CorsOptions = {
   preflightContinue:false,
-  methods: ['GET', 'PUT', 'POST', 'DELETE', 'OPTIONS'],
-  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-  credentials: true, //Credentials are cookies, authorization headers or TLS client certificates.
+  methods: ['PUT', 'POST', 'DELETE','OPTIONS'],
+  optionsSuccessStatus: 200,
+  credentials: true,
   exposedHeaders:[],
   allowedHeaders:[
     'Content-Type',
@@ -29,15 +28,17 @@ const corsValidator = (origin:string|undefined, next:Function) => {
   return whitelist.includes(origin || "")?next(null,true):next(e,false);
 };
 export const corsOptionsDelegate = function (req:IRequest, callback:Function) {
-  const isStaticSite = /vault|sys\/ui|socket.io/.test(req.url);
+  const method = req.method.toLocaleUpperCase();
+  const url = req.url;
+  const isStaticSite = /vault|sys\/ui|socket.io/.test(url);
   const ip_ = req.ip;
   const ip = (ip_ || "").replace(/:/gi,"").replace(/f/gi,"");
-  const wl = req.bvars && req.bvars["origins"]?req.bvars["origins"]:whitelist;
-  const bl = req.bvars && req.bvars["blacklist"]?req.bvars["blacklist"]:[];
+  const wl = req.svars && req.svars["origins"]?req.svars["origins"]:whitelist;
+  const bl = req.svars && req.svars["blacklist"]?req.svars["blacklist"]:[];
   const origin = req.header("Origin");
   const isBypass = !origin || wl.includes(origin) || isStaticSite;
   const inTheClear = ip && !bl.includes(ip);
-  // Utils.ok("cors-info",{origin,ip,isBypass,inTheClear});
+  // Utils.ok("cors-info",{method,url,origin,ip,isBypass,inTheClear});
 
   switch(true){
     case isBypass && inTheClear:{

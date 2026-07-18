@@ -6,7 +6,7 @@ const ObjectId = Schema.Types.ObjectId;
 const {NEW} = Types.IMsgChainStatuses;
 const uniqueValidator = require("mongoose-unique-validator").default;
 
-const msgChainSchema = new Schema<Types.IMsgChain,MsgChain,Types.IMsgChainMethods>({
+const msgChainSchema = new Schema<Types.IMsgChain,MsgChain,Types.IMsgChain>({
   creator:{type:ObjectId,required:true,ref:"cctx_profiles"},
   users:[{type:ObjectId,required:true,ref:"cctx_profiles"}],
   msgs:[{type:ObjectId,required:true,ref:"cctx_messages"}],
@@ -42,7 +42,7 @@ msgChainSchema.methods.preview = function (){
 };
 msgChainSchema.methods.json = function () {
   const json:Types.IMsgChainJson =  {...this.preview() as any};
-  json.creator = (this.creator as any).preview();
+  json.creator = this.creator.preview() as any;
   json.status = this.status;
   json.msgs = this.msgs.map(c => c.json() as any);
   json.users = this.users.map(c => c.preview() as any);
@@ -55,6 +55,6 @@ msgChainSchema.methods.json = function () {
   json.createdOn = this.createdOn;
   return json;
 };
-type MsgChain = Model<Types.IMsgChain,{},Types.IMsgChainMethods>;
+type MsgChain = Model<Types.IMsgChain,{},Types.IMsgChain>;
 const MsgChain:MsgChain = mongoose.model<Types.IMsgChain>('cctx_msg_chains',msgChainSchema);
 export default MsgChain;

@@ -16,12 +16,14 @@ const AdminRouter = () => {
   router.get("/pi_mia/profiles/q",loadV5(ctrl.queryPiMiaProfiles,...PostMiddleware));
   router.get("/pi_mia/cases/q",loadV5(ctrl.queryPiMiaCases,...PostMiddleware));
   router.get("/pi_mia/invoices/q",loadV5(ctrl.queryPiMiaInvoices,...PostMiddleware));
+  /*
   router.get("/ping/profiles/q",loadV5(ctrl.queryPingProfiles,...PostMiddleware));
   router.get("/ping/ext-wallets/q",loadV5(ctrl.queryPingExtWallets,...PostMiddleware));
   router.get("/ping/ext-chains/q",loadV5(ctrl.queryPingExtChains,...PostMiddleware));
   router.get("/ping/cards/q",loadV5(ctrl.queryPingCards,...PostMiddleware));
   router.get("/ping/pos/q",loadV5(ctrl.queryPingPos,...PostMiddleware));
   router.get("/ping/transactions/q",loadV5(ctrl.queryPingTransactions,...PostMiddleware));
+  */
   return router;
 };
 export { AdminRouter };

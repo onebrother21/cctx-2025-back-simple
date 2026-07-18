@@ -21,15 +21,19 @@ export const MyWorkers = async () => {
     process.exit(1);
   });
   try{
-    Utils.ok("env",`${Utils.env()}`);
-    const port = process.env.PORT || 3000;
-    const hostname = process.env.HOSTNAME;
+    Utils.ok("env",Utils.env());
+    Utils.ok("isProd",Utils.isProd());
+    
+    const port =  Number(process.env.PORT) || 3300;
+    const hostname = process.env.HOSTNAME || "";
     const host = Utils.getNetworkAddress();
-    const domain = host + (!Utils.isEnv(["production"])?`:${port}`:"");
-  
-    await initDb();
-    const cache = await initCache({reload:true});
-    await cache.save({domain});
+    const domain = host + (!Utils.isProd()?`:${port}`:"");
+    const cache = await initCache();
+    const db = await initDb();
+
+    await cache.load();
+    await cache.save("cctx-dev-back",{domain});
+    // await cache.print("cctx_admn");
     
     if(Utils.isEnv("live-render")){
       const app = express();

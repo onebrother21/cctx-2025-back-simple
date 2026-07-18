@@ -9,3 +9,4 @@ export * from "./notification-templates.types";
 export * from "./task.types";
 export * from "./message.types";
 export * from "./msg-chain.types";
+export * from "./bvars.types";

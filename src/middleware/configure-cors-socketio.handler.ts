@@ -1,3 +1,4 @@
+import Models from "@models";
 import Utils from "@utils";
 import { RedisCache } from "../init-cache";
 import { ServerOptions } from "socket.io";
@@ -10,19 +11,19 @@ export const ConfigureCorsSocketIo = (cache:RedisCache):Partial<ServerOptions> =
     credentials:true,
     origin:async (origin:string|undefined,callback:Function) => {
       //Utils.print("debug","cctx-dev-back-sockets",{origin})
-      const bvars = await cache.get();
-      const wl = bvars && bvars["origins"]?bvars["origins"]:whitelist;
+      const svars = await cache.get("cctx-dev-back");
+      const wl = svars && svars["origins"]?svars["origins"]:whitelist;
       if (!origin || wl.includes(origin)) callback(null, true);
       else callback(new Error("Not allowed by CORS"));
     },
   },
   allowRequest: async (req, callback:Function) => {
-    const bvars = await cache.get();
+    const svars = await cache.get("cctx-dev-back");
     const origin = req.headers.origin;
     const ip_ = req.socket.localAddress;
     const ip = (ip_ || "").replace(/:/gi,"").replace(/f/gi,"");
-    const wl = bvars && bvars["origins"]?bvars["origins"]:whitelist;
-    const bl = bvars && bvars["blacklist"]?bvars["blacklist"]:[];
+    const wl = svars && svars["origins"]?svars["origins"]:whitelist;
+    const bl = svars && svars["blacklist"]?svars["blacklist"]:[];
     const isBypass = !origin || wl.includes(origin);
     const inTheClear = ip && !bl.includes(ip);
     switch(true){

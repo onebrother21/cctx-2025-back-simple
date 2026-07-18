@@ -24,7 +24,7 @@ export enum IProfileRoles {
   APP_VENDOR = "app-vendor",
   APP_SUBJECT = "app-subject",
 }
-export type IProfileType = DocEntity<IProfileStatuses,USER.IUser> & {
+export type IProfileType = {
   app:string;
   type:IProfileRoles;
   approval:IApprovalStatuses;
@@ -44,17 +44,12 @@ export type IProfileType = DocEntity<IProfileStatuses,USER.IUser> & {
   org?:string;
   img?:ImageObj;
 };
-export type IProfileJson = Omit<IProfileType,"img"> & {img:string;age:number|null;};
-export type IProfileJsonAuth = IProfileJson & Pick<IProfileType,|"approval">;
+export type IProfileObj = DocEntityObj<IProfileType,IProfileStatuses,USER.IUser>;
+export type IProfileJson = Omit<IProfileObj,"img"> & {img:string;age:number|null;};
+export type IProfileJsonAuth = IProfileJson & Pick<IProfileObj,|"approval">;
 export type IProfilePreview = Pick<IProfileJson,"id"|"app"|"type"|"name"|"displayName"|"org"|"img">;
+export type IProfile = DocEntity<IProfileObj,IProfileJson,IProfilePreview>;
 
-export interface IProfileMethods {
-  saveMe():Promise<void>;
-  populateMe():Promise<void>;
-  preview():IProfilePreview;
-  json(isMe?:boolean):IProfileJson|IProfileJsonAuth;
-}
-export interface IProfile extends IProfileType,IProfileMethods {}
 export type IProfileQueryKeys = {
   strings:"name"|"displayName"|"type"|"app"|"org"|"motto"|"bio"
   dates:"created_on"|"meta.member_since";

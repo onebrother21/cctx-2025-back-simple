@@ -15,7 +15,7 @@ const profileRefSchema = new Schema({
   obj:{type:ObjectId,ref:"cctx_profiles",required:true},
 },{_id:false,timestamps:false});
 
-const userSchema = new Schema<Types.IUser,User,Types.IUserMethods>({
+const userSchema = new Schema<Types.IUser,User,Types.IUser>({
   status:{type: String,enum:Object.values(Types.IUserStatuses),default:NEW},
   name:{type:nameSchema},
   email:{type: String, unique: true, lowercase: true ,required:true},
@@ -99,7 +99,7 @@ userSchema.methods.preview = function (){
 };
 userSchema.methods.json = function (auth) {
   const p = this.getProfile();
-  const json:Types.IUserJson =  {...this.preview() as any};
+  const json = {...this.preview()} as Types.IUserJson;
   if(auth) {
     json.name = this.name;
     json.email = this.email;
@@ -109,11 +109,11 @@ userSchema.methods.json = function (auth) {
     json.info = this.info;
     json.meta = this.meta;
     json.createdOn = this.createdOn;
-    json.profile = p?.json() || null;
+    json.profile = (p?.json() as any) || null;
   };
   return json;
 };
 
-type User = Model<Types.IUser,{},Types.IUserMethods>;
+type User = Model<Types.IUser,{},Types.IUser>;
 const User:User = mongoose.model<Types.IUser>('cctx_users',userSchema);
 export default User;

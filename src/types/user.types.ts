@@ -12,10 +12,7 @@ export enum IUserStatuses {
   DELETED = "deleted",
   VERIFIED = "verified",
 }
-export type IUserType = 
-DocEntity<IUserStatuses>
-& AUTH.IAuthParams 
-& {
+export type IUserType = AUTH.IAuthParams & {
   email:string;
   mobile:string;
   name:{first:string;last:string;};
@@ -44,25 +41,19 @@ DocEntity<IUserStatuses>
   device:DEVICE.IAppDevice;
   location:AddressObj;
   role:string;
-};
-
-
-export type IUserPre = Pick<IUserType,"id"|"email"|"dob"|"loc">;
-export type IUserPreview = Pick<IUserType,"id"|"username"|"fullname"|"location">;
-export type IUserJson = Omit<IUserType,|"profiles"|"profile"|"devices"|"device"|"dob"|"sex"|"loc"> & {
-  profile:PROFILE.IProfileJson|PROFILE.IProfileJsonAuth|null;
-};
-
-export interface IUserMethods {
+} & {
   toAge():number|null;
   getUserContactByMethod(method:AUTH.IContactMethods):string;
-  saveMe():Promise<void>;
-  populateMe():Promise<void>;
-  json(auth?:boolean):IUserJson;
-  preview():IUserPreview;
   getProfile():PROFILE.IProfile|null;
-}
-export interface IUser extends IUserType,IUserMethods {}
+};
+export type IUserObj = DocEntityObj<IUserType,IUserStatuses>;
+export type IUserPre = Pick<IUserObj,"id"|"email"|"dob"|"loc">;
+export type IUserJson = Omit<IUserObj,|"pin"|"reset"|"verification"|"profiles"|"profile"|"devices"|"device"|"dob"|"sex"|"loc"> & {
+  profile:PROFILE.IProfileJson|PROFILE.IProfileJsonAuth|null;
+};
+export type IUserPreview = Pick<IUserObj,"id"|"username"|"fullname"|"location">;
+export type IUser = DocEntity<IUserObj,IUserJson,IUserPreview>;
+
 export type IUserQueryKeys = {
   strings:|"name.first"|"name.last"|"email"|"mobile"|"username"
   booleans:`info.${keyof IUser["info"]}`;

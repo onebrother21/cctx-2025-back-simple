@@ -1,0 +1,25 @@
+<nav class="navbar">
+  <div class="page-header">
+    <h1 class="page-title"><%= ui.title%></h1>
+    <% if(page !== 'dash'){%>
+      <div class="page-breadcrumb">
+        <a href="/glass/hm">Dashboard</a>
+        <span>/</span>
+        <span><%= ui.title%></span>
+      </div>
+    <% } %>
+  </div>
+  <div class="navbar-right">
+    <% if(ui.withSearch){%>
+      <%- include('search-input.html',{page,ui}) %>
+    <% } %>
+    <button class="nav-btn">
+      <%- include('svg-icon.html',{icon:"bell"}) %>
+      <span class="notification-dot"></span>
+    </button>
+    <button class="nav-btn" id="theme-toggle" title="Toggle Light/Dark Mode">
+      <span class="icon-sun"><%- include('svg-icon.html',{icon:"sun"}) %></span>
+      <span class="icon-moon" style="display: none;"><%- include('svg-icon.html',{icon:"moon"}) %></span>
+    </button>
+  </div>
+</nav>

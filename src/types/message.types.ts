@@ -30,8 +30,7 @@ export enum IMessageStatuses {
   HIDDEN = "hidden",
 }
 export type IMessageTypes = "comment"|"private"|"inbox"|"post"|"live"|"note";
-export type IMessageType = 
-DocEntity<IMessageStatuses,PROFILE.IProfile,"author"> & {
+export type IMessageType = {
   app:string;
   type:IMessageTypes;
   body:string;
@@ -48,14 +47,9 @@ DocEntity<IMessageStatuses,PROFILE.IProfile,"author"> & {
     reactionCt:number;
   };
 };
-export type IMessageJson = Partial<IMessage & Record<"author",PROFILE.IProfileJson>>;
-export interface IMessageMethods {
-  saveMe():Promise<void>;
-  populateMe():Promise<void>;
-  preview():IMessageJson;
-  json():IMessageJson;
-}
-export type IMessage = IMessageType & IMessageMethods;
+export type IMessageObj = DocEntityObj<IMessageType,IMessageStatuses,PROFILE.IProfile,"author">;
+export type IMessageJson = Partial<IMessageObj & Record<"author",PROFILE.IProfileJson>>;
+export type IMessage = DocEntity<IMessageObj,IMessageJson>;
 
 export type IMessageQueryKeys = {
   strings:

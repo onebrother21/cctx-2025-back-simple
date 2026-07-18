@@ -1,0 +1,31 @@
+<ul class="nav-menu">
+  <li class="nav-section">
+    <span class="nav-section-title">Main Menu</span>
+    <ul>
+    <% ui.sidebarMenu.forEach(link => { %>
+      <li class="nav-item">
+        <a href="<%= link.url %>" class="nav-link">
+          <%- include("svg-icon.html",{icon:link.icon}) %>
+          <%= link.label %>
+          <% if(link.text){ %><span class="nav-badge"><%= link.text %></span><% } %>
+        </a>
+      </li>
+    <% }) %>
+    </ul>
+  </li>
+  <li class="nav-section">
+    <span class="nav-section-title">Account</span>
+    <ul>
+      <li class="nav-item">
+        <a href="#" class="nav-link logout">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            Logout
+        </a>
+      </li>
+    </ul>
+  </li>
+</ul>

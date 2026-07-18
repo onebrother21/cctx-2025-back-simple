@@ -1,0 +1,25 @@
+<div class="dashboard">
+  <%- include("../components/sidebar.html") %>
+  <% switch (page) {
+    case 'dash': %>
+      <%- include('../pages/dash/index',{page,ui,user}) %>
+      <% break; %>
+    <% case 'numbers': %>
+      <%- include('../pages/numbers/index',{page,ui,user}) %>
+      <% break; %>
+    <% case 'settings': %>
+      <%- include('../pages/settings/index',{page,ui,user}) %>
+      <% break; %>
+    <% case 'users': %>
+      <%- include('../pages/users/index',{page,ui,user}) %>
+      <% break; %>
+    <% case 'chats': %>
+      <%- include('../pages/chats/index',{page,ui,user}) %>
+      <% break; %>
+    <% case 'analytics': %>
+      <%- include('../pages/analytics.html',{page,ui,user}) %>
+      <% break; %>
+  <% } %>
+</div>
+<%- include('../components/mobile-menu-btn.html') %>
+<%- include('../components/footer.html') %>

@@ -1,0 +1,107 @@
+<div class="settings-tab-content numbers-test" id="tab-numbers-test-sim">
+  <div class="settings-section">
+    <form data-validate id="runStrategySimForm">
+      <input type="hidden" name="action" value="run-sim">
+      <h3 class="settings-section-title">Run Sim</h3>
+      <div class="form-grid">
+        <div class="form-group-settings">
+          <label for="draws">No. of Draws</label>
+          <input type="number" name="draws" placeholder="Enter number of draws" min="100" step="100" value="100">
+        </div>
+        <div class="form-group-settings">
+          <label for="costPerPlay">Cost Per Play</label>
+          <input type="number" name="costPerPlay" placeholder="Enter cost per draw" min="1" step="1" value="2">
+        </div>
+        <div class="form-group-settings">
+          <label for="maxTimes">Min No.of Shifts (min = 1)</label>
+          <input type="number" name="minTimes" placeholder="Enter number of shifts" min="1" max="7" step="1" value="1">
+        </div>
+        <div class="form-group-settings">
+          <label for="maxTimes">Max No.of Shifts (max = 7)</label>
+          <input type="number" name="maxTimes" placeholder="Enter number of shifts" min="1" max="7" step="1" value="7">
+        </div>
+        <div class="form-group-settings">
+          <label for="maxInc">Max Increment</label>
+          <input type="number" name="maxInc" placeholder="Enter max increment" min="1" max="10" step="1" value="1">
+        </div>
+      </div>
+      <div class="settings-row">
+        <div class="settings-label">
+          <span class="settings-label-title">Strategy Set</span>
+          <span class="settings-label-desc">Choose strategy</span>
+        </div>
+        <select class="settings-select" name="type">
+          <option value="gap-fill" selected>Gap Fill</option>
+          <option value="pos-shift">Position Shift</option>
+          <option value="moving-w">Moving Weights</option>
+        </select>
+      </div>
+      <div class="settings-row">
+        <div class="settings-label">
+          <span class="settings-label-title">Recursive Mode</span>
+          <span class="settings-label-desc">Reseed using previous winner</span>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" name="reseedFromWinners">
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="settings-row">
+        <div class="settings-label">
+          <span class="settings-label-title">Algorithms</span>
+          <span class="settings-label-desc">Choose algo(s)</span>
+        </div>
+        <select class="settings-select" name="algos">
+          <option value="run-all" selected>Run All</option>
+          <option value="add">Add Only</option>
+          <option value="sub">Subtract Only</option>
+          <option value="add-then-sub">Add Then Subtract</option>
+          <option value="sub-then-add">Subtract Then Add</option>
+        </select>
+      </div>
+      <div class="settings-row">
+        <div class="settings-label">
+          <span class="settings-label-title">Directions</span>
+          <span class="settings-label-desc">LTR, RTL, ALL</span>
+        </div>
+        <select class="settings-select" name="directions">
+          <option value="run-all" selected>Run All</option>
+          <option value="ltr">LTR</option>
+          <option value="rtl">RTL</option>
+        </select>
+      </div>
+      <div class="btn-group">
+        <button type="submit" class="btn btn-primary" style="width: auto;">
+          Run Sim
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </button>
+        <button class="btn btn-secondary" type="button" style="width: auto;" id="resetBtn">Reset</button>
+      </div>
+    </form>
+  </div>
+  <div class="settings-section">
+    <h3 class="settings-section-title">Strategy Results</h3>
+    <div class="table-wrapper" style="margin: 0;">
+      <table class="data-table" style="min-width: 100%;">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Draws</th>
+            <th>Plays</th>
+            <th>Cost</th>
+            <th>Prize</th>
+            <th>Profit</th>
+            <th>Return</th>
+            <th>PPD</th>
+            <th>PPP</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody id="strategySimResults"></tbody>
+      </table>
+    </div>
+  </div>
+</div>

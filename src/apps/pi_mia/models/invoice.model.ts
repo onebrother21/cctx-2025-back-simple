@@ -26,7 +26,7 @@ const invoiceItemSchema = new Schema<PiMiaTypes.IInvoiceItem>({
   totalCharges:Number,
   totalChg:String,
 },{_id:false,timestamps:true});
-const invoiceSchema = new Schema<PiMiaTypes.IInvoice,Invoice,PiMiaTypes.IInvoiceMethods>({
+const invoiceSchema = new Schema<PiMiaTypes.IInvoice,Invoice,PiMiaTypes.IInvoice>({
   status:{type:String,enum:Object.values(PiMiaTypes.IInvoiceStatuses),default:NEW},
   creator:{type:ObjectId,ref:"cctx_profiles",required:true},
   caseId:String,
@@ -73,6 +73,6 @@ invoiceSchema.methods.json = function () {
   };
 };
 
-type Invoice = Model<PiMiaTypes.IInvoice,{},PiMiaTypes.IInvoiceMethods>;
+type Invoice = Model<PiMiaTypes.IInvoice,{},PiMiaTypes.IInvoice>;
 const Invoice:Invoice = mongoose.model<PiMiaTypes.IInvoice>('pimia_invoices',invoiceSchema);
 export default Invoice;

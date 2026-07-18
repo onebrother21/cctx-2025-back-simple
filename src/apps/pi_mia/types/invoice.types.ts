@@ -33,7 +33,7 @@ export type IInvoiceItem = {
   totalCharges:number;
   totalChg:string;
 };
-export type IInvoiceType = DocEntity<IInvoiceStatuses,PROFILES.ICaseAdmin> & {
+export type IInvoiceType = {
   caseId:string;
   invoiceNo:string;
   title:string;
@@ -45,18 +45,11 @@ export type IInvoiceType = DocEntity<IInvoiceStatuses,PROFILES.ICaseAdmin> & {
   addressee:PROFILES.ICaseClient|PROFILES.ICaseVendor;
   meta:Record<"submitted"|"sent"|"paid"|"received",Date>;
 };
-
-export type IInvoiceITO = Partial<IInvoiceType>;
-export type IInvoicePTO = Pick<IInvoiceType,"id">;
-export type IInvoiceOTO = Partial<IInvoiceType>;
-
-export interface IInvoiceMethods {
-  saveMe():Promise<void>;
-  populateMe():Promise<void>;
-  json():IInvoiceOTO;
-  preview():IInvoicePTO;
-};
-export interface IInvoice extends IInvoiceType,IInvoiceMethods {}
+export type IInvoiceObj = DocEntityObj<IInvoiceType,IInvoiceStatuses,PROFILES.ICaseAdmin>;
+export type IInvoiceITO = Partial<IInvoiceObj>;
+export type IInvoicePTO = Pick<IInvoiceObj,"id">;
+export type IInvoiceOTO = Partial<IInvoiceObj>;
+export type IInvoice = DocEntity<IInvoiceObj,IInvoiceOTO,IInvoicePTO>;
 
 export type IInvoiceQueryKeys = {
   strings:

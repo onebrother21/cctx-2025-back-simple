@@ -1,4 +1,4 @@
-import * as Profiles from "./profiles.types";
+import * as PROFILES from "./profiles.types";
 import Types from "@types";
 
 export enum ICaseAttemptStatuses {
@@ -48,7 +48,7 @@ export type ICaseInterview = {
   type:"interview";
   time:Date;
   method:"in-person"|"call"|"sms"|"email"|"social";
-  contact:Profiles.ICaseContact;
+  contact:PROFILES.ICaseContact;
   meta:{
     refusedToSpeak:boolean;
     refusedToProvideInfo:boolean;
@@ -60,7 +60,7 @@ export type ICaseInterview = {
 };
 export type ICaseArtifactPre = Types.IMessageJson|ICaseStop|ICaseInterview|UploadResponse;
 export type ICaseArtifact = Types.IMessageJson|ICaseStop|ICaseInterview|ICaseUpload;
-export type ICaseAttemptType = DocEntity<ICaseAttemptStatuses,Profiles.ICaseAdmin> & {
+export type ICaseAttemptType = {
   start:Date;
   end:Date;
   log:ICaseArtifact[];
@@ -71,17 +71,12 @@ export type ICaseAttemptType = DocEntity<ICaseAttemptStatuses,Profiles.ICaseAdmi
     elapsedTime:number;
   };
 };
-export type ICaseAttemptITO = Partial<ICaseAttemptType>;
-export type ICaseAttemptPTO = Pick<ICaseAttemptType,"id">;
-export type ICaseAttemptOTO = Partial<ICaseAttemptType>;
+export type ICaseAttemptObj = DocEntityObj<ICaseAttemptType,ICaseAttemptStatuses,PROFILES.ICaseAdmin>;
+export type ICaseAttemptITO = Partial<ICaseAttemptObj>;
+export type ICaseAttemptPTO = Pick<ICaseAttemptObj,"id">;
+export type ICaseAttemptOTO = Partial<ICaseAttemptObj>;
+export type ICaseAttempt = DocEntity<ICaseAttemptObj,ICaseAttemptOTO,ICaseAttemptPTO>;
 
-export interface ICaseAttemptMethods {
-  saveMe():Promise<void>;
-  populateMe():Promise<void>;
-  json():ICaseAttemptOTO;
-  preview():ICaseAttemptPTO;
-};
-export interface ICaseAttempt extends ICaseAttemptType,ICaseAttemptMethods {}
 export type ICaseAttemptQueryKeys = {
   strings:
   |"creator.name"|"creator.displayName"|"creatorId"

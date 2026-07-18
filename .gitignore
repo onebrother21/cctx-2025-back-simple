@@ -44,6 +44,7 @@ testem.log
 /ps
 /uploads
 /bin
+bvars.txt
 
 # System files
 .DS_Store

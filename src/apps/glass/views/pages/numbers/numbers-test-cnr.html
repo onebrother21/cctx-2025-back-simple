@@ -1,0 +1,40 @@
+<div class="settings-tab-content numbers-test" id="tab-numbers-test-ncr">
+  <div class="settings-section">
+    <form data-validate id="ncrProbForm">
+      <input type="hidden" name="action" value="run-ncr">
+      <h3 class="settings-section-title">nCr Probalitity Calculator</h3>
+      <div class="form-grid">
+        <div class="form-group-settings">
+          <label for="ncr-n">N</label>
+          <input type="number" name="ncr-n" placeholder="Enter ncr-n" min="1" step="1" value="24">
+        </div>
+        <div class="form-group-settings">
+          <label for="ncr-r">R</label>
+          <input type="number" name="ncr-r" placeholder="Enter ncr-r" min="1" step="1" value="12">
+        </div>
+        <div class="form-group-settings">
+          <label for="ncr-m">Match</label>
+          <input type="text" name="ncr-m" placeholder="Enter ncr-m" value="1">
+        </div>
+      </div>
+      <div class="btn-group">
+        <button type="submit" class="btn btn-primary" style="width: auto;">
+          Calc Prob
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"/>
+            <polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </button>
+      </div>
+    </form>
+  </div>
+  <div class="settings-section">
+    <h3 class="settings-section-title">Strategy Results</h3>
+    <div class="settings-row">
+      <div class="settings-label">
+        <span class="settings-label-title" id="calcComboResultsTitle">None to display</span>
+        <span class="settings-label-desc" id="calcComboResults"></span>
+      </div>
+    </div>
+  </div>
+</div>

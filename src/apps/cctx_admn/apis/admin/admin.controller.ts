@@ -4,18 +4,18 @@ import CCTXAdminQueries from './admin-queries.service';
 import CCTXAuthQueries from '../../../cctx_auth/auth-queries.service';
 import CCTXTasksQueries from '../../../cctx_tasks/tasks-queries.service';
 
-import DegenAdminQueries from '../../../jpmoney/degen_poker/apis/admin/admin-queries.service';
-import DegenSessionQueries from '../../../jpmoney/degen_poker/apis/sessions/sessions-queries.service';
-import DegenVenueQueries from '../../../jpmoney/degen_poker/apis/venues/venues-queries.service';
-import DegenPlayerQueries from '../../../jpmoney/degen_poker/apis/players/players-queries.service';
+import DegenAdminQueries from '../../../degen_poker/apis/admin/admin-queries.service';
+import DegenSessionQueries from '../../../degen_poker/apis/sessions/sessions-queries.service';
+import DegenVenueQueries from '../../../degen_poker/apis/venues/venues-queries.service';
+import DegenPlayerQueries from '../../../degen_poker/apis/players/players-queries.service';
 
 //import PiMiaAttemptQueries from '../../../pi_mia/apis/attempts/attempts-queries.service';
 import PiMiaAdminQueries from '../../../pi_mia/apis/admin/admin-queries.service';
 import PiMiaCaseQueries from '../../../pi_mia/apis/cases/cases-queries.service';
 import PiMiaInvoiceQueries from '../../../pi_mia/apis/invoices/invoices-queries.service';
 
-import PingAdminQueries from '../../../ping/apis/admin/admin-queries.service';
-import PingUserOpsQueries from '../../../ping/apis/user-ops/ops-queries.service';
+//import PingAdminQueries from '../../../ping/apis/admin/admin-queries.service';
+//import PingUserOpsQueries from '../../../ping/apis/user-ops/ops-queries.service';
 
 export class AdminController {
   static queryAppUsage:IHandler = async (req,res,next) => {
@@ -128,6 +128,10 @@ export class AdminController {
       next();
     } catch(e) { next(e); }
   };
+}
+export default AdminController;
+
+/*
   static queryPingProfiles:IHandler = async (req,res,next) => {
     try{
       const profileId = req.profile.id;
@@ -188,5 +192,4 @@ export class AdminController {
       next();
     } catch(e) { next(e); }
   };
-}
-export default AdminController;
+*/
