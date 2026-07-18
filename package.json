@@ -5,9 +5,9 @@
   "main": "index.ts",
   "scripts": {
     "build": "tsc && tsc-alias && npm run copy-static && npm run copy-views && npm run copy-glass-static && npm run copy-glass-views",
-    "copy-views": "cpy \"views/**/*.ejs\" dist/views",
+    "copy-views": "cpy \"views/**/*\" dist/views",
     "copy-static": "cpy \"public/**/*\" dist/public",
-    "copy-glass-views": "cpy \"src/apps/glass/views/**/*.ejs\" dist/src/apps/glass/views",
+    "copy-glass-views": "cpy \"src/apps/glass/views/**/*\" dist/src/apps/glass/views",
     "copy-glass-static": "cpy \"src/apps/glass/assets/**/*\" dist/src/apps/glass/assets",
     "start": "node dist/index.js",
     "dev": "npx nodemon -e ts,js,json --exec ts-node -r tsconfig-paths/register index.ts",
