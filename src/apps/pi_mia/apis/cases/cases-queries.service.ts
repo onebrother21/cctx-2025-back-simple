@@ -8,7 +8,7 @@ import PiMiaTypes from "../../types";
 
 const {MongooseAggHelpers} = Services;
 
-export class CasesQueriesService {
+export class PIMiaCasesQueriesService {
   static queryCases = async (q:PiMiaTypes.ICaseQuery,s:string[],o?:any,t:number = 0) => {
     const {results} = await new MongooseAggHelpers<PiMiaTypes.ICaseQuery>({
       model:PiMiaModels.Case,
@@ -54,7 +54,7 @@ export class CasesQueriesService {
     return {results};
   };
 }
-export default CasesQueriesService;
+export default PIMiaCasesQueriesService;
 
 const CASE_PROJECTIONS = {
   creator:{

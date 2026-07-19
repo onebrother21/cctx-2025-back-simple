@@ -27,26 +27,23 @@ import Utils from '@utils';
 
 import getAppPublicRouter from './init-app-public.router';
 
-import getGlassRouter from './apps/glass';
-import getVaultRouter from './apps/vault';
 
 import getCCTXAuthRouter from './apps/cctx_auth';
 import getCCTXTasksRouter from "./apps/cctx_tasks";
 import getCCTXMsgChainsRouter from "./apps/cctx_msgs";
 import getCCTXAdmnRouter from './apps/cctx_admn';
-
+import getGlassRouter from './apps/glass';
 import getDegenPokerRouter from "./apps/degen_poker";
-import getPiMiaRouter from './apps/pi_mia';
+import getPIMiaRouter from './apps/pi_mia';
+import getVaultRouter from './apps/_dev/vault';
 //import getPingRouter from './apps/ping';
-//import getUpcentricRouter from './apps/upcentric';
 //import getCrashDepotRouter from '../apps/app_crashdepot';
 
-
-const cookieSecret = process.env.COOKIE_SECRET || 'myCookieSecret';
-const authSecret = process.env.AUTH_SECRET || 'authSecret';
-const deviceSecret = process.env.DEVICE_SECRET || 'deviceSecret';
-const sessionSecret = process.env.SESSION_SECRET || 'sessionSecret';
-const csrfSecret = process.env.CSRF_SECRET || 'csrfSecret';
+const cookieSecret = Utils.getVar("COOKIE_SECRET") || 'myCookieSecret';
+const authSecret = Utils.getVar("AUTH_SECRET") || 'authSecret';
+const deviceSecret = Utils.getVar("DEVICE_SECRET") || 'deviceSecret';
+const sessionSecret = Utils.getVar("SESSION_SECRET") || 'sessionSecret';
+const csrfSecret = Utils.getVar("CSRF_SECRET") || 'csrfSecret';
 
 export const initApp = (cache:RedisCache) => {
   const isProd = Utils.isProd();

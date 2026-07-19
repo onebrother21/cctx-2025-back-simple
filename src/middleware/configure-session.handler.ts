@@ -2,13 +2,13 @@ import session,{ SessionOptions } from 'express-session';
 import MongoStore from 'connect-mongo';
 import Utils from "@utils";
 
-const sessionCookie = process.env.SESSION_COOKIE || 'sessionCookie';
-const sessionSecret = process.env.SESSION_SECRET || 'supersecret';
+const sessionCookie = Utils.getVar("SESSION_COOKIE") || 'sessionCookie';
+const sessionSecret = Utils.getVar("SESSION_SECRET") || 'supersecret';
 
 export const ConfigureSession:() => IHandler = () => {
   const dbLabel = `DB_URI_${(Utils.isProd() || Utils.isEnv("live"))?"LIVE":"LOCAL"}`;
-  const dbUri = process.env[dbLabel] || '';
-  const dbName = process.env.DB_NAME;
+  const dbUri = Utils.getVar(dbLabel) || '';
+  const dbName = Utils.getVar("DB_NAME");
   if(!dbUri) throw {status:500,message:"No mongodb connection string provided"};
 
   const mongoStore = MongoStore.create({

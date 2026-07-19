@@ -1,6 +1,6 @@
-import getAdminRouter from "./admin.router";
+import DegenAdminRouter from "./admin.router";
 
 export {
-  getAdminRouter
+  DegenAdminRouter
 }
-export default getAdminRouter;
+export default DegenAdminRouter;

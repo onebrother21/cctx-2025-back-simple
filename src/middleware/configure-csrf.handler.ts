@@ -1,8 +1,8 @@
 import { doubleCsrf, DoubleCsrfConfigOptions,DoubleCsrfConfig } from "csrf-csrf";
 import Utils from "@utils";
 
-const csrfCookie = process.env.CSRF_COOKIE || 'csrfCookie';
-const csrfSecret = process.env.CSRF_SECRET || 'csrfsecret';
+const csrfCookie = Utils.getVar("CSRF_COOKIE") || 'csrfCookie';
+const csrfSecret = Utils.getVar("CSRF_SECRET") || 'csrfsecret';
 
 const doubleCsrfOptions:DoubleCsrfConfigOptions = {
   getSessionIdentifier:req => req.session["id"] || Utils.longId(),

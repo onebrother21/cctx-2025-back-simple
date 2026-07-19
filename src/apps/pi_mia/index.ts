@@ -1,4 +1,5 @@
-import getPiMiaRouter from "./pi-mia.router";
+import getPIMiaRouter from "./pi-mia.router";
 
-export { getPiMiaRouter };
-export default getPiMiaRouter;
+export { getPIMiaRouter };
+export default getPIMiaRouter;
+export * from "./pi-mia.sockets";

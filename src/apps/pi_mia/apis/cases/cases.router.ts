@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { CasesController as ctrl } from './cases.controller';
-import { CasesValidators as validators } from './cases.validators';
+import { PIMiaCasesController as ctrl } from './cases.controller';
+import { PIMiaCasesValidators as validators } from './cases.validators';
 import { loadV5,PostMiddleware,upload } from '@middleware';
 import Utils from '@utils';
 
-const CasesRouter = () => {
+const getPIMiaCasesRouter = () => {
   const router = Router();
   
   // 📌 Case Queries
@@ -52,5 +52,5 @@ const CasesRouter = () => {
 
   return router;
 };
-export { CasesRouter };
-export default CasesRouter;
+export { getPIMiaCasesRouter };
+export default getPIMiaCasesRouter;

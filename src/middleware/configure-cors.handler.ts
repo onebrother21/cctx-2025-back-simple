@@ -2,7 +2,7 @@ import cors from 'cors';
 import { CorsOptions } from "cors";
 import Utils from "@utils";
 
-const whitelist = JSON.parse(process.env.WHITELIST||"[]");
+const whitelist = Utils.getVar("WHITELIST")||[];
 const corsOptions:CorsOptions = {
   preflightContinue:false,
   methods: ['PUT', 'POST', 'DELETE','OPTIONS'],

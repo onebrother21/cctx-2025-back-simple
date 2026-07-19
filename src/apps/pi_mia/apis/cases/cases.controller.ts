@@ -1,5 +1,5 @@
-import CasesService from './cases.service';
-import CasesQueries from './cases-queries.service';
+import PIMiaCasesService from './cases.service';
+import PIMiaCasesQueries from './cases-queries.service';
 
 import Types from "@types";
 import Utils from '@utils';
@@ -12,13 +12,13 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-export class CasesController {
+export class PIMiaCasesController {
   // 📌 Case CRUD Ops
   static createCases:IHandler = async (req,res,next) => {
     try {
       const profileId = req.profile.id;
       const {items} = req.body.data;
-      const {pimiaCases} = await CasesService.createCases(profileId,items);
+      const {pimiaCases} = await PIMiaCasesService.createCases(profileId,items);
       res.locals.success = true;
       res.locals.data = {created:pimiaCases.length,ok:true};
       next();
@@ -29,7 +29,7 @@ export class CasesController {
     try {
       const profileId = req.profile.id;
       const data = req.body.data;
-      const {pimiaCase} = await CasesService.createCase(profileId,data);
+      const {pimiaCase} = await PIMiaCasesService.createCase(profileId,data);
       res.locals.success = true;
       res.locals.data = pimiaCase.json();
       next();
@@ -40,7 +40,7 @@ export class CasesController {
     try {
       const profileId = req.profile.id;
       const caseId = req.params.caseId as string;
-      const {pimiaCase} = await CasesService.getCaseById(profileId,caseId);
+      const {pimiaCase} = await PIMiaCasesService.getCaseById(profileId,caseId);
       res.locals.success = true;
       res.locals.data = pimiaCase.json();
       next();
@@ -51,7 +51,7 @@ export class CasesController {
       const profileId = req.profile.id;
       const caseId = req.params.caseId as string;
       const data = req.body.data;
-      const {pimiaCase} = await CasesService.updateCase(profileId,caseId,data);
+      const {pimiaCase} = await PIMiaCasesService.updateCase(profileId,caseId,data);
       res.locals.success = true;
       res.locals.data = pimiaCase.json();
       next();
@@ -61,7 +61,7 @@ export class CasesController {
     try {
       const profileId = req.profile.id;
       const caseId = req.params.caseId as string;
-      const {ok} = await CasesService.deleteCase(profileId,caseId);
+      const {ok} = await PIMiaCasesService.deleteCase(profileId,caseId);
       res.locals.success = ok;
       res.locals.data = {removed:caseId,ok};
       next();
@@ -72,7 +72,7 @@ export class CasesController {
       const caseId = req.params.caseId as string;
       const admin = req.profile.displayName;
       const data = req.body.data;
-      const {pimiaCase} = await CasesService.updateCaseStatus(caseId,data);
+      const {pimiaCase} = await PIMiaCasesService.updateCaseStatus(caseId,data);
       res.locals.success = true;
       res.locals.data = pimiaCase.json();
       next();
@@ -81,7 +81,7 @@ export class CasesController {
   static queryCases:IHandler = async (req,res,next) => {
      try{
       const {q,s,o,t} = JSON.parse(req.query.qstr as string);
-      const data = await CasesQueries.queryCases(q,s,o,t);
+      const data = await PIMiaCasesQueries.queryCases(q,s,o,t);
       res.locals.success = true,
       res.locals.data = data;
       next();
@@ -92,7 +92,7 @@ export class CasesController {
       const caseId = req.params.caseId as string;
       const {subjects} = req.body.data;
       if(!caseId) throw new Utils.AppError(422,'Requested parameters not found');
-      const {pimiaCase} = await CasesService.addSubjectsToCase(caseId,subjects);
+      const {pimiaCase} = await PIMiaCasesService.addSubjectsToCase(caseId,subjects);
       res.locals.success = true;
       res.locals.data = pimiaCase.json();
       next();
@@ -102,7 +102,7 @@ export class CasesController {
     try {
       const caseId = req.params.caseId as string;
       const subjectIdx = Number(req.params.subjectIdx as string);
-      const {pimiaCase} = await CasesService.updateSubject(caseId,subjectIdx,req.body.data);
+      const {pimiaCase} = await PIMiaCasesService.updateSubject(caseId,subjectIdx,req.body.data);
       res.locals.success = true;
       res.locals.data = pimiaCase.json();
       next();
@@ -112,7 +112,7 @@ export class CasesController {
     try {
       const caseId = req.params.caseId as string;
       const subjectIdx = Number(req.params.subjectIdx as string);
-      const {pimiaCase} = await CasesService.removeSubjectFromCase(caseId,subjectIdx);
+      const {pimiaCase} = await PIMiaCasesService.removeSubjectFromCase(caseId,subjectIdx);
       res.locals.success = true;
       res.locals.data = pimiaCase.json();
       next();
@@ -124,7 +124,7 @@ export class CasesController {
       const subjectIndex = Number(req.params.subjectIndex as string);
       if(!(caseId && subjectIndex)) throw new Utils.AppError(422,'Requested parameters not found');
       const {addresses} = req.body.data;
-      const {pimiaCase} = await CasesService.addSubjectAddresses(caseId,subjectIndex,addresses);
+      const {pimiaCase} = await PIMiaCasesService.addSubjectAddresses(caseId,subjectIndex,addresses);
       res.locals.success = true;
       res.locals.data = pimiaCase.json();
       next();
@@ -134,7 +134,7 @@ export class CasesController {
     try {
       const caseId = req.params.caseId as string;
       const {files} = req.body.data;
-      const {pimiaCase} = await CasesService.addFilesToCase(caseId,files);
+      const {pimiaCase} = await PIMiaCasesService.addFilesToCase(caseId,files);
       res.locals.success = true;
       res.locals.data = pimiaCase.json();
       next();
@@ -143,7 +143,7 @@ export class CasesController {
   static addDetailsToCase:IHandler = async (req,res,next) => {
     try {
       const caseId = req.params.caseId as string;
-      const {pimiaCase} = await CasesService.addDetailsToCase(caseId,req.body.data);
+      const {pimiaCase} = await PIMiaCasesService.addDetailsToCase(caseId,req.body.data);
       res.locals.success = true;
       res.locals.data = pimiaCase.json();
       next();
@@ -153,7 +153,7 @@ export class CasesController {
     try {
       const caseId = req.params.caseId as string;
       const {admin} = req.body.data;
-      const {pimiaCase} = await CasesService.assignAdminToCase(caseId,admin);
+      const {pimiaCase} = await PIMiaCasesService.assignAdminToCase(caseId,admin);
       res.locals.success = true;
       res.locals.data = pimiaCase.json();
       next();
@@ -164,7 +164,7 @@ export class CasesController {
   static addNotes:IHandler = async (req,res,next) => {
     try {
       const caseId = req.params.caseId as string;
-      const {pimiaCase} = await CasesService.addNotes(caseId,req.body.data);
+      const {pimiaCase} = await PIMiaCasesService.addNotes(caseId,req.body.data);
       res.locals.success = true;
       res.locals.data = pimiaCase.json();
       next();
@@ -174,7 +174,7 @@ export class CasesController {
     try {
       const caseId = req.params.caseId as string;
       const noteIdx = Number(req.params.noteIdx as string);
-      const {pimiaCase} = await CasesService.updateNote(caseId,noteIdx,req.body.data);
+      const {pimiaCase} = await PIMiaCasesService.updateNote(caseId,noteIdx,req.body.data);
       res.locals.success = true;
       res.locals.data = pimiaCase.json();
       next();
@@ -184,7 +184,7 @@ export class CasesController {
     try {
       const caseId = req.params.caseId as string;
       const noteIdx = Number(req.params.noteIdx as string);
-      const {pimiaCase} = await CasesService.removeNote(caseId,noteIdx);
+      const {pimiaCase} = await PIMiaCasesService.removeNote(caseId,noteIdx);
       res.locals.success = true;
       res.locals.data = pimiaCase.json();
       next();
@@ -195,7 +195,7 @@ export class CasesController {
   static startAttempt:IHandler = async (req,res,next) => {
     try {
       const caseId = req.params.caseId as string;
-      const {pimiaCase} = await CasesService.startAttempt(caseId,req.body.data);
+      const {pimiaCase} = await PIMiaCasesService.startAttempt(caseId,req.body.data);
       res.locals.success = true;
       res.locals.data = pimiaCase.json();
       next();
@@ -205,7 +205,7 @@ export class CasesController {
     try {
       const caseId = req.params.caseId as string;
       const attemptIndex = Number(req.params.attemptIndex as string);
-      const {pimiaCase} = await CasesService.updateAttempt(caseId,attemptIndex);
+      const {pimiaCase} = await PIMiaCasesService.updateAttempt(caseId,attemptIndex);
       res.locals.success = true;
       res.locals.data = pimiaCase.json();
       next();
@@ -216,7 +216,7 @@ export class CasesController {
       const caseId = req.params.caseId as string;
       const attemptIndex = Number(req.params.attemptIndex as string);
       const attemptData = req.body.data;
-      const {pimiaCase} = await CasesService.finalizeAttempt(caseId,attemptIndex,attemptData);
+      const {pimiaCase} = await PIMiaCasesService.finalizeAttempt(caseId,attemptIndex,attemptData);
       res.locals.success = true;
       res.locals.data = pimiaCase.json();
       next();
@@ -226,7 +226,7 @@ export class CasesController {
     try {
       const caseId = req.params.caseId as string;
       const attemptIdx = Number(req.params.attemptIndex as string);
-      const {pimiaCase} = await CasesService.removeAttempt(caseId,attemptIdx);
+      const {pimiaCase} = await PIMiaCasesService.removeAttempt(caseId,attemptIdx);
       res.locals.success = true;
       res.locals.data = pimiaCase.json();
       next();
@@ -249,7 +249,7 @@ export class CasesController {
       else data = req.body.data;
       const caseId = req.params.caseId as string;
       const attemptIndex = Number(req.params.attemptIndex as string);
-      const {pimiaCase} = await CasesService.addAttemptActivity(caseId,attemptIndex,data);
+      const {pimiaCase} = await PIMiaCasesService.addAttemptActivity(caseId,attemptIndex,data);
       res.locals.success = true;
       res.locals.data = pimiaCase.json();
       next();
@@ -260,7 +260,7 @@ export class CasesController {
       const caseId = req.params.caseId as string;
       const attemptIndex = Number(req.params.attemptIndex as string);
       const itemIdx = Number(req.params.intemIdx as string);
-      const {pimiaCase} = await CasesService.removeAttemptActivity(caseId,attemptIndex,itemIdx);
+      const {pimiaCase} = await PIMiaCasesService.removeAttemptActivity(caseId,attemptIndex,itemIdx);
       res.locals.success = true;
       res.locals.data = pimiaCase.json();
       next();
@@ -270,7 +270,7 @@ export class CasesController {
     try {
       const admin = req.profile.id;
       const caseId = req.params.caseId as string;
-      const {pimiaCase} = await CasesService.finalizeCase(admin,caseId,req.body.data);
+      const {pimiaCase} = await PIMiaCasesService.finalizeCase(admin,caseId,req.body.data);
       res.locals.success = true;
       res.locals.data = pimiaCase.json();
       next();
@@ -280,10 +280,11 @@ export class CasesController {
     try {
       const admin = req.profile.id;
       const caseId = req.params.caseId as string;
-      const {pimiaCase} = await CasesService.closeCase(admin,caseId);
+      const {pimiaCase} = await PIMiaCasesService.closeCase(admin,caseId);
       res.locals.success = true;
       res.locals.data = pimiaCase.json();
       next();
     } catch (e) { next(e); }
   };
 }
+export default PIMiaCasesController;

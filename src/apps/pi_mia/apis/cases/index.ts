@@ -1,6 +1,6 @@
-import CaseReportsRouter from "./cases.router";
+import getPIMiaCasesRouter from "./cases.router";
 
 export {
-  CaseReportsRouter
+  getPIMiaCasesRouter
 }
-export default CaseReportsRouter;
+export default getPIMiaCasesRouter;

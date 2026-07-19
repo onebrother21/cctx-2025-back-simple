@@ -1,6 +1,6 @@
-import CaseReportsRouter from "./invoices.router";
+import getPIMiaInvoicesRouter from "./invoices.router";
 
 export {
-  CaseReportsRouter
+  getPIMiaInvoicesRouter
 }
-export default CaseReportsRouter;
+export default getPIMiaInvoicesRouter;

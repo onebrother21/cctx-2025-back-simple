@@ -18,11 +18,11 @@ export const myApp = async () => {
     process.exit(1);
   });
   try {
-    Utils.ok("env",Utils.env());
+    Utils.ok("env",Utils.envName());
     Utils.ok("isProd",Utils.isProd());
 
-    const port = process.env.PORT || 3000;
-    const hostname = process.env.HOSTNAME;
+    const port =  Number(Utils.getVar("PORT")) || 3000;
+    const hostname = Utils.getVar("HOSTNAME",false);
     const host = Utils.getNetworkAddress();
     const domain = host + (!Utils.isProd()?`:${port}`:"");
     const cache = await initCache();

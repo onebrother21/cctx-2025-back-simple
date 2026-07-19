@@ -2,7 +2,7 @@ import Redis from "ioredis";
 import Models from "@models";
 import Utils from "@utils";
 
-const apps = JSON.parse(process.env.MY_APPS || "[]");
+const apps = Utils.getVar("MY_APPS") || [];
 
 export interface RedisCache {redis:Redis}
 export class RedisCache {

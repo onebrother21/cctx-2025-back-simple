@@ -5,8 +5,8 @@ import Types from "@types";
 import Utils from '@utils';
 import {uploadToCloudinary} from "@middleware";
 
-const authCookie = process.env.AUTH_COOKIE || 'authCookie';
-const authSecret = process.env.AUTH_SECRET || 'supersecret';
+const authCookie = Utils.getVar("AUTH_COOKIE") || 'authCookie';
+const authSecret = Utils.getVar("AUTH_SECRET") || 'supersecret';
 
 export class AuthController {
   static SignUp:IHandler = async (req,res,next) => {
@@ -173,7 +173,7 @@ export class AuthController {
       if(res.locals.tokens.access) res.cookie("cctx_auth_23j012",{ready:true},{
         sameSite:"lax",
         path: '/',
-        secure:process.env.NODE_ENV === 'production',
+        secure:Utils.isEnv('production'),
         httpOnly:true,
         maxAge:1000 * 60 * 30,
       });

@@ -23,7 +23,7 @@ const {Profile,AppUsage} = Models;
 const {Notifications:NotificationSvc} = Services;
 const {AppError} = Utils;
 
-export class CasesService {
+export class PIMiaCasesService {
   // 📌 Case CRUD Ops
   static createCases = async (creator:string,newCases:Partial<PiMiaTypes.ICase>[]) => {
     const pimiaCases:PiMiaTypes.ICase[] = [];
@@ -377,4 +377,4 @@ export class CasesService {
     return {pimiaCase};
   };
 }
-export default CasesService;
+export default PIMiaCasesService;

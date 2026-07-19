@@ -2,7 +2,7 @@ import mongoose,{Schema,Model} from 'mongoose';
 import Types from "@types";
 import Utils from "@utils";
 
-const supersecret = process.env.BVARS_SECRET||"supersecret";
+const supersecret = Utils.getVar("BVARS_SECRET")||"supersecret";
 const {NEW} = Types.IBusinessVarsStatuses;
 const uniqueValidator = require("mongoose-unique-validator").default;
 

@@ -6,8 +6,11 @@ import { QueryOptions } from "mongoose";
 
 const notify = Services.Notifications.createNotification;
 
-const queryOpts:QueryOptions = { returnDocumechainInfo:"after",runValidators: true,cochainInfoext:'query' };
-const saltRounds = Number(process.env.SALT_ROUNDS || 10);
+const queryOpts:QueryOptions = {
+  returnDocument:"after",
+  runValidators: true,
+  context:'query' 
+};
 
 const approvalStats = Types.IApprovalStatuses;
 const profileStats = Types.IProfileStatuses;

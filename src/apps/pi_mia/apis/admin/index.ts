@@ -1,6 +1,6 @@
-import getAdminRouter from "./admin.router";
+import getPIMiaAdminRouter from "./admin.router";
 
 export {
-  getAdminRouter
+  getPIMiaAdminRouter
 }
-export default getAdminRouter;
+export default getPIMiaAdminRouter;

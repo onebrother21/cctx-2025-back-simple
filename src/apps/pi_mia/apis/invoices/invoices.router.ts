@@ -1,10 +1,10 @@
 import { Router } from 'express';
-import { InvoicesController as ctrl } from './invoices.controller';
-import { InvoicesValidators as validators } from './invoices.validators';
+import { PIMiaInvoicesController as ctrl } from './invoices.controller';
+import { PIMiaInvoicesValidators as validators } from './invoices.validators';
 import { loadV5,PostMiddleware,upload } from '@middleware';
 import Utils from '@utils';
 
-const InvoicesRouter = () => {
+const PIMiaInvoicesRouter = () => {
   const router = Router();
   
 
@@ -18,5 +18,5 @@ const InvoicesRouter = () => {
 
   return router;
 };
-export { InvoicesRouter };
-export default InvoicesRouter;
+export { PIMiaInvoicesRouter };
+export default PIMiaInvoicesRouter;

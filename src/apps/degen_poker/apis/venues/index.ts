@@ -1,6 +1,6 @@
-import DegenSessionsRouter from "./venues.router";
+import DegenVenuesRouter from "./venues.router";
 
 export {
-  DegenSessionsRouter
+  DegenVenuesRouter
 }
-export default DegenSessionsRouter;
+export default DegenVenuesRouter;

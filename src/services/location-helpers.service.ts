@@ -1,9 +1,9 @@
 import axios from 'axios';
 import Utils from '@utils';
 
-const locationIQUrl = process.env["LOCATION_IQ_URL"];
-const locationIQObjUrl = process.env["LOCATION_IQ_OBJ_URL"];
-const locationIQKey = process.env["LOCATION_IQ_KEY"];
+const locationIQUrl = Utils.getVar("LOCATION_IQ_URL");
+const locationIQObjUrl = Utils.getVar("LOCATION_IQ_OBJ_URL");
+const locationIQKey = Utils.getVar("LOCATION_IQ_KEY");
 
 export class LocationHelpers {
   static calculateDistance(
@@ -89,7 +89,7 @@ export class LocationHelpers {
     origin: { lat: number; lng: number },
     destination: { lat: number; lng: number }) {
     try {
-      const API_KEY = process.env.GEO_API_KEY; // Assume Google Maps or another provider
+      const API_KEY = Utils.getVar("GEO_API_KEY"); // Assume Google Maps or another provider
       const response = await axios.get(`https://maps.googleapis.com/maps/api/directions/json`, {
         params: {
           origin: `${origin.lat},${origin.lng}`,

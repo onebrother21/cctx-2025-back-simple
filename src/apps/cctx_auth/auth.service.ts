@@ -10,14 +10,14 @@ import { uploadFields } from "@middleware";
 import AuthUtils from "./auth.utils";
 import { QueryOptions } from 'mongoose';
 
-const saltRounds = Number(process.env.SALT_ROUNDS || 10);
+const saltRounds = Number(Utils.getVar("SALT_ROUNDS") || 10);
 
-const USE_2FA = process.env.USE_2FA;
-const USE_VERIFY_AGE = process.env.USE_VERIFY_AGE;
+const USE_2FA = Utils.getVar("USE_2FA");
+const USE_VERIFY_AGE = Utils.getVar("USE_VERIFY_AGE");
 
-const jwtSecret = process.env.JWT_KEY || "supersecretkey";
-const refreshSecret = process.env.REFRESH_SECRET || 'refreshsecret';
-const resetSecret = process.env.REFRESH_SECRET || 'resetsecret';
+const jwtSecret = Utils.getVar("JWT_KEY") || "supersecretkey";
+const refreshSecret = Utils.getVar("REFRESH_SECRET") || 'refreshsecret';
+const resetSecret = Utils.getVar("REFRESH_SECRET") || 'resetsecret';
 
 const queryOpts:QueryOptions = { returnDocument:"after",runValidators: true,context:'query' };
 

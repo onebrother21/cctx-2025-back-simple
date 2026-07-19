@@ -3,8 +3,7 @@ import Utils from "@utils";
 import { RedisCache } from "../init-cache";
 import { ServerOptions } from "socket.io";
 
-const whitelist = JSON.parse(process.env.ORIGINS||"[]");
-
+const whitelist = Utils.getVar("WHITELIST")||[];
 export const ConfigureCorsSocketIo = (cache:RedisCache):Partial<ServerOptions> => ({
   cors:{
     methods:["GET","POST"],

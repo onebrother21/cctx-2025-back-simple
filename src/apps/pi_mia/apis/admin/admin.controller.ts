@@ -1,9 +1,9 @@
-import AdminService from './admin.service';
+import PIMiaAdminService from './admin.service';
 
-export class AdminController {
+export class PIMiaAdminController {
   static registerAdmin:IHandler = async (req,res,next) => {
     try {
-      const ok = await AdminService.registerAdmin(req);
+      const ok = await PIMiaAdminService.registerAdmin(req);
       res.locals = {
         ...res.locals,
         status:201,
@@ -17,7 +17,7 @@ export class AdminController {
   static getAdminById:IHandler = async (req,res,next) => {
     try {
       const adminId = req.params.adminId as string;
-      const {admin} = await AdminService.getAdminById(adminId);
+      const {admin} = await PIMiaAdminService.getAdminById(adminId);
       res.locals.success = true;
       res.locals.data = admin.json();
       next();
@@ -27,7 +27,7 @@ export class AdminController {
     try {
       const data = req.body.data;
       const adminId = req.params.adminId as string;
-      const {admin} = await AdminService.updateAdmin(adminId,data);
+      const {admin} = await PIMiaAdminService.updateAdmin(adminId,data);
       res.locals.success = true;
       res.locals.data = admin.json();
       next();
@@ -37,7 +37,7 @@ export class AdminController {
     try {
       const adminId = req.params.adminId as string;
       const data = req.body.data;
-      const {admin} = await AdminService.updateAdminStatus(adminId,data);
+      const {admin} = await PIMiaAdminService.updateAdminStatus(adminId,data);
       res.locals.success = true;
       res.locals.data = admin.json();
       next();
@@ -46,11 +46,11 @@ export class AdminController {
   static deleteAdmin:IHandler = async (req,res,next) => {
     try {
       const adminId = req.params.adminId as string;
-      const {ok} = await AdminService.deleteAdmin(adminId);
+      const {ok} = await PIMiaAdminService.deleteAdmin(adminId);
       res.locals.success = ok;
       res.locals.data = {removed:adminId,ok};
       next();
     } catch (e) { next(e); }
   };
 }
-export default AdminController;
+export default PIMiaAdminController;

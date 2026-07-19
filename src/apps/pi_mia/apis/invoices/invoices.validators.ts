@@ -5,7 +5,7 @@ import Utils from '@utils';
 
 import PiMiaTypes from '../../types';
 
-export class InvoicesValidators {
+export class PIMiaInvoicesValidators {
   // 📌 PiMiaInvoice & Fulfillment Validators
   static createInvoice = [[
     body('data.type').isString().isIn(["C","T"]).withMessage('Invalid game type'),
@@ -51,4 +51,4 @@ export class InvoicesValidators {
     body('data.progress').isNumeric().withMessage('Invalid value').optional(),
   ],CheckValidation()] as IHandler[];
 };
-export default InvoicesValidators;
+export default PIMiaInvoicesValidators;

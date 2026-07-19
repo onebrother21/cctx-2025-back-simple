@@ -8,7 +8,7 @@ import PiMiaTypes from "../../types";
 
 const {MongooseAggHelpers} = Services;
 
-export class AdminQueriesService {
+export class PIMiaAdminQueriesService {
   static queryProfiles = async (q:Types.IProfileQuery,s:string[],o?:any,t:number = 0) => {
     const {results} = await new MongooseAggHelpers<Types.IProfileQuery>({
       model:Models.Profile,
@@ -28,4 +28,4 @@ export class AdminQueriesService {
     return {results};
   };
 }
-export default AdminQueriesService;
+export default PIMiaAdminQueriesService;

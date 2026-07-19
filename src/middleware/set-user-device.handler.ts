@@ -4,8 +4,8 @@ import Models from '@models';
 import Utils from '@utils';
 
 const queryOpts:QueryOptions = {returnDocument:"after",runValidators:true};
-const deviceCookie = process.env.DEVICE_COOKIE || 'deviceCookie';
-const deviceSecret = process.env.DEVICE_SECRET || 'supersecret';
+const deviceCookie = Utils.getVar("DEVICE_COOKIE") || 'deviceCookie';
+const deviceSecret = Utils.getVar("DEVICE_SECRET") || 'supersecret';
 
 export const SetUserDevice:() => IHandler = () => async (req, res, next) => {
   if(["POST","PUT","PATCH"].includes(req.method)){

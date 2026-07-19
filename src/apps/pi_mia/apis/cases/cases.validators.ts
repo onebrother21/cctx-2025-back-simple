@@ -5,7 +5,7 @@ import Utils from '@utils';
 
 import PiMiaTypes from '../../types';
 
-export class CasesValidators {
+export class PIMiaCasesValidators {
   // 📌 PiMiaCase & Fulfillment Validators
   static createCase = [[
     body('data.type').isString().isIn(["C","T"]).withMessage('Invalid game type'),
@@ -51,4 +51,4 @@ export class CasesValidators {
     body('data.progress').isNumeric().withMessage('Invalid value').optional(),
   ],CheckValidation()] as IHandler[];
 };
-export default CasesValidators;
+export default PIMiaCasesValidators;

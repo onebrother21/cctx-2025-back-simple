@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { AdminController as ctrl } from './admin.controller';
-import { AdminValidators as validators } from './admin.validators';
+import { PIMiaAdminController as ctrl } from './admin.controller';
+import { PIMiaAdminValidators as validators } from './admin.validators';
 import { AuthJWT,loadV5,PostMiddleware,upload } from '@middleware';
 
-const AdminRouter = () => {
+const getPIMiaAdminRouter = () => {
   const router = Router();
   router.post("/",loadV5(...validators.registerAdmin,ctrl.registerAdmin,...PostMiddleware));
   router.get("/:adminId",loadV5(ctrl.getAdminById,...PostMiddleware));
@@ -13,5 +13,5 @@ const AdminRouter = () => {
  
   return router;
 };
-export { AdminRouter };
-export default AdminRouter;
+export { getPIMiaAdminRouter };
+export default getPIMiaAdminRouter;

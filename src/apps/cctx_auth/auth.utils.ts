@@ -6,11 +6,11 @@ import Types from "@types";
 import Utils from '@utils';
 import Services from '@services';
 
-const jwtSecret = process.env.JWT_KEY || "supersecretkey";
-const refreshSecret = process.env.REFRESH_SECRET || 'refreshsecret';
-const resetSecret = process.env.REFRESH_SECRET || 'resetsecret';
-const saltRounds = Number(process.env.SALT_ROUNDS || 10);
-const devStaticVerify = process.env.DEV_STATIC_VERIFY;
+const jwtSecret = Utils.getVar("JWT_KEY") || "supersecretkey";
+const refreshSecret = Utils.getVar("REFRESH_SECRET") || 'refreshsecret';
+const resetSecret = Utils.getVar("REFRESH_SECRET") || 'resetsecret';
+const saltRounds = Number(Utils.getVar("SALT_ROUNDS") || 10);
+const devStaticVerify = Utils.getVar("DEV_STATIC_VERIFY");
 
 const TOKEN_EXPIRATION = '24h'; // 24 hour
 const REFRESH_EXPIRATION = '7d'; // 7 days

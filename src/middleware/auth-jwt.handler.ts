@@ -4,7 +4,7 @@ import Utils from '@utils';
 import Types from '@types';
 
 const {User,DeadToken} = Models;
-const jwtSecret = process.env.JWT_KEY || "";
+const jwtSecret = Utils.getVar("JWT_KEY") || "";
 
 export const AuthJWT:() => IHandler = () => async (req,res,next) => {
   try {

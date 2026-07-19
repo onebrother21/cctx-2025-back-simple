@@ -4,16 +4,18 @@ mongoose.Promise = import("bluebird");
 
 export const initDb = async () => {
   try {
-    const dbLabel = `DB_URI_${(Utils.isProd() || Utils.isEnv("live"))?"LIVE":"LOCAL"}`;
-    const dbUri = process.env[dbLabel] || '';
-    const dbName = process.env.DB_NAME;
-    if(!dbUri) throw {status:500,message:"No mongodb connection string provided"};
+    const isLive = Utils.isProd() || Utils.isEnv("live");
+    const dbLabel = `DB_URI_${isLive?"LIVE":"LOCAL"}`;
+    const dbUri = Utils.getVar(dbLabel) || '';
+    const dbName = Utils.getVar("DB_NAME");
+    const dbOpts = {
+      dbName,
+      connectTimeoutMS:10000,
+      socketTimeoutMS:10000
+    };
 
-    const conn = await mongoose.connect(dbUri,{
-      "dbName":dbName,
-      "connectTimeoutMS":10000,
-      "socketTimeoutMS":10000
-    });
+    if(!dbUri) throw {status:500,message:"No mongodb connection string provided"};
+    const conn = await mongoose.connect(dbUri,dbOpts);
     Utils.ok("mongodb","Connected");
     return conn;
   }

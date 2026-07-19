@@ -6,7 +6,7 @@ import Types from "@types";
 import Utils from '@utils';
 import Services from '@services';
 
-export class AdminValidators {
+export class PIMiaAdminValidators {
   static registerAdmin = [[
     body('data.app').isString().withMessage('Invalid app'),
     body('data.type').isString().withMessage('Invalid type'),
@@ -38,4 +38,4 @@ export class AdminValidators {
     body('data.progress').isNumeric().withMessage('Invalid value').optional(),
   ],CheckValidation()] as IHandler[];
 };
-export default AdminValidators;
+export default PIMiaAdminValidators;

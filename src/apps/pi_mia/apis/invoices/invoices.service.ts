@@ -22,7 +22,7 @@ const {Profile,AppUsage} = Models;
 const {Notifications:NotificationSvc} = Services;
 const {AppError} = Utils;
 
-export class InvoicesService {
+export class PIMiaInvoicesService {
   static createInvoice = async (creator:string,newInvoice:PiMiaTypes.IInvoiceITO) => {
     const invoice = new Invoice({
       creator,
@@ -207,4 +207,4 @@ export class InvoicesService {
     return descArr;
   };
 }
-export default InvoicesService;
+export default PIMiaInvoicesService;
