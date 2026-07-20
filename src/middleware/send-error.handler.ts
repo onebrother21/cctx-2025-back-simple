@@ -1,6 +1,19 @@
 import Utils from "@utils";
 import { doubleCsrfUtils } from "./configure-csrf.handler";
 
+export const clockBugs:IErrorHandler = async (err,req) => {
+  const clockBugsQ = Utils.createQueue("clock-bugs");
+  if(!await clockBugsQ.isPaused()) await clockBugsQ.add("clock-bug-job",{
+    creator:req.profile?req.profile.id:null,
+    creatorRef:req.user?req.user.role:"server",
+    category:"backend",
+    type:"error",
+    name:err.name,
+    description:err.stack,
+    info:{err},
+    dueOn:new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+  });
+}
 export const SendErrorHandler:() => IErrorHandler = () => async (err,req,res,next) => {
   let response:any = {success:false,status:500,tokens:res.locals.tokens};
   if(res.headersSent) return next(err);
@@ -39,17 +52,7 @@ export const SendErrorHandler:() => IErrorHandler = () => async (err,req,res,nex
     };break;
     default:{
       Utils.error("send-error",err);
-      const clockBugsQ = Utils.createQueue("clock-bugs");
-      if(!await clockBugsQ.isPaused()) await clockBugsQ.add("clock-bug-job",{
-        creator:req.profile?req.profile.id:null,
-        creatorRef:req.user?req.user.role:"server",
-        category:"backend",
-        type:"error",
-        name:err.name,
-        description:err.stack,
-        info:{err},
-        dueOn:new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-      });
+      await clockBugs(err,req,res,next);
       response = {
         ...response,
         status:500,

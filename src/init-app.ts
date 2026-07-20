@@ -55,7 +55,6 @@ export const initApp = (cache:RedisCache) => {
       return "HEAD" == req.method || "OPTIONS"  == req.method && res.statusCode == 200;
     }
   }));
-  
   app.set('view engine','ejs');
   app.set('views',[
     path.join(__dirname,'../views'),
