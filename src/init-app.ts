@@ -58,11 +58,11 @@ export const initApp = (cache:RedisCache) => {
   
   app.set('view engine','ejs');
   app.set('views',[
-    path.join(__dirname,`${isProd?'../../':'../'}views`),
-    path.join(__dirname,`${isProd?'../':''}apps/glass/views`),
+    path.join(__dirname,`${isProd?'../../dist/':'../'}views`),
+    path.join(__dirname,`${isProd?'../dist/src/':''}apps/glass/views`),
   ]);
-  app.use(express.static(path.join(__dirname,`${isProd?'../../':'../'}public`)));
-  app.use("/glass/assets",express.static(path.join(__dirname,`${isProd?'../':''}apps/glass/assets`)));
+  app.use(express.static(path.join(__dirname,`${isProd?'../../dist':'../'}public`)));
+  app.use("/glass/assets",express.static(path.join(__dirname,`${isProd?'../dist/src':''}apps/glass/assets`)));
 
   // BUSINESS VARS
   app.use(SetBusinessVars(cache) as RequestHandler);
