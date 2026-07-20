@@ -31,9 +31,8 @@ export const MyWorkers = async () => {
     const cache = await initCache();
     const db = await initDb();
 
-    await cache.load();
+    await cache.loadAll();
     await cache.save("cctx-dev-back",{domain});
-    // await cache.print("cctx_admn");
     
     if(Utils.isEnv("live-render")){
       const app = express();

@@ -20,6 +20,7 @@ CreatorType extends CreatorTypes|undefined = "creator"
 type DocEntity<O,J = O,P = J> = O extends DocEntityObj<infer T,infer S,infer C,infer CT>?
 O & {
   saveMe():Promise<void>;
+  updateMe(updates:any):Promise<void>;
   populateMe():Promise<void>;
   json(mine?:boolean):Partial<J>;
   preview():Partial<P>;

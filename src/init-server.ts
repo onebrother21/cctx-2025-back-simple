@@ -28,9 +28,8 @@ export const myApp = async () => {
     const cache = await initCache();
     const db = await initDb();
     
-    await cache.load();
+    await cache.loadAll();
     await cache.save("cctx-dev-back",{domain});
-    // await cache.print("cctx_admn");
 
     const app = initApp(cache);
     const server =  initSockets(app,cache);

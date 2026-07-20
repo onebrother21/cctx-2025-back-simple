@@ -19,6 +19,17 @@ bvarsSchema.methods.saveMe = async function (){
   await this.save();
   await this.populateMe();
 };
+bvarsSchema.methods.updateMe = async function (updates) {
+  const data_ = typeof this.data == "string"?Utils.decrypt(this.data,supersecret):this.data;
+  if(updates.origins && updates.origins.length) for(const k of updates.origins){
+    if(!data_.origins.includes(k)) data_.origins.push(...updates.origins);
+    delete updates.origins;
+  }
+  const data = {...data_,...updates};
+  // Utils.trace("bvars-updateMe",data);
+  this.data = data;
+  await this.saveMe();
+};
 bvarsSchema.methods.populateMe = async function () {};
 bvarsSchema.methods.json = function () {
   const json:Partial<Types.IBusinessVarsJson> =  {};

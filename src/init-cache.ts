@@ -6,7 +6,12 @@ const apps = Utils.getVar("MY_APPS") || [];
 
 export interface RedisCache {redis:Redis}
 export class RedisCache {
-  loadOne = async (varsName:string) => {
+  update = async (varsName:string,updates:any) => {
+    const svars = await Models.BusinessVars.findOne({name:varsName,status:"active"});
+    if(svars) await svars.updateMe(updates);
+    else throw "business data not found";
+  }
+  load = async (varsName:string) => {
     const svars1 = await this.get(varsName);
     const svars2 = await Models.BusinessVars.findOne({name:varsName,status:"active"});
     if(svars2){
@@ -17,8 +22,8 @@ export class RedisCache {
     }
     else Utils.warn(`AppVars (${varsName}) Unavailable")`);
   };
-  load = async () => {
-    try {for(const k of apps) await this.loadOne(k);}
+  loadAll = async () => {
+    try {for(const k of apps) await this.load(k);}
     catch(e){Utils.error("redis-cache.load",e);throw e;}
   };
   get = async (s:string) => JSON.parse(await this.redis.get(s) || "null");
